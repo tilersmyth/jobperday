@@ -1,0 +1,12 @@
+{
+  "extends": ["tslint-react", "../../tslint.json"],
+  "rules": {
+    "no-console": false,
+    "jsx-wrap-multiline": false,
+    "jsx-no-multiline-js": false,
+    "semicolon": [true, "always", "ignore-bound-class-methods"]
+  },
+  "linterOptions": {
+    "exclude": ["node_modules/**/*.ts"]
+  }
+}

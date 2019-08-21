@@ -1,0 +1,5 @@
+{
+  "name": "jobperday",
+  "private": true,
+  "workspaces": ["packages/*"]
+}
