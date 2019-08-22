@@ -1,11 +1,11 @@
-import { InputType, Field, ID } from 'type-graphql';
+import { InputType, Field } from 'type-graphql';
 
 import { CompanyProfileInput } from './company-profile.input';
 
 @InputType()
 export class CreateCompanyProfileInput {
-  @Field(() => ID)
-  readonly companyId: string;
+  @Field()
+  readonly companySlug: string;
   @Field(() => CompanyProfileInput)
   readonly profile: CompanyProfileInput;
 }

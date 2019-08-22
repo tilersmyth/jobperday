@@ -13,6 +13,7 @@ import { Length } from 'class-validator';
 import { CompanyMemberEntity } from './company-member.entity';
 import { CompanyAddressEntity } from './company-address.entity';
 import { CompanyProfileEntity } from './company-profile.entity';
+import { JobEntity } from '../../job/entity';
 
 @Entity('companies')
 export class CompanyEntity extends BaseEntity {
@@ -47,4 +48,7 @@ export class CompanyEntity extends BaseEntity {
 
   @OneToMany(() => CompanyMemberEntity, member => member.company)
   public members: CompanyMemberEntity[];
+
+  @OneToMany(() => JobEntity, job => job.company)
+  public jobs: JobEntity[];
 }

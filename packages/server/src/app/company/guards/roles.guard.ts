@@ -3,11 +3,12 @@ import { Reflector } from '@nestjs/core';
 import { GqlExecutionContext } from '@nestjs/graphql';
 
 import { AppLogger } from '../../app.logger';
-import { CompanyMemberService } from '../services';
+import { CompanyService } from '../services';
 import {
   memberRoles,
   MemberRoles,
 } from '../../_helpers/company/member-roles.types';
+import { CompanyMemberEntity } from '../entity';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -15,7 +16,7 @@ export class RolesGuard implements CanActivate {
 
   constructor(
     private readonly reflector: Reflector,
-    private readonly memberService: CompanyMemberService,
+    private readonly companyService: CompanyService,
   ) {}
 
   private static roleIndex(role: MemberRoles): number {
@@ -35,14 +36,25 @@ export class RolesGuard implements CanActivate {
     const { req } = ctx.getContext();
     const { input } = ctx.getArgs();
 
-    const member = await this.memberService.findOneByUser(
-      input.companyId,
-      req.user.id,
+    const company = await this.companyService.findOne({
+      where: { slug: input.companySlug },
+      relations: ['members'],
+    });
+
+    if (!company || !company.members) {
+      return false;
+    }
+
+    const member = company.members.find(
+      (m: CompanyMemberEntity) => m.userId === req.user.id,
     );
 
     if (!member) {
       return false;
     }
+
+    // Append company to req for service use
+    req.company = company;
 
     this.logger.debug(
       `[access granted] user is ${member.role}, route role is ${role}`,

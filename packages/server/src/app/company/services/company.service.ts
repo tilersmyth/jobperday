@@ -1,5 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import slugify from 'slug';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
@@ -27,13 +28,25 @@ export class CompanyService extends CrudService<CompanyEntity> {
     super();
   }
 
+  public async generateSlug(name: string): Promise<string> {
+    const newSlug = slugify(name, { lower: true });
+
+    const checkSlug = await this.findAll({
+      where: { slug: newSlug },
+    });
+
+    return checkSlug.length > 0
+      ? `${newSlug}-${checkSlug.length + 1}`
+      : newSlug;
+  }
+
   public async create(
     user: UserEntity,
     input: CreateCompanyInput,
   ): Promise<CompanyEntity> {
     const company = new CompanyEntity();
     company.name = input.name;
-    company.slug = 'no-slug-yet';
+    company.slug = await this.generateSlug(input.name);
     const savedCompany = await this.repository.save(company);
 
     this.logger.debug(`[create] company: ${company.name} (${savedCompany.id})`);
@@ -49,9 +62,9 @@ export class CompanyService extends CrudService<CompanyEntity> {
   }
 
   public async createProfile(
+    company: CompanyEntity,
     input: CreateCompanyProfileInput,
   ): Promise<boolean> {
-    const company = await this.findOneById(input.companyId);
     await this.profileService.create(company, input.profile);
 
     company.setup_stage = company.setup_stage + 1;
@@ -62,9 +75,9 @@ export class CompanyService extends CrudService<CompanyEntity> {
   }
 
   public async createAddress(
+    company: CompanyEntity,
     input: CreateCompanyAddressInput,
   ): Promise<boolean> {
-    const company = await this.findOneById(input.companyId);
     const address = await this.addressService.create(input.address);
 
     const setupStage = company.setup_stage + 1;

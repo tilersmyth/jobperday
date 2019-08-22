@@ -14,10 +14,12 @@ const PROVIDERS = [
   CompanyMemberService,
   CompanyProfileService,
   CompanyAddressService,
+  CompanyResolver,
 ];
 
 @Module({
-  providers: [...PROVIDERS, CompanyResolver],
+  providers: [...PROVIDERS],
   imports: [DatabaseModule],
+  exports: [CompanyService],
 })
 export class CompanyModule {}

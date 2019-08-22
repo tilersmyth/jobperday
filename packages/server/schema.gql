@@ -3,6 +3,12 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddJobInstanceInput {
+  companySlug: String!
+  jobId: ID!
+  instance: JobInstanceInput!
+}
+
 input AddressInput {
   phone: String!
   street: String!
@@ -16,6 +22,7 @@ input AddressInput {
 type CompanyDto {
   id: ID!
   name: String!
+  slug: String!
   setup_complete: Boolean!
   setup_stage: Int!
 }
@@ -28,7 +35,7 @@ input CompanyProfileInput {
 }
 
 input CreateCompanyAddressInput {
-  companyId: ID!
+  companySlug: String!
   address: AddressInput!
 }
 
@@ -37,8 +44,39 @@ input CreateCompanyInput {
 }
 
 input CreateCompanyProfileInput {
-  companyId: ID!
+  companySlug: String!
   profile: CompanyProfileInput!
+}
+
+input CreateJobInput {
+  companySlug: String!
+  job: JobInput!
+}
+
+"""
+The javascript `Date` as string. Type represents date and time as the ISO Date string.
+"""
+scalar DateTime
+
+type JobDto {
+  id: ID!
+  name: String!
+}
+
+input JobInput {
+  name: String!
+  category: String!
+  summary: String!
+  description: String!
+}
+
+input JobInstanceInput {
+  date: DateTime!
+  start_time: String!
+  end_time: String!
+  pay_rate: String!
+  total_openings: Int!
+  apply_deadline: DateTime!
 }
 
 type JwtDto {
@@ -56,6 +94,8 @@ type Mutation {
   login(input: LoginInput!): JwtDto!
   register(input: RegisterInput!): Boolean!
   refresh(input: RefreshTokenInput!): JwtDto!
+  createJob(input: CreateJobInput!): JobDto!
+  addJobInstance(input: AddJobInstanceInput!): Boolean!
   createCompany(input: CreateCompanyInput!): CompanyDto!
   createCompanyProfile(input: CreateCompanyProfileInput!): Boolean!
   createCompanyAddress(input: CreateCompanyAddressInput!): Boolean!

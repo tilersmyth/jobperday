@@ -11,21 +11,21 @@ import { UserModule } from '../src/app/user/user.module';
 import { SecurityModule } from '../src/app/security';
 import { GqlConfigService } from '../src/app/_helpers';
 import { AuthModule } from '../src/app/auth/auth.module';
-import { UserService } from '../src/app/user/user.service';
 import { CompanyModule } from '../src/app/company/company.module';
 import { CompanyService } from '../src/app/company/services';
 import { CompanyEntity } from '../src/app/company/entity';
+import { TestSeedService } from './seed.service';
 
-describe('CompanyResolver', () => {
+describe('CompanyResolver', async () => {
   let app: INestApplication;
-  let userService: UserService;
   let companyService: CompanyService;
 
-  let companyId: string;
+  let companySlug: string;
   let accessToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      providers: [TestSeedService],
       imports: [
         CompanyModule,
         AuthModule,
@@ -37,7 +37,11 @@ describe('CompanyResolver', () => {
       ],
     }).compile();
 
-    userService = moduleFixture.get<UserService>(UserService);
+    // Seed test
+    const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
+    await seedService.user();
+    accessToken = seedService.accessToken;
+
     companyService = moduleFixture.get<CompanyService>(CompanyService);
 
     app = moduleFixture.createNestApplication();
@@ -48,51 +52,7 @@ describe('CompanyResolver', () => {
     await app.close();
   });
 
-  describe('Setup', async () => {
-    const user = {
-      first_name: faker.name.firstName(),
-      last_name: faker.name.lastName(),
-      email: faker.internet.email(),
-      password: faker.internet.password(),
-    };
-
-    it('should create test user', async () => {
-      await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input: user },
-          query:
-            'mutation Register($input: RegisterInput!) {register(input: $input)}',
-        });
-
-      await userService.updateUserByEmail(user.email, {
-        is_verified: true,
-      });
-
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: {
-            input: { email: user.email, password: user.password },
-          },
-          query: `mutation Login($input: LoginInput!) {
-            login(input: $input) {
-              accessToken
-              refreshToken
-            }
-          }
-        `,
-        });
-
-      accessToken = body.data.login.accessToken;
-
-      expect(body.data.login.accessToken).toBeTruthy();
-    });
-  });
-
-  describe('Create', async () => {
+  describe('Create Company', async () => {
     const input = {
       name: faker.company.companyName(),
     };
@@ -109,16 +69,15 @@ describe('CompanyResolver', () => {
             createCompany(input:$input){
               id
               name
+              slug
               setup_complete
               setup_stage
             }
           }`,
         })
         .set('Authorization', `Bearer ${accessToken}`);
-
       company = body.data.createCompany;
-
-      companyId = company.id;
+      companySlug = company.slug;
 
       expect(company.name).toEqual(input.name);
     });
@@ -132,10 +91,10 @@ describe('CompanyResolver', () => {
     });
   });
 
-  describe('Create Profile', async () => {
+  describe('Create Company Profile', async () => {
     it('should create company profile', async () => {
       const input = {
-        companyId,
+        companySlug,
         profile: {
           profile_image: 'profile.png',
           cover_image: 'cover.png',
@@ -150,25 +109,27 @@ describe('CompanyResolver', () => {
           operationName: null,
           variables: { input },
           query: `mutation CreateCompanyProfile($input: CreateCompanyProfileInput!){
-            createCompanyProfile(input:$input)
-          }`,
+              createCompanyProfile(input:$input)
+            }`,
         })
         .set('Authorization', `Bearer ${accessToken}`);
-
       const { createCompanyProfile } = body.data;
       expect(createCompanyProfile).toBeTruthy();
     });
 
     it('should have setup stage equal to 1', async () => {
-      const company = await companyService.findOneById(companyId);
+      const company = await companyService.findOne({
+        where: { slug: companySlug },
+      });
+
       expect(company.setup_stage).toEqual(1);
     });
   });
 
-  describe('Create Address', async () => {
+  describe('Create Company Address', async () => {
     it('should create company address', async () => {
       const input = {
-        companyId,
+        companySlug,
         address: {
           street: '1 main st',
           city: 'Boston',
@@ -197,7 +158,9 @@ describe('CompanyResolver', () => {
     let company: CompanyEntity;
 
     it('should have setup stage equal to 2', async () => {
-      company = await companyService.findOneById(companyId);
+      company = await companyService.findOne({
+        where: { slug: companySlug },
+      });
       expect(company.setup_stage).toEqual(2);
     });
 

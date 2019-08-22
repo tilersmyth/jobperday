@@ -1,7 +1,7 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { GraphqlGuard, User as CurrentUser } from '../_helpers';
+import { GraphqlGuard, User as CurrentUser, Company } from '../_helpers';
 import { UserEntity } from '../user/entity';
 import { CompanyService } from './services';
 import { AppLogger } from '../app.logger';
@@ -11,6 +11,7 @@ import { CreateCompanyAddressInput } from './inputs/create-company-address.input
 import { Role } from './roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { CreateCompanyProfileInput } from './inputs/create-company-profile.input';
+import { CompanyEntity } from './entity';
 
 @UseGuards(GraphqlGuard)
 @Resolver('Company')
@@ -32,8 +33,11 @@ export class CompanyResolver {
   @Mutation(() => Boolean)
   @Role('admin')
   @UseGuards(RolesGuard)
-  async createCompanyProfile(@Args('input') input: CreateCompanyProfileInput) {
-    await this.companyService.createProfile(input);
+  async createCompanyProfile(
+    @Company() company: CompanyEntity,
+    @Args('input') input: CreateCompanyProfileInput,
+  ) {
+    await this.companyService.createProfile(company, input);
     this.logger.debug(`[createCompanyProfile] profile created`);
     return true;
   }
@@ -41,8 +45,11 @@ export class CompanyResolver {
   @Mutation(() => Boolean)
   @Role('admin')
   @UseGuards(RolesGuard)
-  async createCompanyAddress(@Args('input') input: CreateCompanyAddressInput) {
-    await this.companyService.createAddress(input);
+  async createCompanyAddress(
+    @Company() company: CompanyEntity,
+    @Args('input') input: CreateCompanyAddressInput,
+  ) {
+    await this.companyService.createAddress(company, input);
     this.logger.debug(`[createCompanyAddress] address created`);
     return true;
   }

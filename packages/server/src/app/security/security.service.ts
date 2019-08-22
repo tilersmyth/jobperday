@@ -9,7 +9,7 @@ export class SecurityService<T extends BaseEntity> {
 
   public async denyAccessUnlessGranted(
     attributes: string,
-    subject: T,
+    subject: T | T[],
   ): Promise<boolean> {
     const isGranted = await this.authorizationChecker.isGranted(
       attributes,
