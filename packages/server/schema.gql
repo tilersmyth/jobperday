@@ -61,6 +61,7 @@ scalar DateTime
 type JobDto {
   id: ID!
   name: String!
+  slug: String!
 }
 
 input JobInput {

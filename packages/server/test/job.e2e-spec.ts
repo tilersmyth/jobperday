@@ -12,12 +12,15 @@ import { SecurityModule } from '../src/app/security';
 import { GqlConfigService } from '../src/app/_helpers';
 import { AuthModule } from '../src/app/auth/auth.module';
 import { CompanyEntity } from '../src/app/company/entity';
-import { TestSeedService } from './seed.service';
+import { TestSeedService } from './services/seed.service';
 import { JobModule } from '../src/app/job/job.module';
 import { CompanyModule } from '../src/app/company/company.module';
+import { TestModule } from './test.module';
+import { TestUtilsService } from './services';
 
 describe('JobResolver', async () => {
   let app: INestApplication;
+  let testUtils: TestUtilsService;
 
   let accessToken: string;
   let company: CompanyEntity;
@@ -27,6 +30,7 @@ describe('JobResolver', async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [TestSeedService],
       imports: [
+        TestModule,
         JobModule,
         CompanyModule,
         AuthModule,
@@ -38,7 +42,11 @@ describe('JobResolver', async () => {
       ],
     }).compile();
 
-    // Seed test
+    // Clean DB
+    testUtils = moduleFixture.get<TestUtilsService>(TestUtilsService);
+    await testUtils.reloadFixtures();
+
+    // Seed test DB
     const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
     await seedService.company();
     accessToken = seedService.accessToken;
@@ -49,6 +57,7 @@ describe('JobResolver', async () => {
   });
 
   afterAll(async () => {
+    await testUtils.closeDbConnection();
     await app.close();
   });
 
@@ -57,8 +66,8 @@ describe('JobResolver', async () => {
       const input = {
         companySlug: company.slug,
         job: {
-          name: faker.lorem.word(),
-          category: faker.lorem.word(),
+          name: faker.name.jobType(),
+          category: faker.commerce.department(),
           summary: faker.lorem.sentence(),
           description: faker.lorem.paragraph(),
         },

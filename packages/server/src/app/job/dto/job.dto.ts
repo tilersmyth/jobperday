@@ -6,4 +6,6 @@ export class JobDto {
   readonly id: string;
   @Field()
   readonly name: string;
+  @Field()
+  readonly slug: string;
 }

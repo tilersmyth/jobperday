@@ -41,10 +41,10 @@ export const config: Config = {
       process.env.NODE_ENV === 'test' ? 'test' : ''
     }`,
     logging: process.env.NODE_ENV === 'test' ? false : true,
-    synchronize: true,
+    synchronize: process.env.NODE_ENV === 'development' ? true : false,
     entities: [__dirname + '/../**/entity/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
-    dropSchema: process.env.NODE_ENV === 'test' ? true : false,
+    dropSchema: false,
   },
   session: {
     domain: process.env.SESSION_DOMAIN,

@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import faker from 'faker';
 
-import { UserService } from '../src/app/user/user.service';
-import { createAuthToken } from '../src/app/auth/jwt';
-import { UserEntity } from '../src/app/user/entity';
-import { CompanyService } from '../src/app/company/services';
-import { CompanyEntity } from '../src/app/company/entity';
+import { UserService } from '../../src/app/user/user.service';
+import { createAuthToken } from '../../src/app/auth/jwt';
+import { UserEntity } from '../../src/app/user/entity';
+import { CompanyService } from '../../src/app/company/services';
+import { CompanyEntity } from '../../src/app/company/entity';
 
 @Injectable()
 export class TestSeedService {
@@ -70,6 +70,7 @@ export class TestSeedService {
 
     // Create company
     const company = await this.companyService.create(this.userEntity, input);
+
     this.companyEntity = company;
   }
 }

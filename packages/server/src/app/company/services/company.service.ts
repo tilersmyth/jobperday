@@ -1,6 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
-import slugify from 'slug';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
@@ -13,6 +12,7 @@ import { CreateCompanyAddressInput } from '../inputs/create-company-address.inpu
 import { CompanyAddressService } from './company-address.service';
 import { CreateCompanyProfileInput } from '../inputs/create-company-profile.input';
 import { CompanyProfileService } from './company-profile.service';
+import { SlugGeneratorUtil } from '../../_helpers';
 
 @Injectable()
 export class CompanyService extends CrudService<CompanyEntity> {
@@ -29,15 +29,8 @@ export class CompanyService extends CrudService<CompanyEntity> {
   }
 
   public async generateSlug(name: string): Promise<string> {
-    const newSlug = slugify(name, { lower: true });
-
-    const checkSlug = await this.findAll({
-      where: { slug: newSlug },
-    });
-
-    return checkSlug.length > 0
-      ? `${newSlug}-${checkSlug.length + 1}`
-      : newSlug;
+    const slug = new SlugGeneratorUtil(this.repository);
+    return slug.generate(name);
   }
 
   public async create(

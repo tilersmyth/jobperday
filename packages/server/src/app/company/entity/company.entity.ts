@@ -24,7 +24,7 @@ export class CompanyEntity extends BaseEntity {
   @Length(3, 100, { message: 'must be between 3 and 100 characters' })
   public name: string;
 
-  @Column('text')
+  @Column({ type: 'text' })
   @Length(3, 110, { message: 'must be between 3 and 110 characters' })
   public slug: string;
 

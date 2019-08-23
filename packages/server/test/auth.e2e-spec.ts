@@ -13,15 +13,21 @@ import { GqlConfigService } from '../src/app/_helpers';
 import { AuthModule } from '../src/app/auth/auth.module';
 import { UserErrorEnum } from '../src/app/user/user-error.enum';
 import { UserService } from '../src/app/user/user.service';
+import { TestUtilsService } from './services';
+import { TestModule } from './test.module';
 
 describe('AuthResolver', () => {
   let app: INestApplication;
+  let testUtils: TestUtilsService;
   let userService: UserService;
+
+  let user: any;
   let accessToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
+        TestModule,
         AuthModule,
         UserModule,
         SecurityModule,
@@ -31,22 +37,27 @@ describe('AuthResolver', () => {
       ],
     }).compile();
 
+    // Clean DB
+    testUtils = moduleFixture.get<TestUtilsService>(TestUtilsService);
+    await testUtils.reloadFixtures();
+
     userService = moduleFixture.get<UserService>(UserService);
 
     app = moduleFixture.createNestApplication();
     await app.init();
+
+    user = {
+      first_name: faker.name.firstName(),
+      last_name: faker.name.lastName(),
+      email: faker.internet.email(),
+      password: faker.internet.password(),
+    };
   });
 
   afterAll(async () => {
+    await testUtils.closeDbConnection();
     await app.close();
   });
-
-  const user = {
-    first_name: faker.name.firstName(),
-    last_name: faker.name.lastName(),
-    email: faker.internet.email(),
-    password: faker.internet.password(),
-  };
 
   describe('Register', async () => {
     it('should successfully create user', async () => {

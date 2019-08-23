@@ -14,10 +14,12 @@ import { AuthModule } from '../src/app/auth/auth.module';
 import { CompanyModule } from '../src/app/company/company.module';
 import { CompanyService } from '../src/app/company/services';
 import { CompanyEntity } from '../src/app/company/entity';
-import { TestSeedService } from './seed.service';
+import { TestUtilsService, TestSeedService } from './services';
+import { TestModule } from './test.module';
 
 describe('CompanyResolver', async () => {
   let app: INestApplication;
+  let testUtils: TestUtilsService;
   let companyService: CompanyService;
 
   let companySlug: string;
@@ -27,6 +29,7 @@ describe('CompanyResolver', async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [TestSeedService],
       imports: [
+        TestModule,
         CompanyModule,
         AuthModule,
         UserModule,
@@ -37,7 +40,11 @@ describe('CompanyResolver', async () => {
       ],
     }).compile();
 
-    // Seed test
+    // Clean DB
+    testUtils = moduleFixture.get<TestUtilsService>(TestUtilsService);
+    await testUtils.reloadFixtures();
+
+    // Seed test DB
     const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
     await seedService.user();
     accessToken = seedService.accessToken;
@@ -49,6 +56,7 @@ describe('CompanyResolver', async () => {
   });
 
   afterAll(async () => {
+    await testUtils.closeDbConnection();
     await app.close();
   });
 
@@ -76,6 +84,7 @@ describe('CompanyResolver', async () => {
           }`,
         })
         .set('Authorization', `Bearer ${accessToken}`);
+
       company = body.data.createCompany;
       companySlug = company.slug;
 

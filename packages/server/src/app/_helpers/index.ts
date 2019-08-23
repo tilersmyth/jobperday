@@ -5,6 +5,7 @@ export * from './graphql';
 export * from './database';
 export * from './request-context';
 export * from './middleware';
+export * from './slug-generator.util';
 
 export const ucfirst = string => {
   return string[0].toUpperCase() + string.slice(1);

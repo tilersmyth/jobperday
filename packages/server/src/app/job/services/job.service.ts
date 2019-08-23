@@ -9,6 +9,7 @@ import { CreateJobInput } from '../inputs/create-job.input';
 import { CompanyEntity } from '../../company/entity';
 import { AddJobInstanceInput } from '../inputs/add-job-instance.input';
 import { JobInstanceService } from './job-instance.service';
+import { SlugGeneratorUtil } from '../../_helpers';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -22,12 +23,21 @@ export class JobService extends CrudService<JobEntity> {
     super();
   }
 
+  public async generateSlug(
+    name: string,
+    company: CompanyEntity,
+  ): Promise<string> {
+    const slug = new SlugGeneratorUtil(this.repository);
+    return slug.generate(name, { company });
+  }
+
   public async create(
     company: CompanyEntity,
     input: CreateJobInput,
   ): Promise<JobEntity> {
     const job = new JobEntity();
     job.name = input.job.name;
+    job.slug = await this.generateSlug(input.job.name, company);
     job.category = input.job.category;
     job.summary = input.job.summary;
     job.description = input.job.description;
