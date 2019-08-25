@@ -2,42 +2,29 @@
 require('dotenv-safe').config();
 
 import faker from 'faker';
-import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
 
 import { UserModule } from '../src/app/user/user.module';
-import { SecurityModule } from '../src/app/security';
-import { GqlConfigService } from '../src/app/_helpers';
 import { AuthModule } from '../src/app/auth/auth.module';
 import { CompanyModule } from '../src/app/company/company.module';
 import { CompanyService } from '../src/app/company/services';
 import { CompanyEntity } from '../src/app/company/entity';
-import { TestUtilsService, TestSeedService } from './services';
+import { TestUtilsService, TestSeedService, GqlReqUtil } from './services';
 import { TestModule } from './test.module';
 
 describe('CompanyResolver', async () => {
   let app: INestApplication;
+  let gqlReq: GqlReqUtil;
   let testUtils: TestUtilsService;
   let companyService: CompanyService;
 
   let companySlug: string;
-  let accessToken: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [TestSeedService],
-      imports: [
-        TestModule,
-        CompanyModule,
-        AuthModule,
-        UserModule,
-        SecurityModule,
-        GraphQLModule.forRootAsync({
-          useClass: GqlConfigService,
-        }),
-      ],
+      imports: [TestModule, CompanyModule, AuthModule, UserModule],
     }).compile();
 
     // Clean DB
@@ -47,11 +34,12 @@ describe('CompanyResolver', async () => {
     // Seed test DB
     const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
     await seedService.user();
-    accessToken = seedService.accessToken;
 
     companyService = moduleFixture.get<CompanyService>(CompanyService);
 
     app = moduleFixture.createNestApplication();
+    gqlReq = new GqlReqUtil(app);
+    gqlReq.token = seedService.accessToken;
     await app.init();
   });
 
@@ -68,12 +56,8 @@ describe('CompanyResolver', async () => {
     let company: CompanyEntity;
 
     it('should create company', async () => {
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input },
-          query: `mutation CreateCompany($input: CreateCompanyInput!){
+      const { body } = await gqlReq.send(
+        `mutation CreateCompany($input: CreateCompanyInput!){
             createCompany(input:$input){
               id
               name
@@ -82,8 +66,8 @@ describe('CompanyResolver', async () => {
               setup_stage
             }
           }`,
-        })
-        .set('Authorization', `Bearer ${accessToken}`);
+        { input },
+      );
 
       company = body.data.createCompany;
       companySlug = company.slug;
@@ -112,16 +96,13 @@ describe('CompanyResolver', async () => {
         },
       };
 
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input },
-          query: `mutation CreateCompanyProfile($input: CreateCompanyProfileInput!){
-              createCompanyProfile(input:$input)
-            }`,
-        })
-        .set('Authorization', `Bearer ${accessToken}`);
+      const { body } = await gqlReq.send(
+        `mutation CreateCompanyProfile($input: CreateCompanyProfileInput!){
+            createCompanyProfile(input:$input)
+          }`,
+        { input },
+      );
+
       const { createCompanyProfile } = body.data;
       expect(createCompanyProfile).toBeTruthy();
     });
@@ -149,16 +130,12 @@ describe('CompanyResolver', async () => {
         },
       };
 
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input },
-          query: `mutation CreateCompanyAddress($input: CreateCompanyAddressInput!){
+      const { body } = await gqlReq.send(
+        `mutation CreateCompanyAddress($input: CreateCompanyAddressInput!){
             createCompanyAddress(input:$input)
           }`,
-        })
-        .set('Authorization', `Bearer ${accessToken}`);
+        { input },
+      );
 
       const { createCompanyAddress } = body.data;
       expect(createCompanyAddress).toBeTruthy();

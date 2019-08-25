@@ -2,44 +2,30 @@
 require('dotenv-safe').config();
 
 import faker from 'faker';
-import request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import { GraphQLModule } from '@nestjs/graphql';
 
 import { UserModule } from '../src/app/user/user.module';
-import { SecurityModule } from '../src/app/security';
-import { GqlConfigService } from '../src/app/_helpers';
 import { AuthModule } from '../src/app/auth/auth.module';
 import { CompanyEntity } from '../src/app/company/entity';
 import { TestSeedService } from './services/seed.service';
 import { JobModule } from '../src/app/job/job.module';
 import { CompanyModule } from '../src/app/company/company.module';
 import { TestModule } from './test.module';
-import { TestUtilsService } from './services';
+import { TestUtilsService, GqlReqUtil } from './services';
 
 describe('JobResolver', async () => {
   let app: INestApplication;
+  let gqlReq: GqlReqUtil;
   let testUtils: TestUtilsService;
 
-  let accessToken: string;
   let company: CompanyEntity;
   let jobId: string;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       providers: [TestSeedService],
-      imports: [
-        TestModule,
-        JobModule,
-        CompanyModule,
-        AuthModule,
-        UserModule,
-        SecurityModule,
-        GraphQLModule.forRootAsync({
-          useClass: GqlConfigService,
-        }),
-      ],
+      imports: [TestModule, JobModule, CompanyModule, AuthModule, UserModule],
     }).compile();
 
     // Clean DB
@@ -49,10 +35,11 @@ describe('JobResolver', async () => {
     // Seed test DB
     const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
     await seedService.company();
-    accessToken = seedService.accessToken;
     company = seedService.testCompany;
 
     app = moduleFixture.createNestApplication();
+    gqlReq = new GqlReqUtil(app);
+    gqlReq.token = seedService.accessToken;
     await app.init();
   });
 
@@ -73,19 +60,15 @@ describe('JobResolver', async () => {
         },
       };
 
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input },
-          query: `mutation CreateJob($input: CreateJobInput!){
+      const { body } = await gqlReq.send(
+        `mutation CreateJob($input: CreateJobInput!){
             createJob(input:$input){
               id
               name
             }
           }`,
-        })
-        .set('Authorization', `Bearer ${accessToken}`);
+        { input },
+      );
 
       const job = body.data.createJob;
       jobId = job.id;
@@ -109,16 +92,12 @@ describe('JobResolver', async () => {
         },
       };
 
-      const { body } = await request(app.getHttpServer())
-        .post('/graphql')
-        .send({
-          operationName: null,
-          variables: { input },
-          query: `mutation AddJobInstance($input: AddJobInstanceInput!){
+      const { body } = await gqlReq.send(
+        `mutation AddJobInstance($input: AddJobInstanceInput!){
             addJobInstance(input:$input)
           }`,
-        })
-        .set('Authorization', `Bearer ${accessToken}`);
+        { input },
+      );
 
       const instance = body.data.addJobInstance;
 
