@@ -5,11 +5,16 @@ import {
   FindOneOptions,
   FindManyOptions,
 } from 'typeorm';
-import { validate, ValidatorOptions } from 'class-validator';
+import { validate, ValidatorOptions, ValidationError } from 'class-validator';
+import { UserInputError } from 'apollo-server-core';
 
 import { config } from '../config';
 import { SecurityService } from '../app/security/security.service';
 import { RestVoterActionEnum } from '../app/security/voter/rest-voter-action.enum';
+
+interface GqlValidationError {
+  [key: string]: string;
+}
 
 export class CrudService<T extends BaseEntity> {
   protected repository: Repository<T>;
@@ -60,19 +65,24 @@ export class CrudService<T extends BaseEntity> {
     return entity;
   }
 
+  private errorReducer = (acc: GqlValidationError, error: ValidationError) => {
+    const key = Object.keys(error.constraints)[0];
+    return { [error.property]: error.constraints[key], ...acc };
+  };
+
   protected async validate(entity: T, options?: ValidatorOptions) {
-    const errors = await validate(entity, {
+    const valErrors = await validate(entity, {
       ...config.validator,
       options,
     } as ValidatorOptions);
-    if (errors.length) {
-      throw new HttpException(
-        {
-          errors,
-          type: 'validation',
-        },
-        HttpStatus.UNPROCESSABLE_ENTITY,
+    if (valErrors.length) {
+      const errors: GqlValidationError = valErrors.reduce(
+        this.errorReducer,
+        {},
       );
+      throw new UserInputError('register_error', {
+        errors,
+      });
     }
   }
 }

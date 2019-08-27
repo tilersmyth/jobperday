@@ -30,6 +30,7 @@
     "async-exit-hook": "^2.0.1",
     "cls-hooked": "^4.2.2",
     "connect-redis": "^3.4.2",
+    "cors": "^2.8.5",
     "dotenv-safe": "^6.1.0",
     "graphql": "^14.4.2",
     "graphql-tools": "^4.0.5",

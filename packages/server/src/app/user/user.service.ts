@@ -1,11 +1,6 @@
-import {
-  Injectable,
-  Inject,
-  HttpException,
-  HttpStatus,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
+import { UserInputError } from 'apollo-server-core';
 
 import { CrudService } from '../../base';
 import { UserEntity } from './entity/user.entity';
@@ -13,7 +8,6 @@ import { USER_TOKEN } from './user.constants';
 import { RegisterInput, LoginInput } from '../auth/inputs';
 import { AppLogger } from '../app.logger';
 import { hashPassword } from '../_helpers';
-import { UserErrorEnum } from './user-error.enum';
 import { config } from '../../config';
 
 @Injectable()
@@ -49,30 +43,12 @@ export class UserService extends CrudService<UserEntity> {
   public async login(input: LoginInput): Promise<UserEntity> {
     const user = await this.findByEmail(input.email);
 
-    if (!user) {
-      throw new HttpException(
-        {
-          error: 'User',
-          message: `User not found`,
-          condition: UserErrorEnum.NOT_FOUND,
-        },
-        HttpStatus.NOT_FOUND,
-      );
-    }
-
-    if (user.password !== hashPassword(input.password)) {
-      throw new NotFoundException(`User doesn't exists`);
+    if (!user || user.password !== hashPassword(input.password)) {
+      throw new UserInputError('Invalid email or password');
     }
 
     if (!user.is_verified) {
-      throw new HttpException(
-        {
-          error: 'User',
-          message: `User is not verified`,
-          condition: UserErrorEnum.NOT_VERIFIED,
-        },
-        HttpStatus.PRECONDITION_FAILED,
-      );
+      throw new UserInputError('Account not verified');
     }
 
     return user;

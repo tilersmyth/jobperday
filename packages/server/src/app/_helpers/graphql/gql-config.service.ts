@@ -7,6 +7,7 @@ import { config } from '../../../config';
 export class GqlConfigService implements GqlOptionsFactory {
   createGqlOptions(): GqlModuleOptions {
     return {
+      cors: config.cors,
       introspection: true,
       playground: true,
       installSubscriptionHandlers: true,

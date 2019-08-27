@@ -8,8 +8,8 @@ const IndexPage: NextPage = () => {
     <Layout title="Home | Next.js + TypeScript Example">
       <h1>Hello Next.js 👋</h1>
       <p>
-        <Link href="/about">
-          <a>About</a>
+        <Link href="/register">
+          <a>Register</a>
         </Link>
       </p>
     </Layout>

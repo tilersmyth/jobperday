@@ -1,6 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { useContainer } from 'class-validator';
+import cors from 'cors';
 
 import { AppModule } from './app.module';
 import { config } from '../config';
@@ -25,6 +26,8 @@ export class AppDispatcher {
     });
 
     useContainer(this.app.select(AppModule), { fallbackOnErrors: true });
+
+    this.app.use(cors(config.cors));
   }
 
   private async startServer(): Promise<void> {

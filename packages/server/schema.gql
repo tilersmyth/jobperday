@@ -58,6 +58,10 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+input ForgotPasswordInput {
+  email: String!
+}
+
 type JobDto {
   id: ID!
   name: String!
@@ -94,12 +98,13 @@ input LoginInput {
 type Mutation {
   login(input: LoginInput!): JwtDto!
   register(input: RegisterInput!): Boolean!
+  forgotPassword(input: ForgotPasswordInput!): Boolean!
   refresh(input: RefreshTokenInput!): JwtDto!
-  createJob(input: CreateJobInput!): JobDto!
-  addJobInstance(input: AddJobInstanceInput!): Boolean!
   createCompany(input: CreateCompanyInput!): CompanyDto!
   createCompanyProfile(input: CreateCompanyProfileInput!): Boolean!
   createCompanyAddress(input: CreateCompanyAddressInput!): Boolean!
+  createJob(input: CreateJobInput!): JobDto!
+  addJobInstance(input: AddJobInstanceInput!): Boolean!
 }
 
 type Query {

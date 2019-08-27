@@ -4,7 +4,7 @@
     "no-console": false,
     "jsx-wrap-multiline": false,
     "jsx-no-multiline-js": false,
-    "semicolon": [true, "always", "ignore-bound-class-methods"]
+    "jsx-no-lambda": false
   },
   "linterOptions": {
     "exclude": ["node_modules/**/*.ts"]

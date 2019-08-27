@@ -27,6 +27,10 @@ interface Config {
       value: boolean;
     };
   };
+  cors: {
+    credentials: boolean;
+    origin: string;
+  };
 }
 
 export const config: Config = {
@@ -63,5 +67,9 @@ export const config: Config = {
       target: false,
       value: false,
     },
+  },
+  cors: {
+    credentials: true,
+    origin: process.env.FRONTEND,
   },
 };

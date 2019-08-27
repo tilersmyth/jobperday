@@ -7,7 +7,6 @@ import { GqlConfigService, RequestContextMiddleware } from './_helpers';
 import { AuthModule } from './auth/auth.module';
 import { SecurityModule } from './security';
 import { CompanyModule } from './company/company.module';
-import { JobResolver } from './job/job.resolver';
 import { JobModule } from './job/job.module';
 
 @Module({

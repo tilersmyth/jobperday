@@ -6,6 +6,7 @@ import { AppLogger } from '../app.logger';
 import { JwtDto } from './dto/jwt.dto';
 import { createAuthToken, verifyToken } from './jwt';
 import { config } from '../../config';
+import { ForgotPasswordInput } from './inputs/forgot-password.input';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -24,6 +25,12 @@ export class AuthResolver {
   async register(@Args('input') input: RegisterInput) {
     const user = await this.userService.create(input);
     this.logger.debug(`[register] User ${user.email} register`);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(@Args('input') input: ForgotPasswordInput) {
+    // to do
     return true;
   }
 
