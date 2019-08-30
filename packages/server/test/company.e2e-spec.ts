@@ -10,7 +10,12 @@ import { AuthModule } from '../src/app/auth/auth.module';
 import { CompanyModule } from '../src/app/company/company.module';
 import { CompanyService } from '../src/app/company/services';
 import { CompanyEntity } from '../src/app/company/entity';
-import { TestUtilsService, TestSeedService, GqlReqUtil } from './services';
+import {
+  TestUtilsService,
+  TestSeedService,
+  GqlReqUtil,
+  session,
+} from './services';
 import { TestModule } from './test.module';
 
 describe('CompanyResolver', async () => {
@@ -31,16 +36,19 @@ describe('CompanyResolver', async () => {
     testUtils = moduleFixture.get<TestUtilsService>(TestUtilsService);
     await testUtils.reloadFixtures();
 
-    // Seed test DB
-    const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
-    await seedService.user();
-
     companyService = moduleFixture.get<CompanyService>(CompanyService);
 
     app = moduleFixture.createNestApplication();
+
+    app.use(session());
+
     gqlReq = new GqlReqUtil(app);
-    gqlReq.token = seedService.accessToken;
+
     await app.init();
+
+    // Seed test DB
+    const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
+    await seedService.user(gqlReq);
   });
 
   afterAll(async () => {

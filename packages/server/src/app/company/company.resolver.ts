@@ -1,7 +1,7 @@
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
-import { GraphqlGuard, User as CurrentUser, Company } from '../_helpers';
+import { User as CurrentUser, Company } from '../_helpers';
 import { UserEntity } from '../user/entity';
 import { CompanyService } from './services';
 import { AppLogger } from '../app.logger';
@@ -12,8 +12,9 @@ import { Role } from './roles.decorator';
 import { RolesGuard } from './guards/roles.guard';
 import { CreateCompanyProfileInput } from './inputs/create-company-profile.input';
 import { CompanyEntity } from './entity';
+import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 
-@UseGuards(GraphqlGuard)
+@UseGuards(UserAuthGuard)
 @Resolver('Company')
 export class CompanyResolver {
   private logger = new AppLogger(CompanyResolver.name);

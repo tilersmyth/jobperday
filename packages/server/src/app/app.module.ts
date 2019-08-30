@@ -1,25 +1,24 @@
 import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
+
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { AppLogger } from './app.logger';
-import { GqlConfigService, RequestContextMiddleware } from './_helpers';
+import { GqlConfigService, ExpressSessionMiddleware } from './_helpers';
 import { AuthModule } from './auth/auth.module';
-import { SecurityModule } from './security';
 import { CompanyModule } from './company/company.module';
 import { JobModule } from './job/job.module';
 
 @Module({
   imports: [
     DatabaseModule,
+    AuthModule,
+    UserModule,
+    CompanyModule,
+    JobModule,
     GraphQLModule.forRootAsync({
       useClass: GqlConfigService,
     }),
-    AuthModule,
-    UserModule,
-    SecurityModule,
-    CompanyModule,
-    JobModule,
   ],
 })
 export class AppModule {
@@ -31,7 +30,7 @@ export class AppModule {
 
   configure(consumer: MiddlewareConsumer) {
     consumer
-      .apply(RequestContextMiddleware)
+      .apply(ExpressSessionMiddleware)
       .forRoutes({ path: '*', method: RequestMethod.ALL });
   }
 }

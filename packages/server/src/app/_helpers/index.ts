@@ -3,8 +3,8 @@ import { config } from '../../config';
 
 export * from './graphql';
 export * from './database';
-export * from './request-context';
 export * from './middleware';
+export * from './decorators';
 export * from './slug-generator.util';
 
 export const ucfirst = string => {

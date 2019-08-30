@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import { Formik, Field } from 'formik';
+import Router from 'next/router';
 
 import { AuthLayout } from '../auth-layout';
 import { LoginComponent } from '../../../apollo/generated-components';
@@ -29,8 +30,8 @@ export const LoginView: React.FunctionComponent = () => {
               onSubmit={async data => {
                 try {
                   setError('');
-                  const test = await login({ variables: data });
-                  console.log(test);
+                  await login({ variables: data });
+                  Router.push('/admin');
                 } catch (err) {
                   const errors = serverValidationError(err);
                   return errors && setError(errors.message);

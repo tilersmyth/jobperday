@@ -4,8 +4,8 @@ import { useContainer } from 'class-validator';
 import cors from 'cors';
 
 import { AppModule } from './app.module';
-import { config } from '../config';
 import { AppLogger } from './app.logger';
+import { config } from '../config';
 
 export class AppDispatcher {
   private app: INestApplication;
@@ -25,9 +25,9 @@ export class AppDispatcher {
       logger: new AppLogger('Nest'),
     });
 
-    useContainer(this.app.select(AppModule), { fallbackOnErrors: true });
-
     this.app.use(cors(config.cors));
+
+    useContainer(this.app.select(AppModule), { fallbackOnErrors: true });
   }
 
   private async startServer(): Promise<void> {

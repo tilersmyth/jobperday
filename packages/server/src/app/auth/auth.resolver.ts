@@ -1,25 +1,16 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 
-import { LoginInput, RegisterInput, RefreshTokenInput } from './inputs';
+import { LoginInput, RegisterInput } from './inputs';
 import { UserService } from '../user/user.service';
 import { AppLogger } from '../app.logger';
-import { JwtDto } from './dto/jwt.dto';
-import { createAuthToken, verifyToken } from './jwt';
-import { config } from '../../config';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
+import { ExpressContext } from '../types/context';
 
 @Resolver('Auth')
 export class AuthResolver {
   private logger = new AppLogger(AuthResolver.name);
 
   constructor(private readonly userService: UserService) {}
-
-  @Mutation(() => JwtDto)
-  async login(@Args('input') input: LoginInput) {
-    const user = await this.userService.login(input);
-    this.logger.debug(`[login] User ${user.email} logging`);
-    return createAuthToken(user);
-  }
 
   @Mutation(() => Boolean)
   async register(@Args('input') input: RegisterInput) {
@@ -29,15 +20,25 @@ export class AuthResolver {
   }
 
   @Mutation(() => Boolean)
-  async forgotPassword(@Args('input') input: ForgotPasswordInput) {
-    // to do
+  async login(
+    @Args('input') input: LoginInput,
+    @Context() ctx: ExpressContext,
+  ) {
+    const user = await this.userService.login(input, ctx.req);
+    this.logger.debug(`[login] User ${user.email} logged in`);
     return true;
   }
 
-  @Mutation(() => JwtDto)
-  async refresh(@Args('input') input: RefreshTokenInput) {
-    this.logger.debug(`[refresh] Token ${input.token}`);
-    const token = await verifyToken(input.token, config.session.refresh.secret);
-    return await createAuthToken({ id: token.id });
+  @Mutation(() => Boolean)
+  async logout(@Context() ctx: ExpressContext) {
+    const user = await this.userService.logout(ctx);
+    this.logger.debug(`[logout] User ${user.email} logged out`);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(@Args('input') input: ForgotPasswordInput) {
+    // to do
+    return true;
   }
 }

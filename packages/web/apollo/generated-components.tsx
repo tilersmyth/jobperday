@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import * as ApolloReactCommon from '@apollo/react-common';
 import * as React from 'react';
+import * as ApolloReactCommon from '@apollo/react-common';
 import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 export type Maybe<T> = T | null;
@@ -94,13 +94,6 @@ export type JobInstanceInput = {
   apply_deadline: Scalars['DateTime'];
 };
 
-export type JwtDto = {
-  __typename?: 'JwtDto';
-  expiresIn: Scalars['Int'];
-  accessToken: Scalars['String'];
-  refreshToken: Scalars['String'];
-};
-
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -108,10 +101,10 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  login: JwtDto;
   register: Scalars['Boolean'];
+  login: Scalars['Boolean'];
+  logout: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
-  refresh: JwtDto;
   createCompany: CompanyDto;
   createCompanyProfile: Scalars['Boolean'];
   createCompanyAddress: Scalars['Boolean'];
@@ -119,20 +112,16 @@ export type Mutation = {
   addJobInstance: Scalars['Boolean'];
 };
 
-export type MutationLoginArgs = {
-  input: LoginInput;
-};
-
 export type MutationRegisterArgs = {
   input: RegisterInput;
 };
 
-export type MutationForgotPasswordArgs = {
-  input: ForgotPasswordInput;
+export type MutationLoginArgs = {
+  input: LoginInput;
 };
 
-export type MutationRefreshArgs = {
-  input: RefreshTokenInput;
+export type MutationForgotPasswordArgs = {
+  input: ForgotPasswordInput;
 };
 
 export type MutationCreateCompanyArgs = {
@@ -160,10 +149,6 @@ export type Query = {
   me: UserDto;
 };
 
-export type RefreshTokenInput = {
-  token: Scalars['String'];
-};
-
 export type RegisterInput = {
   first_name: Scalars['String'];
   last_name: Scalars['String'];
@@ -178,6 +163,24 @@ export type UserDto = {
   last_name: Scalars['String'];
   email: Scalars['String'];
 };
+export type MeQueryVariables = {};
+
+export type MeQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    'id' | 'first_name' | 'last_name' | 'email'
+  >;
+};
+
+export type MeClientQueryVariables = {};
+
+export type MeClientQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    'id' | 'first_name' | 'last_name' | 'email'
+  >;
+};
+
 export type ForgotPasswordMutationVariables = {
   email: Scalars['String'];
 };
@@ -192,12 +195,17 @@ export type LoginMutationVariables = {
   password: Scalars['String'];
 };
 
-export type LoginMutation = { __typename?: 'Mutation' } & {
-  login: { __typename?: 'JwtDto' } & Pick<
-    JwtDto,
-    'accessToken' | 'refreshToken'
-  >;
-};
+export type LoginMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'login'
+>;
+
+export type LogoutMutationVariables = {};
+
+export type LogoutMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'logout'
+>;
 
 export type RegisterMutationVariables = {
   first_name: Scalars['String'];
@@ -211,6 +219,107 @@ export type RegisterMutation = { __typename?: 'Mutation' } & Pick<
   'register'
 >;
 
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+`;
+export type MeComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<MeQuery, MeQueryVariables>,
+  'query'
+>;
+
+export const MeComponent = (props: MeComponentProps) => (
+  <ApolloReactComponents.Query<MeQuery, MeQueryVariables>
+    query={MeDocument}
+    {...props}
+  />
+);
+
+export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  MeQuery,
+  MeQueryVariables
+> &
+  TChildProps;
+export function withMe<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >(MeDocument, {
+    alias: 'withMe',
+    ...operationOptions,
+  });
+}
+export type MeQueryResult = ApolloReactCommon.QueryResult<
+  MeQuery,
+  MeQueryVariables
+>;
+export const MeClientDocument = gql`
+  query MeClient {
+    me @client {
+      id
+      first_name
+      last_name
+      email
+    }
+  }
+`;
+export type MeClientComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    MeClientQuery,
+    MeClientQueryVariables
+  >,
+  'query'
+>;
+
+export const MeClientComponent = (props: MeClientComponentProps) => (
+  <ApolloReactComponents.Query<MeClientQuery, MeClientQueryVariables>
+    query={MeClientDocument}
+    {...props}
+  />
+);
+
+export type MeClientProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  MeClientQuery,
+  MeClientQueryVariables
+> &
+  TChildProps;
+export function withMeClient<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    MeClientQuery,
+    MeClientQueryVariables,
+    MeClientProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    MeClientQuery,
+    MeClientQueryVariables,
+    MeClientProps<TChildProps>
+  >(MeClientDocument, {
+    alias: 'withMeClient',
+    ...operationOptions,
+  });
+}
+export type MeClientQueryResult = ApolloReactCommon.QueryResult<
+  MeClientQuery,
+  MeClientQueryVariables
+>;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
     forgotPassword(input: { email: $email })
@@ -272,10 +381,7 @@ export type ForgotPasswordMutationOptions = ApolloReactCommon.BaseMutationOption
 >;
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
-    login(input: { email: $email, password: $password }) {
-      accessToken
-      refreshToken
-    }
+    login(input: { email: $email, password: $password })
   }
 `;
 export type LoginMutationFn = ApolloReactCommon.MutationFunction<
@@ -326,6 +432,60 @@ export type LoginMutationResult = ApolloReactCommon.MutationResult<
 export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<
   LoginMutation,
   LoginMutationVariables
+>;
+export const LogoutDocument = gql`
+  mutation Logout {
+    logout
+  }
+`;
+export type LogoutMutationFn = ApolloReactCommon.MutationFunction<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
+export type LogoutComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    LogoutMutation,
+    LogoutMutationVariables
+  >,
+  'mutation'
+>;
+
+export const LogoutComponent = (props: LogoutComponentProps) => (
+  <ApolloReactComponents.Mutation<LogoutMutation, LogoutMutationVariables>
+    mutation={LogoutDocument}
+    {...props}
+  />
+);
+
+export type LogoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  LogoutMutation,
+  LogoutMutationVariables
+> &
+  TChildProps;
+export function withLogout<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >(LogoutDocument, {
+    alias: 'withLogout',
+    ...operationOptions,
+  });
+}
+export type LogoutMutationResult = ApolloReactCommon.MutationResult<
+  LogoutMutation
+>;
+export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  LogoutMutation,
+  LogoutMutationVariables
 >;
 export const RegisterDocument = gql`
   mutation Register(

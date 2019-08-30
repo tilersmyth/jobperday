@@ -46,7 +46,7 @@ export class RolesGuard implements CanActivate {
     }
 
     const member = company.members.find(
-      (m: CompanyMemberEntity) => m.userId === req.user.id,
+      (m: CompanyMemberEntity) => m.userId === req.session.user.id,
     );
 
     if (!member) {

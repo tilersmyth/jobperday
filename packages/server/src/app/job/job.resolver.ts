@@ -1,17 +1,18 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { UseGuards } from '@nestjs/common';
 
 import { AppLogger } from '../app.logger';
 import { CreateJobInput } from './inputs/create-job.input';
 import { JobDto } from './dto/job.dto';
 import { JobService } from './services';
-import { Company, GraphqlGuard } from '../_helpers';
+import { Company } from '../_helpers';
 import { CompanyEntity } from '../company/entity';
 import { Role } from '../company/roles.decorator';
-import { UseGuards } from '@nestjs/common';
 import { RolesGuard } from '../company/guards/roles.guard';
 import { AddJobInstanceInput } from './inputs/add-job-instance.input';
+import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 
-@UseGuards(GraphqlGuard)
+@UseGuards(UserAuthGuard)
 @Resolver('Job')
 export class JobResolver {
   private logger = new AppLogger(JobResolver.name);

@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Inject, forwardRef } from '@nestjs/common';
+import { HttpException, HttpStatus } from '@nestjs/common';
 import {
   BaseEntity,
   Repository,
@@ -9,8 +9,6 @@ import { validate, ValidatorOptions, ValidationError } from 'class-validator';
 import { UserInputError } from 'apollo-server-core';
 
 import { config } from '../config';
-import { SecurityService } from '../app/security/security.service';
-import { RestVoterActionEnum } from '../app/security/voter/rest-voter-action.enum';
 
 interface GqlValidationError {
   [key: string]: string;
@@ -19,9 +17,6 @@ interface GqlValidationError {
 export class CrudService<T extends BaseEntity> {
   protected repository: Repository<T>;
 
-  @Inject(forwardRef(() => SecurityService))
-  protected readonly securityService: SecurityService<T>;
-
   constructor(repository?: Repository<T>) {
     if (repository) {
       this.repository = repository;
@@ -29,22 +24,12 @@ export class CrudService<T extends BaseEntity> {
   }
 
   public async findAll(options?: FindManyOptions<T>): Promise<T[]> {
-    const entities = await this.repository.find(options);
-    await this.securityService.denyAccessUnlessGranted(
-      RestVoterActionEnum.READ_ALL,
-      entities,
-    );
-    return entities;
+    return this.repository.find(options);
   }
 
   public async findOneById(id: string): Promise<T> {
     try {
-      const entity = await this.repository.findOneOrFail(id);
-      await this.securityService.denyAccessUnlessGranted(
-        RestVoterActionEnum.READ,
-        entity,
-      );
-      return entity;
+      return this.repository.findOneOrFail(id);
     } catch (e) {
       throw new HttpException(
         {
@@ -57,12 +42,7 @@ export class CrudService<T extends BaseEntity> {
   }
 
   public async findOne(options?: FindOneOptions<T>): Promise<T> {
-    const entity = await this.repository.findOne(options);
-    await this.securityService.denyAccessUnlessGranted(
-      RestVoterActionEnum.READ,
-      entity,
-    );
-    return entity;
+    return this.repository.findOne(options);
   }
 
   private errorReducer = (acc: GqlValidationError, error: ValidationError) => {

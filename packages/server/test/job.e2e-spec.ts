@@ -12,7 +12,7 @@ import { TestSeedService } from './services/seed.service';
 import { JobModule } from '../src/app/job/job.module';
 import { CompanyModule } from '../src/app/company/company.module';
 import { TestModule } from './test.module';
-import { TestUtilsService, GqlReqUtil } from './services';
+import { TestUtilsService, GqlReqUtil, session } from './services';
 
 describe('JobResolver', async () => {
   let app: INestApplication;
@@ -32,15 +32,16 @@ describe('JobResolver', async () => {
     testUtils = moduleFixture.get<TestUtilsService>(TestUtilsService);
     await testUtils.reloadFixtures();
 
+    app = moduleFixture.createNestApplication();
+    app.use(session());
+
+    gqlReq = new GqlReqUtil(app);
+
+    await app.init();
+
     // Seed test DB
     const seedService = moduleFixture.get<TestSeedService>(TestSeedService);
-    await seedService.company();
-    company = seedService.testCompany;
-
-    app = moduleFixture.createNestApplication();
-    gqlReq = new GqlReqUtil(app);
-    gqlReq.token = seedService.accessToken;
-    await app.init();
+    company = await seedService.company(gqlReq);
   });
 
   afterAll(async () => {

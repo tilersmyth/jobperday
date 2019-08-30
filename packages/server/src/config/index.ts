@@ -6,17 +6,10 @@ interface Config {
   env: EnvTypes;
   host: string;
   port: number;
-  uuid: string;
   salt: string;
   database: ConnectionOptions;
   session: {
-    domain: string;
     secret: string;
-    timeout: number;
-    refresh: {
-      secret: string;
-      timeout: number;
-    };
   };
   logger: {
     level: string;
@@ -37,7 +30,6 @@ export const config: Config = {
   env: process.env.NODE_ENV as EnvTypes,
   host: process.env.HOST,
   port: parseInt(process.env.PORT, 10),
-  uuid: process.env.UUID,
   salt: process.env.USER_PASSWORD_SALT,
   database: {
     type: 'postgres',
@@ -51,13 +43,7 @@ export const config: Config = {
     dropSchema: false,
   },
   session: {
-    domain: process.env.SESSION_DOMAIN,
     secret: process.env.SESSION_SECRET,
-    timeout: parseInt(process.env.SESSION_TIMEOUT, 10),
-    refresh: {
-      secret: process.env.SESSION_REFRESH_SECRET,
-      timeout: parseInt(process.env.SESSION_REFRESH_TIMEOUT, 10),
-    },
   },
   logger: {
     level: process.env.LOGGER_LEVEL,

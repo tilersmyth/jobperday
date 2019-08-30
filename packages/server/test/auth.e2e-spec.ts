@@ -7,16 +7,15 @@ import { INestApplication } from '@nestjs/common';
 
 import { UserModule } from '../src/app/user/user.module';
 import { AuthModule } from '../src/app/auth/auth.module';
-import { UserErrorEnum } from '../src/app/user/user-error.enum';
 import { UserService } from '../src/app/user/user.service';
-import { TestUtilsService, GqlReqUtil } from './services';
+import { TestUtilsService, GqlReqUtil, session } from './services';
 import { TestModule } from './test.module';
 
 describe('AuthResolver', () => {
   let app: INestApplication;
-  let gqlReq: GqlReqUtil;
   let testUtils: TestUtilsService;
   let userService: UserService;
+  let gqlReq: GqlReqUtil;
 
   const user = {
     first_name: faker.name.firstName(),
@@ -37,6 +36,8 @@ describe('AuthResolver', () => {
     userService = moduleFixture.get<UserService>(UserService);
 
     app = moduleFixture.createNestApplication();
+
+    app.use(session());
 
     gqlReq = new GqlReqUtil(app);
 
@@ -64,9 +65,7 @@ describe('AuthResolver', () => {
   describe('Login', async () => {
     const LoginMutation = `
         mutation Login($input: LoginInput!) {
-          login(input: $input) {
-            accessToken
-          }
+          login(input: $input)
         }
       `;
 
@@ -79,7 +78,7 @@ describe('AuthResolver', () => {
       });
 
       expect(body.errors.length).toEqual(1);
-      expect(body.errors[0].message.condition).toEqual(UserErrorEnum.NOT_FOUND);
+      expect(body.errors[0].message).toEqual('Invalid email or password');
     });
 
     it('User is not verified', async () => {
@@ -91,36 +90,33 @@ describe('AuthResolver', () => {
       });
 
       expect(body.errors.length).toEqual(1);
-      expect(body.errors[0].message.condition).toEqual(
-        UserErrorEnum.NOT_VERIFIED,
-      );
+      expect(body.errors[0].message).toEqual('Account not verified');
     });
 
-    it('User has access token', async () => {
-      const updatedUser = await userService.updateUserByEmail(user.email, {
+    it('Set user session', async () => {
+      await userService.updateUserByEmail(user.email, {
         is_verified: true,
       });
 
-      const { body } = await gqlReq.send(LoginMutation, {
+      const req = await gqlReq.send(LoginMutation, {
         input: {
           email: user.email,
           password: user.password,
         },
       });
 
-      gqlReq.token = body.data.login.accessToken;
+      gqlReq.setCookie = req.header['set-cookie'];
 
-      expect(updatedUser.is_verified).toBeTruthy();
-      expect(body.data.login).toBeDefined();
+      expect(req.body.data.login).toBeTruthy();
     });
 
     it('Me (current user)', async () => {
       const { body } = await gqlReq.send(
         `query{
-          me{
-            email
-          }
-        }`,
+            me{
+              email
+            }
+          }`,
       );
 
       expect(body.data.me.email).toEqual(user.email);

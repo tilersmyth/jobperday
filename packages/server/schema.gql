@@ -84,35 +84,25 @@ input JobInstanceInput {
   apply_deadline: DateTime!
 }
 
-type JwtDto {
-  expiresIn: Int!
-  accessToken: String!
-  refreshToken: String!
-}
-
 input LoginInput {
   email: String!
   password: String!
 }
 
 type Mutation {
-  login(input: LoginInput!): JwtDto!
   register(input: RegisterInput!): Boolean!
+  login(input: LoginInput!): Boolean!
+  logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
-  refresh(input: RefreshTokenInput!): JwtDto!
+  createJob(input: CreateJobInput!): JobDto!
+  addJobInstance(input: AddJobInstanceInput!): Boolean!
   createCompany(input: CreateCompanyInput!): CompanyDto!
   createCompanyProfile(input: CreateCompanyProfileInput!): Boolean!
   createCompanyAddress(input: CreateCompanyAddressInput!): Boolean!
-  createJob(input: CreateJobInput!): JobDto!
-  addJobInstance(input: AddJobInstanceInput!): Boolean!
 }
 
 type Query {
   me: UserDto!
-}
-
-input RefreshTokenInput {
-  token: String!
 }
 
 input RegisterInput {

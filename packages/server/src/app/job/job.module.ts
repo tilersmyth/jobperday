@@ -5,6 +5,7 @@ import { DatabaseModule } from '../database/database.module';
 import { JobResolver } from './job.resolver';
 import { JobService, JobInstanceService } from './services';
 import { CompanyModule } from '../company/company.module';
+import { UserModule } from '../user/user.module';
 
 const PROVIDERS = [
   ...jobProviders,
@@ -15,6 +16,6 @@ const PROVIDERS = [
 
 @Module({
   providers: [...PROVIDERS],
-  imports: [DatabaseModule, CompanyModule],
+  imports: [DatabaseModule, UserModule, CompanyModule],
 })
 export class JobModule {}

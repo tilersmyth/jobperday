@@ -6,6 +6,7 @@ import { companyProviders } from './company.providers';
 import { CompanyResolver } from './company.resolver';
 import { RolesGuard } from './guards/roles.guard';
 import { CompanyAddressService, CompanyProfileService } from './services';
+import { UserModule } from '../user/user.module';
 
 const PROVIDERS = [
   ...companyProviders,
@@ -19,7 +20,7 @@ const PROVIDERS = [
 
 @Module({
   providers: [...PROVIDERS],
-  imports: [DatabaseModule],
+  imports: [UserModule, DatabaseModule],
   exports: [CompanyService],
 })
 export class CompanyModule {}

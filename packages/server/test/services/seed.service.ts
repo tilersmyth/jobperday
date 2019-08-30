@@ -2,36 +2,20 @@ import { Injectable } from '@nestjs/common';
 import faker from 'faker';
 
 import { UserService } from '../../src/app/user/user.service';
-import { createAuthToken } from '../../src/app/auth/jwt';
 import { UserEntity } from '../../src/app/user/entity';
 import { CompanyService } from '../../src/app/company/services';
 import { CompanyEntity } from '../../src/app/company/entity';
+import { GqlReqUtil } from './gql-req.util';
 
 @Injectable()
 export class TestSeedService {
-  private token: string;
-  private userEntity: UserEntity;
-  private companyEntity: CompanyEntity;
-
   constructor(
     private readonly userService: UserService,
     private readonly companyService: CompanyService,
   ) {}
 
-  get accessToken() {
-    return this.token;
-  }
-
-  get testUser() {
-    return this.userEntity;
-  }
-
-  get testCompany() {
-    return this.companyEntity;
-  }
-
-  public async user(): Promise<void> {
-    const user = {
+  public async user(gqlReq: GqlReqUtil): Promise<UserEntity> {
+    const fakeUser: any = {
       first_name: faker.name.firstName(),
       last_name: faker.name.lastName(),
       email: faker.internet.email(),
@@ -39,38 +23,39 @@ export class TestSeedService {
     };
 
     // Create user
-    await this.userService.create(user);
+    const user = await this.userService.create(fakeUser);
 
     // Verify user
-    await this.userService.updateUserByEmail(user.email, {
+    await this.userService.updateUserByEmail(fakeUser.email, {
       is_verified: true,
     });
 
-    // Login user
-    const login = await this.userService.login({
-      email: user.email,
-      password: user.password,
-    });
+    const req = await gqlReq.send(
+      `mutation Login($input: LoginInput!) {
+      login(input: $input)
+    }`,
+      {
+        input: {
+          email: fakeUser.email,
+          password: fakeUser.password,
+        },
+      },
+    );
 
-    this.userEntity = login;
+    gqlReq.setCookie = req.header['set-cookie'];
 
-    // Create token
-    const token = await createAuthToken(login);
-
-    this.token = token.accessToken;
+    return user;
   }
 
-  public async company(): Promise<void> {
+  public async company(gqlReq: GqlReqUtil): Promise<CompanyEntity> {
     // Create user
-    await this.user();
+    const user = await this.user(gqlReq);
 
     const input = {
       name: faker.company.companyName(),
     };
 
     // Create company
-    const company = await this.companyService.create(this.userEntity, input);
-
-    this.companyEntity = company;
+    return this.companyService.create(user, input);
   }
 }
