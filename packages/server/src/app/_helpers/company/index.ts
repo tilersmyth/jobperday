@@ -1,1 +1,1 @@
-export * from './member-roles.types';
+export * from './member.roles';

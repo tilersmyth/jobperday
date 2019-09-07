@@ -1,16 +1,21 @@
 import { Resolver, Query } from '@nestjs/graphql';
-import { UseGuards } from '@nestjs/common';
 
 import { UserDto } from './dto/user.dto';
 import { UserEntity } from './entity';
 import { User as CurrentUser } from '../_helpers';
-import { UserAuthGuard } from '../auth/guards/user-auth.guard';
+import { UserService } from './user.service';
 
 @Resolver('User')
-@UseGuards(UserAuthGuard)
 export class UserResolver {
-  @Query(() => UserDto)
-  async me(@CurrentUser() user: UserEntity): Promise<UserEntity> {
+  constructor(private readonly userService: UserService) {}
+
+  @Query(() => UserDto, { nullable: true })
+  async me(@CurrentUser() user: UserEntity): Promise<UserEntity | null> {
     return user;
+  }
+
+  @Query(() => [UserDto])
+  async allUsers(): Promise<UserEntity[]> {
+    return this.userService.find();
   }
 }

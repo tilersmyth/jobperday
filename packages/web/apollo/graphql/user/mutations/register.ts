@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const registerMutation = gql`
   mutation Register(
@@ -14,6 +14,14 @@ export const registerMutation = gql`
         email: $email
         password: $password
       }
-    )
+    ) {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+    }
   }
 `;

@@ -4,11 +4,9 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 
 import { AppLogger } from '../../app.logger';
 import { CompanyService } from '../services';
-import {
-  memberRoles,
-  MemberRoles,
-} from '../../_helpers/company/member-roles.types';
+import { MemberRoles } from '../../types/member-roles.type';
 import { CompanyMemberEntity } from '../entity';
+import { memberRoles } from '../../_helpers';
 
 @Injectable()
 export class RolesGuard implements CanActivate {

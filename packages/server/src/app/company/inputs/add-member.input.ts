@@ -1,5 +1,5 @@
 import { InputType, Field, ID } from 'type-graphql';
-import { MemberRoles } from '../../_helpers/company';
+import { MemberRoles } from '../../types';
 import { CompanyEntity } from '../entity';
 
 @InputType()

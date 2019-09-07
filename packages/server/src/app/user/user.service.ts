@@ -8,10 +8,9 @@ import { UserEntity } from './entity/user.entity';
 import { USER_TOKEN } from './user.constants';
 import { RegisterInput, LoginInput } from '../auth/inputs';
 import { AppLogger } from '../app.logger';
-import { hashPassword } from '../_helpers';
+import { hashPassword, MailService } from '../_helpers';
 import { config } from '../../config';
-import { ExpressContext } from '../types/context';
-import { inspect } from 'util';
+import { ExpressContext } from '../types/context.interface';
 
 @Injectable()
 export class UserService extends CrudService<UserEntity> {
@@ -19,6 +18,7 @@ export class UserService extends CrudService<UserEntity> {
 
   constructor(
     @Inject(USER_TOKEN) protected readonly repository: Repository<UserEntity>,
+    private readonly mailService: MailService,
   ) {
     super();
   }
@@ -43,7 +43,7 @@ export class UserService extends CrudService<UserEntity> {
     return user;
   }
 
-  public async create(input: RegisterInput): Promise<UserEntity> {
+  public async create(input: RegisterInput, req: Request): Promise<UserEntity> {
     const user = new UserEntity();
     user.first_name = input.first_name;
     user.last_name = input.last_name;
@@ -56,7 +56,32 @@ export class UserService extends CrudService<UserEntity> {
       user.is_verified = true;
     }
 
-    return this.repository.save(user);
+    // const test_params = {
+    //   Source: 'info@jobperday.com',
+    //   Destination: {
+    //     ToAddresses: ['tyler.smith.la@gmail.com'],
+    //   },
+    //   Message: {
+    //     Body: {
+    //       Html: {
+    //         Charset: 'UTF-8',
+    //         Data: 'verification email content',
+    //       },
+    //     },
+    //     Subject: {
+    //       Charset: 'UTF-8',
+    //       Data: 'verification email',
+    //     },
+    //   },
+    // };
+
+    // await this.mailService.send(test_params);
+
+    const newUser = await this.repository.save(user);
+
+    req.session.user = newUser;
+
+    return newUser;
   }
 
   public async login(input: LoginInput, req: Request): Promise<UserEntity> {

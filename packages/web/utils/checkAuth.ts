@@ -1,13 +1,10 @@
 import { NextPageContextApollo } from '../types';
-import { MeDocument } from '../apollo/generated-components';
-import { redirect } from '../apollo/redirect';
+import { MeDocument, MeQuery } from '../apollo/generated-components';
 
-export const checkAuth = async (ctx: NextPageContextApollo) => {
+export const checkAuth = async (
+  ctx: NextPageContextApollo,
+): Promise<MeQuery['me'] | null> => {
   const { apolloClient } = ctx;
-
-  try {
-    await apolloClient.query({ query: MeDocument });
-  } catch (err) {
-    redirect(ctx, '/login');
-  }
+  const { data } = await apolloClient.query({ query: MeDocument });
+  return data.me;
 };

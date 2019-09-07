@@ -1,4 +1,4 @@
-export type MemberRoles = 'owner' | 'admin' | 'manager' | 'associate';
+import { MemberRoles } from '../../types';
 
 export const memberRoles: MemberRoles[] = [
   'owner',

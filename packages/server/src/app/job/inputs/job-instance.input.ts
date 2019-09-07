@@ -3,11 +3,9 @@ import { InputType, Field, Int } from 'type-graphql';
 @InputType()
 export class JobInstanceInput {
   @Field()
-  readonly date: Date;
+  readonly start_date: Date;
   @Field()
-  readonly start_time: string;
-  @Field()
-  readonly end_time: string;
+  readonly end_date: Date;
   @Field()
   readonly pay_rate: string;
   @Field(() => Int)

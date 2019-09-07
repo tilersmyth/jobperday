@@ -1,6 +1,10 @@
+import { UserRealm } from '../../types';
+
 export interface UserProfile {
   id: string;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
+  is_verified: boolean;
+  realm: UserRealm;
 }

@@ -15,10 +15,7 @@ export class JobAddressEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column('text')
-  public phone: string;
-
-  @Column('text')
+  @Column({ type: 'text', nullable: true })
   public street: string;
 
   @Column({ type: 'text', nullable: true })
@@ -36,13 +33,11 @@ export class JobAddressEntity extends BaseEntity {
   @Column('text')
   public postal_code: string;
 
-  @Column({
-    type: 'geometry',
-    nullable: true,
-    spatialFeatureType: 'Point',
-    srid: 4326,
-  })
-  public coords: string;
+  @Column('float')
+  public coord_lat: number;
+
+  @Column('float')
+  public coord_lng: number;
 
   @OneToMany(() => JobInstanceEntity, instance => instance.address)
   public instances: JobInstanceEntity[];

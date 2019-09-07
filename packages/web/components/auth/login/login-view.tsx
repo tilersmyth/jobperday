@@ -4,7 +4,10 @@ import { Formik, Field } from 'formik';
 import Router from 'next/router';
 
 import { AuthLayout } from '../auth-layout';
-import { LoginComponent } from '../../../apollo/generated-components';
+import {
+  LoginComponent,
+  MeDocument,
+} from '../../../apollo/generated-components';
 import { LoginSchema } from '../../../utils/yup-validation';
 import { InputField } from '../../shared/input/input-field';
 import { serverValidationError } from '../../../utils/validation-util';
@@ -27,11 +30,27 @@ export const LoginView: React.FunctionComponent = () => {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async data => {
+              onSubmit={async variables => {
                 try {
                   setError('');
-                  await login({ variables: data });
-                  Router.push('/admin');
+                  const user = await login({
+                    variables,
+                    update(cache, { data }) {
+                      if (data) {
+                        cache.writeQuery({
+                          query: MeDocument,
+                          data: { me: data.login },
+                        });
+                      }
+                    },
+                  });
+
+                  if (!user || !user.data || !user.data.login) {
+                    Router.push('/error');
+                    return;
+                  }
+
+                  Router.push(`/${user.data.login.realm}`);
                 } catch (err) {
                   const errors = serverValidationError(err);
                   return errors && setError(errors.message);

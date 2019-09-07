@@ -3,11 +3,13 @@ import { config } from '../../config';
 
 export * from './graphql';
 export * from './database';
-export * from './middleware';
 export * from './decorators';
+export * from './session';
+export * from './company';
+export * from './mail';
 export * from './slug-generator.util';
 
-export const ucfirst = string => {
+export const ucfirst = (string: string[]) => {
   return string[0].toUpperCase() + string.slice(1);
 };
 

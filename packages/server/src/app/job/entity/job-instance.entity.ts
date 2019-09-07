@@ -16,14 +16,11 @@ export class JobInstanceEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column('date')
-  public date: Date;
+  @Column('timestamp')
+  public start_date: Date;
 
-  @Column('time')
-  public start_time: string;
-
-  @Column('time')
-  public end_time: string;
+  @Column('timestamp')
+  public end_date: Date;
 
   @Column('varchar')
   public pay_rate: string;
@@ -34,8 +31,16 @@ export class JobInstanceEntity extends BaseEntity {
   @Column({ type: 'int' })
   public remaining_openings: number;
 
-  @Column('date')
+  @Column('timestamp')
   public apply_deadline: Date;
+
+  @Column({
+    type: 'geometry',
+    nullable: true,
+    spatialFeatureType: 'Point',
+    srid: 4326,
+  })
+  public location: object;
 
   @ManyToOne(() => JobEntity, job => job.instances)
   public job: JobEntity;

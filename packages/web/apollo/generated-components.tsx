@@ -101,8 +101,8 @@ export type LoginInput = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  register: Scalars['Boolean'];
-  login: Scalars['Boolean'];
+  register: UserDto;
+  login: UserDto;
   logout: Scalars['Boolean'];
   forgotPassword: Scalars['Boolean'];
   createCompany: CompanyDto;
@@ -147,6 +147,11 @@ export type MutationAddJobInstanceArgs = {
 export type Query = {
   __typename?: 'Query';
   me: UserDto;
+  search: Scalars['Boolean'];
+};
+
+export type QuerySearchArgs = {
+  input: SearchInput;
 };
 
 export type RegisterInput = {
@@ -156,30 +161,26 @@ export type RegisterInput = {
   password: Scalars['String'];
 };
 
+export type SearchInput = {
+  keyword: Scalars['String'];
+  location: Scalars['String'];
+};
+
 export type UserDto = {
   __typename?: 'UserDto';
   id: Scalars['ID'];
   first_name: Scalars['String'];
   last_name: Scalars['String'];
   email: Scalars['String'];
+  realm: Scalars['String'];
+  is_verified: Scalars['Boolean'];
+  setup: Array<Scalars['String']>;
 };
-export type MeQueryVariables = {};
-
-export type MeQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'UserDto' } & Pick<
-    UserDto,
-    'id' | 'first_name' | 'last_name' | 'email'
-  >;
+export type SearchQueryVariables = {
+  input: SearchInput;
 };
 
-export type MeClientQueryVariables = {};
-
-export type MeClientQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'UserDto' } & Pick<
-    UserDto,
-    'id' | 'first_name' | 'last_name' | 'email'
-  >;
-};
+export type SearchQuery = { __typename?: 'Query' } & Pick<Query, 'search'>;
 
 export type ForgotPasswordMutationVariables = {
   email: Scalars['String'];
@@ -195,10 +196,18 @@ export type LoginMutationVariables = {
   password: Scalars['String'];
 };
 
-export type LoginMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'login'
->;
+export type LoginMutation = { __typename?: 'Mutation' } & {
+  login: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    | 'id'
+    | 'first_name'
+    | 'last_name'
+    | 'email'
+    | 'realm'
+    | 'is_verified'
+    | 'setup'
+  >;
+};
 
 export type LogoutMutationVariables = {};
 
@@ -214,111 +223,81 @@ export type RegisterMutationVariables = {
   password: Scalars['String'];
 };
 
-export type RegisterMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'register'
->;
+export type RegisterMutation = { __typename?: 'Mutation' } & {
+  register: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    | 'id'
+    | 'first_name'
+    | 'last_name'
+    | 'email'
+    | 'realm'
+    | 'is_verified'
+    | 'setup'
+  >;
+};
 
-export const MeDocument = gql`
-  query Me {
-    me {
-      id
-      first_name
-      last_name
-      email
-    }
+export type MeQueryVariables = {};
+
+export type MeQuery = { __typename?: 'Query' } & {
+  me: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    | 'id'
+    | 'first_name'
+    | 'last_name'
+    | 'email'
+    | 'realm'
+    | 'is_verified'
+    | 'setup'
+  >;
+};
+
+export const SearchDocument = gql`
+  query Search($input: SearchInput!) {
+    search(input: $input)
   }
 `;
-export type MeComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<MeQuery, MeQueryVariables>,
-  'query'
->;
-
-export const MeComponent = (props: MeComponentProps) => (
-  <ApolloReactComponents.Query<MeQuery, MeQueryVariables>
-    query={MeDocument}
-    {...props}
-  />
-);
-
-export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  MeQuery,
-  MeQueryVariables
-> &
-  TChildProps;
-export function withMe<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    MeQuery,
-    MeQueryVariables,
-    MeProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    MeQuery,
-    MeQueryVariables,
-    MeProps<TChildProps>
-  >(MeDocument, {
-    alias: 'withMe',
-    ...operationOptions,
-  });
-}
-export type MeQueryResult = ApolloReactCommon.QueryResult<
-  MeQuery,
-  MeQueryVariables
->;
-export const MeClientDocument = gql`
-  query MeClient {
-    me @client {
-      id
-      first_name
-      last_name
-      email
-    }
-  }
-`;
-export type MeClientComponentProps = Omit<
+export type SearchComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
-    MeClientQuery,
-    MeClientQueryVariables
+    SearchQuery,
+    SearchQueryVariables
   >,
   'query'
->;
+> &
+  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
 
-export const MeClientComponent = (props: MeClientComponentProps) => (
-  <ApolloReactComponents.Query<MeClientQuery, MeClientQueryVariables>
-    query={MeClientDocument}
+export const SearchComponent = (props: SearchComponentProps) => (
+  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
+    query={SearchDocument}
     {...props}
   />
 );
 
-export type MeClientProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  MeClientQuery,
-  MeClientQueryVariables
+export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchQuery,
+  SearchQueryVariables
 > &
   TChildProps;
-export function withMeClient<TProps, TChildProps = {}>(
+export function withSearch<TProps, TChildProps = {}>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    MeClientQuery,
-    MeClientQueryVariables,
-    MeClientProps<TChildProps>
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
   >,
 ) {
   return ApolloReactHoc.withQuery<
     TProps,
-    MeClientQuery,
-    MeClientQueryVariables,
-    MeClientProps<TChildProps>
-  >(MeClientDocument, {
-    alias: 'withMeClient',
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >(SearchDocument, {
+    alias: 'withSearch',
     ...operationOptions,
   });
 }
-export type MeClientQueryResult = ApolloReactCommon.QueryResult<
-  MeClientQuery,
-  MeClientQueryVariables
+export type SearchQueryResult = ApolloReactCommon.QueryResult<
+  SearchQuery,
+  SearchQueryVariables
 >;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
@@ -381,7 +360,15 @@ export type ForgotPasswordMutationOptions = ApolloReactCommon.BaseMutationOption
 >;
 export const LoginDocument = gql`
   mutation Login($email: String!, $password: String!) {
-    login(input: { email: $email, password: $password })
+    login(input: { email: $email, password: $password }) {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+    }
   }
 `;
 export type LoginMutationFn = ApolloReactCommon.MutationFunction<
@@ -501,7 +488,15 @@ export const RegisterDocument = gql`
         email: $email
         password: $password
       }
-    )
+    ) {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+    }
   }
 `;
 export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
@@ -552,4 +547,56 @@ export type RegisterMutationResult = ApolloReactCommon.MutationResult<
 export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
+>;
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+    }
+  }
+`;
+export type MeComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<MeQuery, MeQueryVariables>,
+  'query'
+>;
+
+export const MeComponent = (props: MeComponentProps) => (
+  <ApolloReactComponents.Query<MeQuery, MeQueryVariables>
+    query={MeDocument}
+    {...props}
+  />
+);
+
+export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  MeQuery,
+  MeQueryVariables
+> &
+  TChildProps;
+export function withMe<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >(MeDocument, {
+    alias: 'withMe',
+    ...operationOptions,
+  });
+}
+export type MeQueryResult = ApolloReactCommon.QueryResult<
+  MeQuery,
+  MeQueryVariables
 >;

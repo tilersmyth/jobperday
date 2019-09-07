@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { CompanyEntity } from './company.entity';
-import { MemberRoles } from '../../_helpers/company';
+import { MemberRoles } from '../../types';
 
 @Entity('company_members')
 export class CompanyMemberEntity extends BaseEntity {

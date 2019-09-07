@@ -16,6 +16,7 @@ import {
 
 import { IsUserAlreadyExist } from '../user.validator';
 import { hashPassword } from '../../_helpers';
+import { UserRealm } from '../../types';
 
 @Entity('users')
 export class UserEntity extends BaseEntity {
@@ -42,6 +43,12 @@ export class UserEntity extends BaseEntity {
 
   @Column({ type: 'boolean', default: false })
   public is_verified: boolean;
+
+  @Column({ type: 'text', default: 'candidate' })
+  public realm: UserRealm;
+
+  @Column({ type: 'text', array: true })
+  public setup: string[] = [];
 
   @CreateDateColumn() created_at: Date;
 

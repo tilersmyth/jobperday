@@ -26,15 +26,18 @@ export class JobEntity extends BaseEntity {
   public slug: string;
 
   @Column('text')
-  public category: string;
-
-  @Column('text')
   @MaxLength(200, { message: 'must not exceed 200 characters' })
   public summary: string;
 
   @Column('text')
   @MaxLength(5000, { message: 'must not exceed 5,000 characters' })
   public description: string;
+
+  @Column('text')
+  public type: string;
+
+  @Column({ type: 'text', array: true })
+  public keywords: string[];
 
   @OneToMany(() => JobInstanceEntity, instance => instance.job)
   public instances: JobInstanceEntity[];

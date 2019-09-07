@@ -34,6 +34,7 @@ const create = (initialState: any, { getToken, fetchOptions }: Options) => {
 
   const errorLink = onError(({ graphQLErrors, networkError }) => {
     if (graphQLErrors) {
+      console.log(graphQLErrors[0]);
       graphQLErrors.map(({ message }) => {
         const notAuth = Object.entries(message).some(
           ([key, val]: any) => key === 'statusCode' && val === 403,

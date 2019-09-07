@@ -24,6 +24,12 @@ interface Config {
     credentials: boolean;
     origin: string;
   };
+  ses: {
+    accessKeyId: string;
+    secretAccessKey: string;
+    region: string;
+    sslEnabled: boolean;
+  };
 }
 
 export const config: Config = {
@@ -36,8 +42,8 @@ export const config: Config = {
     url: `${process.env.DATABASE_URL}${
       process.env.NODE_ENV === 'test' ? 'test' : ''
     }`,
-    logging: process.env.NODE_ENV === 'test' ? false : true,
-    synchronize: process.env.NODE_ENV === 'development' ? true : false,
+    logging: process.env.NODE_ENV !== 'test',
+    synchronize: process.env.NODE_ENV === 'development',
     entities: [__dirname + '/../**/entity/*.entity{.ts,.js}'],
     migrations: [__dirname + '/../migrations/*{.ts,.js}'],
     dropSchema: false,
@@ -56,6 +62,12 @@ export const config: Config = {
   },
   cors: {
     credentials: true,
-    origin: process.env.FRONTEND,
+    origin: process.env.FRONTEND_HOST,
+  },
+  ses: {
+    accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
+    region: process.env.AWS_SES_REGION,
+    sslEnabled: process.env.NODE_ENV === 'production',
   },
 };

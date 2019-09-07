@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Typography } from 'antd';
 
-import { Layout } from '../shared/layout/Layout';
+import { RootLayout } from '../shared/layout/root-layout';
 
 interface Props {
   children: any;
@@ -13,7 +13,7 @@ export const AuthLayout: React.FunctionComponent<Props> = ({
   title,
 }) => {
   return (
-    <Layout title={title}>
+    <RootLayout title={title}>
       <Row type="flex" align="middle" style={{ minHeight: '80vh' }}>
         <Col
           lg={{ span: 6, offset: 9 }}
@@ -31,6 +31,6 @@ export const AuthLayout: React.FunctionComponent<Props> = ({
           </div>
         </Col>
       </Row>
-    </Layout>
+    </RootLayout>
   );
 };

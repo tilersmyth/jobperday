@@ -37,7 +37,7 @@ export class UserAuthGuard implements CanActivate {
 
       return true;
     } catch (error) {
-      throw new HttpException(error, HttpStatus.UNAUTHORIZED);
+      return false;
     }
   }
 }

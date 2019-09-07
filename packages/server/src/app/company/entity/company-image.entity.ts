@@ -4,9 +4,9 @@ import {
   PrimaryGeneratedColumn,
   CreateDateColumn,
   BaseEntity,
-  UpdateDateColumn,
   ManyToOne,
 } from 'typeorm';
+
 import { CompanyProfileEntity } from './company-profile.entity';
 
 @Entity('company_images')

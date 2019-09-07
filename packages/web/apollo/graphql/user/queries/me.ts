@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import gql from 'graphql-tag';
 
 export const meQuery = gql`
   query Me {
@@ -7,17 +7,9 @@ export const meQuery = gql`
       first_name
       last_name
       email
-    }
-  }
-`;
-
-export const meQueryClient = gql`
-  query MeClient {
-    me @client {
-      id
-      first_name
-      last_name
-      email
+      realm
+      is_verified
+      setup
     }
   }
 `;

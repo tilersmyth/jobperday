@@ -4,7 +4,8 @@ import { LoginInput, RegisterInput } from './inputs';
 import { UserService } from '../user/user.service';
 import { AppLogger } from '../app.logger';
 import { ForgotPasswordInput } from './inputs/forgot-password.input';
-import { ExpressContext } from '../types/context';
+import { ExpressContext } from '../types/context.interface';
+import { UserDto } from '../user/dto/user.dto';
 
 @Resolver('Auth')
 export class AuthResolver {
@@ -12,21 +13,24 @@ export class AuthResolver {
 
   constructor(private readonly userService: UserService) {}
 
-  @Mutation(() => Boolean)
-  async register(@Args('input') input: RegisterInput) {
-    const user = await this.userService.create(input);
+  @Mutation(() => UserDto)
+  async register(
+    @Args('input') input: RegisterInput,
+    @Context() ctx: ExpressContext,
+  ) {
+    const user = await this.userService.create(input, ctx.req);
     this.logger.debug(`[register] User ${user.email} register`);
-    return true;
+    return user;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => UserDto)
   async login(
     @Args('input') input: LoginInput,
     @Context() ctx: ExpressContext,
   ) {
     const user = await this.userService.login(input, ctx.req);
     this.logger.debug(`[login] User ${user.email} logged in`);
-    return true;
+    return user;
   }
 
   @Mutation(() => Boolean)

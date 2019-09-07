@@ -6,6 +6,7 @@ import cors from 'cors';
 import { AppModule } from './app.module';
 import { AppLogger } from './app.logger';
 import { config } from '../config';
+import { session } from './_helpers';
 
 export class AppDispatcher {
   private app: INestApplication;
@@ -26,6 +27,7 @@ export class AppDispatcher {
     });
 
     this.app.use(cors(config.cors));
+    this.app.use(session());
 
     useContainer(this.app.select(AppModule), { fallbackOnErrors: true });
   }

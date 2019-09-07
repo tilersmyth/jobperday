@@ -11,6 +11,10 @@ interface Validation {
 export const serverValidationError = (
   errors: ValidationError,
 ): Validation | null => {
+  if (!errors.graphQLErrors[0]) {
+    return null;
+  }
+
   const { extensions, message } = errors.graphQLErrors[0];
 
   if (!extensions) {

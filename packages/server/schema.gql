@@ -3,6 +3,12 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
+input AddJobInstanceAddressInput {
+  companySlug: String!
+  instanceId: ID!
+  address: AddressInput!
+}
+
 input AddJobInstanceInput {
   companySlug: String!
   jobId: ID!
@@ -10,13 +16,15 @@ input AddJobInstanceInput {
 }
 
 input AddressInput {
-  phone: String!
-  street: String!
+  phone: String
+  street: String
   street2: String
   city: String!
   state: String!
   postal_code: String!
   country: String!
+  coord_lat: Float!
+  coord_lng: Float!
 }
 
 type CompanyDto {
@@ -32,6 +40,11 @@ input CompanyProfileInput {
   cover_image: String!
   about: String!
   business_type: String!
+}
+
+input CoordsInput {
+  lat: Float!
+  lng: Float!
 }
 
 input CreateCompanyAddressInput {
@@ -70,15 +83,15 @@ type JobDto {
 
 input JobInput {
   name: String!
-  category: String!
   summary: String!
   description: String!
+  type: String!
+  keywords: [String!]
 }
 
 input JobInstanceInput {
-  date: DateTime!
-  start_time: String!
-  end_time: String!
+  start_date: DateTime!
+  end_date: DateTime!
   pay_rate: String!
   total_openings: Int!
   apply_deadline: DateTime!
@@ -90,19 +103,22 @@ input LoginInput {
 }
 
 type Mutation {
-  register(input: RegisterInput!): Boolean!
-  login(input: LoginInput!): Boolean!
+  register(input: RegisterInput!): UserDto!
+  login(input: LoginInput!): UserDto!
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
-  createJob(input: CreateJobInput!): JobDto!
-  addJobInstance(input: AddJobInstanceInput!): Boolean!
   createCompany(input: CreateCompanyInput!): CompanyDto!
   createCompanyProfile(input: CreateCompanyProfileInput!): Boolean!
   createCompanyAddress(input: CreateCompanyAddressInput!): Boolean!
+  createJob(input: CreateJobInput!): JobDto!
+  addJobInstance(input: AddJobInstanceInput!): Boolean!
+  addJobInstanceAddress(input: AddJobInstanceAddressInput!): Boolean!
 }
 
 type Query {
-  me: UserDto!
+  me: UserDto
+  allUsers: [UserDto!]!
+  search(input: SearchInput!): Boolean!
 }
 
 input RegisterInput {
@@ -112,9 +128,19 @@ input RegisterInput {
   password: String!
 }
 
+input SearchInput {
+  keyword: String!
+  location: CoordsInput!
+  radius: Int!
+}
+
 type UserDto {
   id: ID!
   first_name: String!
   last_name: String!
   email: String!
+  realm: String!
+  is_verified: Boolean!
+  setup: [String!]!
+  created_at: DateTime!
 }

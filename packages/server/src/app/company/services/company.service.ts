@@ -51,7 +51,7 @@ export class CompanyService extends CrudService<CompanyEntity> {
       confirmed: true,
     });
 
-    return this.repository.save(company);
+    return savedCompany;
   }
 
   public async createProfile(

@@ -11,6 +11,7 @@ import { Role } from '../company/roles.decorator';
 import { RolesGuard } from '../company/guards/roles.guard';
 import { AddJobInstanceInput } from './inputs/add-job-instance.input';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
+import { AddJobInstanceAddressInput } from './inputs/add-job-instance-address.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -37,6 +38,17 @@ export class JobResolver {
   async addJobInstance(@Args('input') input: AddJobInstanceInput) {
     const instance = await this.jobService.addInstance(input);
     this.logger.debug(`[addInstance] job instance added: ${instance.name}`);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @Role('admin')
+  @UseGuards(RolesGuard)
+  async addJobInstanceAddress(
+    @Args('input') input: AddJobInstanceAddressInput,
+  ) {
+    const instance = await this.jobService.addInstanceAddress(input);
+    this.logger.debug(`[addInstanceAddress] address added to ${instance.id}`);
     return true;
   }
 }

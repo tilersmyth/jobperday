@@ -1,36 +1,47 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Button, Row, Col, Typography } from 'antd';
 import { Formik, Field } from 'formik';
+import Router from 'next/router';
 
 import { AuthLayout } from '../auth-layout';
 import { InputField } from '../../shared/input/input-field';
-import { RegisterComponent } from '../../../apollo/generated-components';
+import {
+  RegisterComponent,
+  MeDocument,
+} from '../../../apollo/generated-components';
 import { RegisterSchema } from '../../../utils/yup-validation';
 import { serverValidationError } from '../../../utils/validation-util';
-import { SuccessAlert } from '../../shared/alerts/success-alert';
 
 export const RegisterView: React.FunctionComponent = () => {
-  const [verify, setVerify] = useState(false);
-
   return (
     <AuthLayout title="Register">
       <div>
-        {verify && (
-          <div style={{ marginBottom: 20 }}>
-            <SuccessAlert message="Check your e-mail to confirm your account" />
-          </div>
-        )}
         <RegisterComponent>
           {register => (
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async (data, { setErrors, resetForm }) => {
+              onSubmit={async (variables, { setErrors }) => {
                 try {
-                  await register({ variables: data });
-                  resetForm();
-                  setVerify(true);
+                  const user = await register({
+                    variables,
+                    update(cache, { data }) {
+                      if (data) {
+                        cache.writeQuery({
+                          query: MeDocument,
+                          data: { me: data.register },
+                        });
+                      }
+                    },
+                  });
+
+                  if (!user || !user.data || !user.data.register) {
+                    Router.push('/error');
+                    return;
+                  }
+
+                  Router.push(`/${user.data.register.realm}`);
                 } catch (err) {
                   const errors = serverValidationError(err);
                   return errors && setErrors(errors);
