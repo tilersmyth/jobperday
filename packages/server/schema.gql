@@ -79,6 +79,11 @@ type JobDto {
   id: ID!
   name: String!
   slug: String!
+  summary: String!
+  description: String!
+  type: String!
+  keywords: [String!]!
+  instances: [JobInstanceDto!]!
 }
 
 input JobInput {
@@ -87,6 +92,17 @@ input JobInput {
   description: String!
   type: String!
   keywords: [String!]
+}
+
+type JobInstanceDto {
+  id: ID!
+  start_date: DateTime!
+  end_date: DateTime!
+  pay_rate: Int!
+  total_openings: Int!
+  remaining_openings: Int!
+  apply_deadline: DateTime!
+  keywords: [String!]!
 }
 
 input JobInstanceInput {
@@ -118,7 +134,7 @@ type Mutation {
 type Query {
   me: UserDto
   allUsers: [UserDto!]!
-  search(input: SearchInput!): Boolean!
+  search(input: SearchInput!): [SearchDto!]!
 }
 
 input RegisterInput {
@@ -128,10 +144,19 @@ input RegisterInput {
   password: String!
 }
 
+type SearchDto {
+  job: JobDto!
+  rank: Float!
+  isTypeOf: String!
+}
+
 input SearchInput {
+  take: Int!
+  skip: Int!
   keyword: String!
   location: CoordsInput!
   radius: Int!
+  pay_rate: Int
 }
 
 type UserDto {

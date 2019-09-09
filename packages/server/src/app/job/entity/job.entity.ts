@@ -46,4 +46,7 @@ export class JobEntity extends BaseEntity {
   public company: CompanyEntity;
 
   @CreateDateColumn() created_at: Date;
+
+  @Column('tsvector', { select: false })
+  document_with_weights: any;
 }

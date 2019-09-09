@@ -57,7 +57,7 @@ export class SeedDBService {
   async reloadFixtures() {
     const entities = await this.getEntities();
     await this.cleanAll(entities);
-    await this.loadAll(entities);
+    // await this.loadAll(entities);
   }
 
   /**
