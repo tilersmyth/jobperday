@@ -134,6 +134,19 @@ export type LoginInput = {
   password: Scalars['String'];
 };
 
+export type MeSessionDto = {
+  __typename?: 'MeSessionDto';
+  id: Scalars['ID'];
+  first_name: Scalars['String'];
+  last_name: Scalars['String'];
+  email: Scalars['String'];
+  realm: Scalars['String'];
+  is_verified: Scalars['Boolean'];
+  setup: Array<Scalars['String']>;
+  created_at: Scalars['DateTime'];
+  search?: Maybe<SearchLocationDto>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   register: UserDto;
@@ -186,7 +199,7 @@ export type MutationAddJobInstanceAddressArgs = {
 
 export type Query = {
   __typename?: 'Query';
-  me?: Maybe<UserDto>;
+  me?: Maybe<MeSessionDto>;
   allUsers: Array<UserDto>;
   search: SearchDto;
   test: Scalars['Boolean'];
@@ -203,6 +216,12 @@ export type RegisterInput = {
   password: Scalars['String'];
 };
 
+export type SearchCoordsDto = {
+  __typename?: 'SearchCoordsDto';
+  lng: Scalars['Float'];
+  lat: Scalars['Float'];
+};
+
 export type SearchDto = {
   __typename?: 'SearchDto';
   count: Scalars['Int'];
@@ -214,6 +233,12 @@ export type SearchInput = {
   location: LocationInput;
   options: SearchOptionsInput;
   pagination: SearchPaginationInput;
+};
+
+export type SearchLocationDto = {
+  __typename?: 'SearchLocationDto';
+  locality: Scalars['String'];
+  coords: SearchCoordsDto;
 };
 
 export type SearchOptionsInput = {
@@ -316,8 +341,8 @@ export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: 'Query' } & {
   me: Maybe<
-    { __typename?: 'UserDto' } & Pick<
-      UserDto,
+    { __typename?: 'MeSessionDto' } & Pick<
+      MeSessionDto,
       | 'id'
       | 'first_name'
       | 'last_name'
@@ -325,7 +350,19 @@ export type MeQuery = { __typename?: 'Query' } & {
       | 'realm'
       | 'is_verified'
       | 'setup'
-    >
+    > & {
+        search: Maybe<
+          { __typename?: 'SearchLocationDto' } & Pick<
+            SearchLocationDto,
+            'locality'
+          > & {
+              coords: { __typename?: 'SearchCoordsDto' } & Pick<
+                SearchCoordsDto,
+                'lng' | 'lat'
+              >;
+            }
+        >;
+      }
   >;
 };
 
@@ -644,6 +681,13 @@ export const MeDocument = gql`
       realm
       is_verified
       setup
+      search {
+        locality
+        coords {
+          lng
+          lat
+        }
+      }
     }
   }
 `;

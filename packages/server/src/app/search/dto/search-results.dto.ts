@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID, Int, Float } from 'type-graphql';
+import { ObjectType, Field, Float } from 'type-graphql';
 import { JobDto } from '../../job/dto/job.dto';
 
 @ObjectType()

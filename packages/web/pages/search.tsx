@@ -33,6 +33,7 @@ Search.getInitialProps = async (ctx: NextPageContextApollo) => {
   // Validates location as well as stores in cookie
   const location = await setSearchLocation(me, ctx);
 
+  // Result of invalid location param in query
   if (!location) {
     console.log('this will eventually be a redirect');
     return { me };

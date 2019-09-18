@@ -1,6 +1,6 @@
-import { ObjectType, Field, ID, Int, Float } from 'type-graphql';
-import { JobDto } from '../../job/dto/job.dto';
-import { SearchResultsDto } from './search-results';
+import { ObjectType, Field, Int } from 'type-graphql';
+
+import { SearchResultsDto } from './search-results.dto';
 
 @ObjectType()
 export class SearchDto {

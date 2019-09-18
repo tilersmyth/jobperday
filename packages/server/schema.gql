@@ -123,6 +123,18 @@ input LoginInput {
   password: String!
 }
 
+type MeSessionDto {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  realm: String!
+  is_verified: Boolean!
+  setup: [String!]!
+  created_at: DateTime!
+  search: SearchLocationDto
+}
+
 type Mutation {
   register(input: RegisterInput!): UserDto!
   login(input: LoginInput!): UserDto!
@@ -137,7 +149,7 @@ type Mutation {
 }
 
 type Query {
-  me: UserDto
+  me: MeSessionDto
   allUsers: [UserDto!]!
   search(input: SearchInput!): SearchDto!
 }
@@ -147,6 +159,11 @@ input RegisterInput {
   last_name: String!
   email: String!
   password: String!
+}
+
+type SearchCoordsDto {
+  lng: Float!
+  lat: Float!
 }
 
 type SearchDto {
@@ -159,6 +176,11 @@ input SearchInput {
   location: LocationInput!
   options: SearchOptionsInput!
   pagination: SearchPaginationInput!
+}
+
+type SearchLocationDto {
+  locality: String!
+  coords: SearchCoordsDto!
 }
 
 input SearchOptionsInput {

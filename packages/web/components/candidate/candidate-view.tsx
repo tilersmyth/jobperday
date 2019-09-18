@@ -3,20 +3,23 @@ import { Layout, Typography } from 'antd';
 
 import { CandidateLayout } from './candidate-layout';
 import { SearchBar } from '../shared/layout/search-bar/search-bar';
-import { MeQuery } from '../../apollo/generated-components';
-import { SearchModel } from '../../utils/search/SearchModel';
+import { MeQuery, SearchInput } from '../../apollo/generated-components';
 
 const { Content } = Layout;
 
 interface Props {
   me: MeQuery['me'];
+  searchArgs: SearchInput;
 }
 
-export const CandidateView: React.FunctionComponent<Props> = ({ me }) => {
-  const [searchArgs, updateArgs] = useState(new SearchModel());
+export const CandidateView: React.FunctionComponent<Props> = ({
+  me,
+  searchArgs,
+}) => {
+  const [args, updateArgs] = useState(searchArgs);
   return (
     <CandidateLayout title="Candidate">
-      <SearchBar searchArgs={searchArgs} updateArgs={updateArgs} />
+      <SearchBar searchArgs={args} updateArgs={updateArgs} />
       <Content style={{ padding: '0 50px' }}>
         <div style={{ textAlign: 'center' }}>
           <Typography.Text

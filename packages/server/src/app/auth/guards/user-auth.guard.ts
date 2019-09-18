@@ -1,10 +1,4 @@
-import {
-  CanActivate,
-  ExecutionContext,
-  Injectable,
-  HttpException,
-  HttpStatus,
-} from '@nestjs/common';
+import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import { Request } from 'express';
 
@@ -23,14 +17,21 @@ export class UserAuthGuard implements CanActivate {
         throw Error('No user session found');
       }
 
-      const { user } = req.session;
+      const { id } = req.session.user;
 
       // Ensure user exists
-      const me = await this.userService.findOneById(user.id);
+      const user = await this.userService.findOneById(id);
 
-      if (!me) {
-        throw Error(`User not found by session ID: ${user.id}`);
+      if (!user) {
+        throw Error(`User not found by session ID: ${id}`);
       }
+
+      // no easy way to exclude result property using typeorm
+      // https://github.com/typeorm/typeorm/issues/535
+      delete user.password;
+
+      // Keep existing props (such as search) appended
+      const me = { ...user, ...req.session.user };
 
       // Re-append user to session
       req.session.user = me;

@@ -17,8 +17,8 @@ export const setSearchLocation = async (
   try {
     const { location } = ctx.query;
 
-    if (me) {
-      console.log('look in session');
+    if (me && me.search) {
+      return me.search;
     }
 
     const cookies = parseCookies(ctx);

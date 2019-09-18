@@ -10,6 +10,13 @@ export const meQuery = gql`
       realm
       is_verified
       setup
+      search {
+        locality
+        coords {
+          lng
+          lat
+        }
+      }
     }
   }
 `;

@@ -95,6 +95,10 @@ export class UserService extends CrudService<UserEntity> {
       throw new UserInputError('Account not verified');
     }
 
+    // no easy way to exclude result property using typeorm
+    // https://github.com/typeorm/typeorm/issues/535
+    delete user.password;
+
     req.session.user = user;
 
     return user;
