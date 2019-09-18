@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
 import * as ApolloReactCommon from '@apollo/react-common';
+import * as React from 'react';
 import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 export type Maybe<T> = T | null;
@@ -201,6 +201,7 @@ export type Query = {
   __typename?: 'Query';
   me?: Maybe<MeSessionDto>;
   allUsers: Array<UserDto>;
+  userLocation?: Maybe<SearchLocationDto>;
   search: SearchDto;
   test: Scalars['Boolean'];
 };
@@ -269,20 +270,6 @@ export type UserDto = {
   setup: Array<Scalars['String']>;
   created_at: Scalars['DateTime'];
 };
-export type SearchQueryVariables = {
-  input: SearchInput;
-};
-
-export type SearchQuery = { __typename?: 'Query' } & {
-  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
-      results: Array<
-        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
-            job: { __typename?: 'JobDto' } & Pick<JobDto, 'name'>;
-          }
-      >;
-    };
-};
-
 export type ForgotPasswordMutationVariables = {
   email: Scalars['String'];
 };
@@ -337,6 +324,22 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type UserLocationQueryVariables = {};
+
+export type UserLocationQuery = { __typename?: 'Query' } & {
+  userLocation: Maybe<
+    { __typename?: 'SearchLocationDto' } & Pick<
+      SearchLocationDto,
+      'locality'
+    > & {
+        coords: { __typename?: 'SearchCoordsDto' } & Pick<
+          SearchCoordsDto,
+          'lat' | 'lng'
+        >;
+      }
+  >;
+};
+
 export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: 'Query' } & {
@@ -366,62 +369,20 @@ export type MeQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export const SearchDocument = gql`
-  query Search($input: SearchInput!) {
-    search(input: $input) {
-      count
-      results {
-        rank
-        job {
-          name
-        }
-      }
-    }
-  }
-`;
-export type SearchComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    SearchQuery,
-    SearchQueryVariables
-  >,
-  'query'
-> &
-  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
+export type SearchQueryVariables = {
+  input: SearchInput;
+};
 
-export const SearchComponent = (props: SearchComponentProps) => (
-  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
-    query={SearchDocument}
-    {...props}
-  />
-);
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
+      results: Array<
+        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
+            job: { __typename?: 'JobDto' } & Pick<JobDto, 'name'>;
+          }
+      >;
+    };
+};
 
-export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  SearchQuery,
-  SearchQueryVariables
-> &
-  TChildProps;
-export function withSearch<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >(SearchDocument, {
-    alias: 'withSearch',
-    ...operationOptions,
-  });
-}
-export type SearchQueryResult = ApolloReactCommon.QueryResult<
-  SearchQuery,
-  SearchQueryVariables
->;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
     forgotPassword(input: { email: $email })
@@ -671,6 +632,59 @@ export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const UserLocationDocument = gql`
+  query UserLocation {
+    userLocation {
+      locality
+      coords {
+        lat
+        lng
+      }
+    }
+  }
+`;
+export type UserLocationComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    UserLocationQuery,
+    UserLocationQueryVariables
+  >,
+  'query'
+>;
+
+export const UserLocationComponent = (props: UserLocationComponentProps) => (
+  <ApolloReactComponents.Query<UserLocationQuery, UserLocationQueryVariables>
+    query={UserLocationDocument}
+    {...props}
+  />
+);
+
+export type UserLocationProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  UserLocationQuery,
+  UserLocationQueryVariables
+> &
+  TChildProps;
+export function withUserLocation<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UserLocationQuery,
+    UserLocationQueryVariables,
+    UserLocationProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    UserLocationQuery,
+    UserLocationQueryVariables,
+    UserLocationProps<TChildProps>
+  >(UserLocationDocument, {
+    alias: 'withUserLocation',
+    ...operationOptions,
+  });
+}
+export type UserLocationQueryResult = ApolloReactCommon.QueryResult<
+  UserLocationQuery,
+  UserLocationQueryVariables
+>;
 export const MeDocument = gql`
   query Me {
     me {
@@ -729,4 +743,60 @@ export function withMe<TProps, TChildProps = {}>(
 export type MeQueryResult = ApolloReactCommon.QueryResult<
   MeQuery,
   MeQueryVariables
+>;
+export const SearchDocument = gql`
+  query Search($input: SearchInput!) {
+    search(input: $input) {
+      count
+      results {
+        rank
+        job {
+          name
+        }
+      }
+    }
+  }
+`;
+export type SearchComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    SearchQuery,
+    SearchQueryVariables
+  >,
+  'query'
+> &
+  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const SearchComponent = (props: SearchComponentProps) => (
+  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
+    query={SearchDocument}
+    {...props}
+  />
+);
+
+export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchQuery,
+  SearchQueryVariables
+> &
+  TChildProps;
+export function withSearch<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >(SearchDocument, {
+    alias: 'withSearch',
+    ...operationOptions,
+  });
+}
+export type SearchQueryResult = ApolloReactCommon.QueryResult<
+  SearchQuery,
+  SearchQueryVariables
 >;

@@ -59,6 +59,7 @@ export const LocationInput: React.FunctionComponent = ({
       }
 
       const geo = await geocodeByAddress(value);
+
       const coords = await getLatLng(geo[0]);
 
       setFieldValue('location', {

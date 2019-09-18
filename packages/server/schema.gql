@@ -151,6 +151,7 @@ type Mutation {
 type Query {
   me: MeSessionDto
   allUsers: [UserDto!]!
+  userLocation: SearchLocationDto
   search(input: SearchInput!): SearchDto!
 }
 

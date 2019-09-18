@@ -61,12 +61,12 @@ export const SearchBar: React.FunctionComponent<Props> = ({
 
               const query = searchToQuery(variables);
 
+              await updateArgs(variables);
+
               await Router.push({
                 pathname: '/search',
                 query,
               });
-
-              await updateArgs(variables);
             }}
             initialValues={{
               ...searchArgs,

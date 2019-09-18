@@ -8,6 +8,7 @@ import { UserResolver } from './user.resolver';
 
 import { MailService } from '../_helpers';
 import { UserMiddleware } from './middleware';
+import { UserLocationService } from './location/user-location.service';
 
 const PROVIDERS = [
   ...userProviders,
@@ -15,6 +16,7 @@ const PROVIDERS = [
   UserService,
   UserResolver,
   MailService,
+  UserLocationService,
 ];
 
 @Module({

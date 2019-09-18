@@ -7,6 +7,7 @@ import { CandidateView } from '../../components/candidate/candidate-view';
 import { MeQuery, SearchInput } from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
 import { SearchModel } from '../../utils/search/SearchModel';
+import { SearchLocation } from '../../utils/search/search-location.util';
 
 interface Props {
   me: MeQuery['me'] | null;
@@ -35,10 +36,15 @@ Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
   // Load user search loc from session
   if (me.search) {
     searchArgs.location = me.search;
+    return { me, searchArgs };
   }
 
-  // To do: if search loc does not exist in session
-  // get user server location.. need to find library for this
+  const search = new SearchLocation(me, ctx);
+  const location = await search.set();
+
+  if (location) {
+    searchArgs.location = location;
+  }
 
   return { me, searchArgs };
 };

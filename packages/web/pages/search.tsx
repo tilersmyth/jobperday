@@ -4,7 +4,7 @@ import { NextPageContextApollo } from '../types';
 import { checkAuth } from '../utils/checkAuth';
 import { SearchView } from '../components/search/search-view';
 import { MeQuery, SearchInput } from '../apollo/generated-components';
-import { setSearchLocation } from '../utils/set-search-location.util';
+import { SearchLocation } from '../utils/search/search-location.util';
 import { queryToSearch } from '../utils/search/search-query-map';
 
 interface Props {
@@ -30,8 +30,8 @@ Search.getInitialProps = async (ctx: NextPageContextApollo) => {
     return { me };
   }
 
-  // Validates location as well as stores in cookie
-  const location = await setSearchLocation(me, ctx);
+  const search = new SearchLocation(me, ctx);
+  const location = await search.find(query.location);
 
   // Result of invalid location param in query
   if (!location) {

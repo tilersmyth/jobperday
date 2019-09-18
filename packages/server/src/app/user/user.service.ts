@@ -11,6 +11,8 @@ import { AppLogger } from '../app.logger';
 import { hashPassword, MailService } from '../_helpers';
 import { config } from '../../config';
 import { ExpressContext } from '../types/context.interface';
+import { UserLocationService } from './location/user-location.service';
+import { SearchLocation } from '../search/interfaces/search-location.interface';
 
 @Injectable()
 export class UserService extends CrudService<UserEntity> {
@@ -19,6 +21,7 @@ export class UserService extends CrudService<UserEntity> {
   constructor(
     @Inject(USER_TOKEN) protected readonly repository: Repository<UserEntity>,
     private readonly mailService: MailService,
+    private readonly locationService: UserLocationService,
   ) {
     super();
   }
@@ -122,5 +125,9 @@ export class UserService extends CrudService<UserEntity> {
     const user = await this.findByEmail(email);
     Object.assign(user, args);
     return user.save();
+  }
+
+  public async findUserLocation(ip: string): Promise<SearchLocation | null> {
+    return this.locationService.find(ip);
   }
 }

@@ -24,8 +24,6 @@ export const Header: React.SFC = (): JSX.Element => (
 
             const me = data && data.me;
 
-            console.log('me', me);
-
             const handleLogout = async () => {
               await client.mutate({
                 mutation: LogoutDocument,
