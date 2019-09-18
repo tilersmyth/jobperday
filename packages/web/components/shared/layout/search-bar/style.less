@@ -19,6 +19,18 @@
   color: #666666;
 }
 
+.filter-btn-wrapper {
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.filter-btn-wrapper .filter-btn:focus {
+  color: inherit;
+  border-color: inherit;
+}
+
 @media (min-width: @screen-xs-min) {
   .search-bar .sb-mid-col {
     margin-top: 10px;
@@ -38,7 +50,7 @@
   }
 }
 
-@media (min-width: @screen-md-min) {
+@media (min-width: @screen-lg-min) {
   .search-bar .sb-mid-col {
     margin-top: 0;
     margin-bottom: 0;

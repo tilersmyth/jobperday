@@ -1,5 +1,5 @@
 import merge from 'lodash.merge';
 
-import { userTypeDef } from './user';
+import { testTypeDef } from './test';
 
-export const typeDefs = merge(userTypeDef);
+export const typeDefs = merge(testTypeDef);

@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const userTypeDef = gql`
+export const testTypeDef = gql`
   extend type Query {
-    me: UserDto!
+    test: Boolean!
   }
 `;

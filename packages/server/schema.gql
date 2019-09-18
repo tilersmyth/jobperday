@@ -43,8 +43,8 @@ input CompanyProfileInput {
 }
 
 input CoordsInput {
-  lat: Float!
   lng: Float!
+  lat: Float!
 }
 
 input CreateCompanyAddressInput {
@@ -113,6 +113,11 @@ input JobInstanceInput {
   apply_deadline: DateTime!
 }
 
+input LocationInput {
+  locality: String!
+  coords: CoordsInput!
+}
+
 input LoginInput {
   email: String!
   password: String!
@@ -134,7 +139,7 @@ type Mutation {
 type Query {
   me: UserDto
   allUsers: [UserDto!]!
-  search(input: SearchInput!): [SearchDto!]!
+  search(input: SearchInput!): SearchDto!
 }
 
 input RegisterInput {
@@ -145,18 +150,31 @@ input RegisterInput {
 }
 
 type SearchDto {
-  job: JobDto!
-  rank: Float!
-  isTypeOf: String!
+  count: Int!
+  results: [SearchResultsDto!]!
 }
 
 input SearchInput {
-  take: Int!
-  skip: Int!
-  keyword: String!
-  location: CoordsInput!
+  search: String!
+  location: LocationInput!
+  options: SearchOptionsInput!
+  pagination: SearchPaginationInput!
+}
+
+input SearchOptionsInput {
   radius: Int!
-  pay_rate: Int
+  pay_rate: Int!
+}
+
+input SearchPaginationInput {
+  skip: Int!
+  take: Int!
+}
+
+type SearchResultsDto {
+  job: JobDto!
+  rank: Float!
+  isTypeOf: String!
 }
 
 type UserDto {

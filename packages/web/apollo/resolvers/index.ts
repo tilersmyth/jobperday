@@ -1,5 +1,5 @@
 import merge from 'lodash.merge';
 
-import { userResolvers } from './user';
+import { searchResolvers } from './search';
 
-export const resolvers = merge(userResolvers);
+export const resolvers = merge(searchResolvers);

@@ -16,6 +16,12 @@ export type Scalars = {
   DateTime: any;
 };
 
+export type AddJobInstanceAddressInput = {
+  companySlug: Scalars['String'];
+  instanceId: Scalars['ID'];
+  address: AddressInput;
+};
+
 export type AddJobInstanceInput = {
   companySlug: Scalars['String'];
   jobId: Scalars['ID'];
@@ -23,13 +29,15 @@ export type AddJobInstanceInput = {
 };
 
 export type AddressInput = {
-  phone: Scalars['String'];
-  street: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+  street?: Maybe<Scalars['String']>;
   street2?: Maybe<Scalars['String']>;
   city: Scalars['String'];
   state: Scalars['String'];
   postal_code: Scalars['String'];
   country: Scalars['String'];
+  coord_lat: Scalars['Float'];
+  coord_lng: Scalars['Float'];
 };
 
 export type CompanyDto = {
@@ -46,6 +54,11 @@ export type CompanyProfileInput = {
   cover_image: Scalars['String'];
   about: Scalars['String'];
   business_type: Scalars['String'];
+};
+
+export type CoordsInput = {
+  lng: Scalars['Float'];
+  lat: Scalars['Float'];
 };
 
 export type CreateCompanyAddressInput = {
@@ -76,22 +89,44 @@ export type JobDto = {
   id: Scalars['ID'];
   name: Scalars['String'];
   slug: Scalars['String'];
+  summary: Scalars['String'];
+  description: Scalars['String'];
+  type: Scalars['String'];
+  keywords: Array<Scalars['String']>;
+  instances: Array<JobInstanceDto>;
 };
 
 export type JobInput = {
   name: Scalars['String'];
-  category: Scalars['String'];
   summary: Scalars['String'];
   description: Scalars['String'];
+  type: Scalars['String'];
+  keywords?: Maybe<Array<Scalars['String']>>;
+};
+
+export type JobInstanceDto = {
+  __typename?: 'JobInstanceDto';
+  id: Scalars['ID'];
+  start_date: Scalars['DateTime'];
+  end_date: Scalars['DateTime'];
+  pay_rate: Scalars['Int'];
+  total_openings: Scalars['Int'];
+  remaining_openings: Scalars['Int'];
+  apply_deadline: Scalars['DateTime'];
+  keywords: Array<Scalars['String']>;
 };
 
 export type JobInstanceInput = {
-  date: Scalars['DateTime'];
-  start_time: Scalars['String'];
-  end_time: Scalars['String'];
+  start_date: Scalars['DateTime'];
+  end_date: Scalars['DateTime'];
   pay_rate: Scalars['String'];
   total_openings: Scalars['Int'];
   apply_deadline: Scalars['DateTime'];
+};
+
+export type LocationInput = {
+  locality: Scalars['String'];
+  coords: CoordsInput;
 };
 
 export type LoginInput = {
@@ -110,6 +145,7 @@ export type Mutation = {
   createCompanyAddress: Scalars['Boolean'];
   createJob: JobDto;
   addJobInstance: Scalars['Boolean'];
+  addJobInstanceAddress: Scalars['Boolean'];
 };
 
 export type MutationRegisterArgs = {
@@ -144,10 +180,16 @@ export type MutationAddJobInstanceArgs = {
   input: AddJobInstanceInput;
 };
 
+export type MutationAddJobInstanceAddressArgs = {
+  input: AddJobInstanceAddressInput;
+};
+
 export type Query = {
   __typename?: 'Query';
-  me: UserDto;
-  search: Scalars['Boolean'];
+  me?: Maybe<UserDto>;
+  allUsers: Array<UserDto>;
+  search: SearchDto;
+  test: Scalars['Boolean'];
 };
 
 export type QuerySearchArgs = {
@@ -161,9 +203,34 @@ export type RegisterInput = {
   password: Scalars['String'];
 };
 
+export type SearchDto = {
+  __typename?: 'SearchDto';
+  count: Scalars['Int'];
+  results: Array<SearchResultsDto>;
+};
+
 export type SearchInput = {
-  keyword: Scalars['String'];
-  location: Scalars['String'];
+  search: Scalars['String'];
+  location: LocationInput;
+  options: SearchOptionsInput;
+  pagination: SearchPaginationInput;
+};
+
+export type SearchOptionsInput = {
+  radius: Scalars['Int'];
+  pay_rate: Scalars['Int'];
+};
+
+export type SearchPaginationInput = {
+  skip: Scalars['Int'];
+  take: Scalars['Int'];
+};
+
+export type SearchResultsDto = {
+  __typename?: 'SearchResultsDto';
+  job: JobDto;
+  rank: Scalars['Float'];
+  isTypeOf: Scalars['String'];
 };
 
 export type UserDto = {
@@ -175,12 +242,21 @@ export type UserDto = {
   realm: Scalars['String'];
   is_verified: Scalars['Boolean'];
   setup: Array<Scalars['String']>;
+  created_at: Scalars['DateTime'];
 };
 export type SearchQueryVariables = {
   input: SearchInput;
 };
 
-export type SearchQuery = { __typename?: 'Query' } & Pick<Query, 'search'>;
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
+      results: Array<
+        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
+            job: { __typename?: 'JobDto' } & Pick<JobDto, 'name'>;
+          }
+      >;
+    };
+};
 
 export type ForgotPasswordMutationVariables = {
   email: Scalars['String'];
@@ -239,21 +315,31 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
 export type MeQueryVariables = {};
 
 export type MeQuery = { __typename?: 'Query' } & {
-  me: { __typename?: 'UserDto' } & Pick<
-    UserDto,
-    | 'id'
-    | 'first_name'
-    | 'last_name'
-    | 'email'
-    | 'realm'
-    | 'is_verified'
-    | 'setup'
+  me: Maybe<
+    { __typename?: 'UserDto' } & Pick<
+      UserDto,
+      | 'id'
+      | 'first_name'
+      | 'last_name'
+      | 'email'
+      | 'realm'
+      | 'is_verified'
+      | 'setup'
+    >
   >;
 };
 
 export const SearchDocument = gql`
   query Search($input: SearchInput!) {
-    search(input: $input)
+    search(input: $input) {
+      count
+      results {
+        rank
+        job {
+          name
+        }
+      }
+    }
   }
 `;
 export type SearchComponentProps = Omit<

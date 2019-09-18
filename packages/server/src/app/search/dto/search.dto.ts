@@ -1,12 +1,11 @@
 import { ObjectType, Field, ID, Int, Float } from 'type-graphql';
 import { JobDto } from '../../job/dto/job.dto';
+import { SearchResultsDto } from './search-results';
 
 @ObjectType()
 export class SearchDto {
-  @Field(() => JobDto)
-  readonly job: JobDto;
-  @Field(() => Float)
-  readonly rank: number;
-  @Field()
-  readonly isTypeOf: string;
+  @Field(() => Int)
+  readonly count: number;
+  @Field(() => [SearchResultsDto])
+  readonly results: SearchResultsDto[];
 }

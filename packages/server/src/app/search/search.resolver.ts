@@ -11,11 +11,11 @@ export class SearchResolver {
 
   constructor(private readonly searchService: SearchService) {}
 
-  @Query(() => [SearchDto])
+  @Query(() => SearchDto)
   async search(@Args('input') input: SearchInput) {
     const search = await this.searchService.query(input);
     this.logger.debug(
-      `[${input.keyword} (${input.location.lat}, ${input.location.lng})] yielded ${search.length} results`,
+      `[${input.search}] yielded ${search.results.length} results`,
     );
     return search;
   }

@@ -33,27 +33,38 @@ const results = (
 };
 
 export const LocationInput: React.FunctionComponent = ({
+  location,
   field,
   form: { errors, touched },
   setFieldValue,
 }: any) => {
   const inputError = touched[field.name] && errors[field.name];
 
-  const [address, setAddress] = useState('');
+  const [address, setAddress] = useState({
+    type: 'url',
+    value: location ? location.locality : '',
+  });
+
   const [error, setError] = useState('');
 
   const handleChange = (value: any) => {
     setError('');
-    setAddress(value);
+    setAddress({ type: 'api', value });
   };
 
   const handleSelect = async (value: any) => {
     try {
+      if (address.type === 'url') {
+        return;
+      }
+
       const geo = await geocodeByAddress(value);
-      console.log(geo);
       const coords = await getLatLng(geo[0]);
-      setFieldValue('lat', coords.lat);
-      setFieldValue('lng', coords.lng);
+
+      setFieldValue('location', {
+        locality: value,
+        coords,
+      });
       console.log('Success', coords);
     } catch (error) {
       console.error('Error', error);
@@ -73,9 +84,9 @@ export const LocationInput: React.FunctionComponent = ({
           types: ['geocode'],
           componentRestrictions: { country: 'us' },
         }}
-        value={address}
+        value={address.value}
         onChange={handleChange}
-        shouldFetchSuggestions={address.length > 1}
+        shouldFetchSuggestions={address.value.length > 1}
         onError={onError}
       >
         {({ getInputProps, suggestions, loading }) => {
@@ -84,6 +95,7 @@ export const LocationInput: React.FunctionComponent = ({
           return (
             <AutoComplete
               size="large"
+              defaultValue={address.value}
               onSelect={handleSelect}
               onSearch={(value: any) => onChange({ target: { value } })}
               placeholder="City, state or zip"

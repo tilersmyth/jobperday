@@ -1,18 +1,16 @@
 import { InputType, Field, Int } from 'type-graphql';
-import { CoordsInput } from './coords.input';
+import { LocationInput } from './location.input';
+import { SearchOptionsInput } from './options.input';
+import { SearchPaginationInput } from './pagination.input';
 
 @InputType()
 export class SearchInput {
-  @Field(() => Int)
-  readonly take: number;
-  @Field(() => Int)
-  readonly skip: number;
   @Field()
-  readonly keyword: string;
-  @Field(() => CoordsInput)
-  readonly location: CoordsInput;
-  @Field(() => Int)
-  readonly radius: number;
-  @Field(() => Int, { nullable: true })
-  readonly pay_rate?: number;
+  readonly search: string;
+  @Field(() => LocationInput)
+  readonly location: LocationInput;
+  @Field(() => SearchOptionsInput)
+  readonly options: SearchOptionsInput;
+  @Field(() => SearchPaginationInput)
+  readonly pagination: SearchPaginationInput;
 }
