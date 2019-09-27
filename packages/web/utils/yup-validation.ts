@@ -35,6 +35,12 @@ export const ForgotPasswordSchema = Yup.object().shape({
     .required('Required'),
 });
 
+export const SearchSchema = Yup.object().shape({
+  location: Yup.object().shape({
+    locality: Yup.string().required(),
+  }),
+});
+
 export const CreateCompanySchema = Yup.object().shape({
   name: Yup.string()
     .min(3, '3 character minimum')

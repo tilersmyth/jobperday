@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FieldProps } from 'formik';
+import { FieldProps, getIn } from 'formik';
 import { AutoComplete, Icon, Form } from 'antd';
 import PlacesAutocomplete, {
   PropTypes,
@@ -13,7 +13,7 @@ interface Props extends FieldProps {
   handleChange: (value: string) => void;
   handleSelect: (value: string, option: object) => void;
   searchOptions: PropTypes['searchOptions'];
-  showError: boolean;
+  showError?: boolean;
   size: InputProps['size'];
   placeholder: string;
 }
@@ -51,25 +51,26 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
   showError,
   ...input
 }) => {
-  const [error, setError] = useState('');
+  const [resultsError, setResultsError] = useState('');
 
   const onError = (status: any, clearSuggestions: any) => {
-    setError('No results found');
+    setResultsError('No results found');
     console.log('Google Maps API returned error with status: ', status);
     clearSuggestions();
   };
 
   const inputChange = (value: string) => {
-    setError('');
+    setResultsError('');
     handleChange(value);
   };
 
-  const inputError = touched[field.name] && errors[field.name];
+  const errorMsg = getIn(errors, field.name);
+  const error = errorMsg && getIn(touched, field.name);
 
   return (
     <Form.Item
-      validateStatus={inputError ? 'error' : undefined}
-      help={showError && inputError}
+      validateStatus={error ? 'error' : undefined}
+      help={showError && errorMsg}
     >
       <PlacesAutocomplete
         searchOptions={searchOptions}
@@ -93,7 +94,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
               onSelect={onSelect}
               onSearch={onSearch}
             >
-              {results(loading, error, suggestions)}
+              {results(loading, resultsError, suggestions)}
             </AutoComplete>
           );
         }}

@@ -3,21 +3,32 @@ import { Form, Button, Row, Col } from 'antd';
 import Router from 'next/router';
 import { setCookie } from 'nookies';
 import base64 from 'base-64';
-import { Formik, Field } from 'formik';
+import { Formik, Field, FieldProps } from 'formik';
 import ReactResizeDetector from 'react-resize-detector';
+import {
+  PropTypes,
+  geocodeByAddress,
+  getLatLng,
+} from 'react-places-autocomplete';
 
 import { ResponsiveWrapper } from '../responsive-wrapper';
 import { JobInput } from './job-input';
-import { LocationInput } from './location-input';
 import { SearchInput } from '../../../../apollo/generated-components';
 import { SearchDrawer } from './search-drawer';
 import { searchToQuery } from '../../../../utils/search/search-query-map';
+import { PlacesAutocompleteInput } from '../../input/places-autocomplete-input';
 import './style.less';
+import { SearchSchema } from '../../../../utils/yup-validation';
 
 interface Props {
   searchArgs: SearchInput;
   updateArgs: (args: SearchInput) => void | Promise<void>;
 }
+
+const PlacesInputOptions: PropTypes['searchOptions'] = {
+  types: ['geocode'],
+  componentRestrictions: { country: 'us' },
+};
 
 export const SearchBar: React.FunctionComponent<Props> = ({
   searchArgs,
@@ -63,6 +74,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
             enableReinitialize={true}
             validateOnBlur={false}
             validateOnChange={false}
+            validationSchema={SearchSchema}
             onSubmit={async variables => {
               const encoded = base64.encode(JSON.stringify(variables.location));
 
@@ -81,76 +93,107 @@ export const SearchBar: React.FunctionComponent<Props> = ({
               ...searchArgs,
             }}
           >
-            {({ handleSubmit, setFieldValue }) => (
-              <Form layout="inline" onSubmit={handleSubmit}>
-                <Row gutter={16}>
-                  <Col lg={{ span: 8 }} sm={{ span: 22 }} xs={{ span: 21 }}>
-                    <Field
-                      name="search"
-                      onFocus={openSecondary}
-                      component={JobInput}
-                    />
-                  </Col>
+            {({ handleSubmit, setFieldValue }) => {
+              const HandlePlacesInputChange = (value: string) => {
+                setFieldValue('location.locality', value);
+              };
 
-                  <Col lg={{ span: 0 }} sm={{ span: 2 }} xs={{ span: 3 }}>
-                    <div className="filter-btn-wrapper">
-                      <Button
-                        className="filter-btn"
-                        icon="filter"
-                        size="large"
-                        onClick={() => openDrawer(true)}
+              const HandlePlacesInputSelect = async (value: string) => {
+                try {
+                  const geo = await geocodeByAddress(value);
+                  const coords = await getLatLng(geo[0]);
+
+                  setFieldValue('location', {
+                    locality: value,
+                    coords,
+                  });
+                  console.log('Success', coords);
+                } catch (error) {
+                  console.error('Error', error);
+                }
+              };
+
+              return (
+                <Form layout="inline" onSubmit={handleSubmit}>
+                  <Row gutter={16}>
+                    <Col lg={{ span: 8 }} sm={{ span: 22 }} xs={{ span: 21 }}>
+                      <Field
+                        name="search"
+                        onFocus={openSecondary}
+                        component={JobInput}
                       />
-                    </div>
-                  </Col>
+                    </Col>
 
-                  <Col
-                    lg={{ span: 8 }}
-                    xs={{ span: 24 }}
-                    className={`sb-mid-col sb-secondary ${secondary}`}
-                  >
-                    <Field
-                      location={searchArgs.location}
-                      component={LocationInput}
-                      setFieldValue={setFieldValue}
-                    />
-                  </Col>
-                  <Col
-                    lg={{ span: 5 }}
-                    md={{ span: 24 }}
-                    className={`sb-secondary ${secondary}`}
-                  >
-                    <Form.Item>
-                      <Row>
-                        <Col lg={{ span: 0 }} xs={{ span: 12 }}>
-                          <Button
-                            type="link"
-                            className="sb-close-btn"
-                            onClick={closeSecondary}
-                          >
-                            Close
-                          </Button>
-                        </Col>
+                    <Col lg={{ span: 0 }} sm={{ span: 2 }} xs={{ span: 3 }}>
+                      <div className="filter-btn-wrapper">
+                        <Button
+                          className="filter-btn"
+                          icon="filter"
+                          size="large"
+                          onClick={() => openDrawer(true)}
+                        />
+                      </div>
+                    </Col>
 
-                        <Col
-                          lg={{ span: 24 }}
-                          xs={{ span: 12 }}
-                          className="sb-col-btn"
-                        >
-                          <Button
-                            htmlType="submit"
-                            type="primary"
-                            ghost={true}
-                            size="large"
+                    <Col
+                      lg={{ span: 8 }}
+                      xs={{ span: 24 }}
+                      className={`sb-mid-col sb-secondary ${secondary}`}
+                    >
+                      <Form.Item>
+                        <Field
+                          name="location.locality"
+                          render={(formikProps: FieldProps) => (
+                            <PlacesAutocompleteInput
+                              {...formikProps}
+                              searchOptions={PlacesInputOptions}
+                              handleChange={HandlePlacesInputChange}
+                              handleSelect={HandlePlacesInputSelect}
+                              size="large"
+                              placeholder="City, state or zip"
+                            />
+                          )}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col
+                      lg={{ span: 5 }}
+                      md={{ span: 24 }}
+                      className={`sb-secondary ${secondary}`}
+                    >
+                      <Form.Item>
+                        <Row>
+                          <Col lg={{ span: 0 }} xs={{ span: 12 }}>
+                            <Button
+                              type="link"
+                              className="sb-close-btn"
+                              onClick={closeSecondary}
+                            >
+                              Close
+                            </Button>
+                          </Col>
+
+                          <Col
+                            lg={{ span: 24 }}
+                            xs={{ span: 12 }}
+                            className="sb-col-btn"
                           >
-                            Find Jobs
-                          </Button>
-                        </Col>
-                      </Row>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-            )}
+                            <Button
+                              htmlType="submit"
+                              type="primary"
+                              ghost={true}
+                              size="large"
+                            >
+                              Find Jobs
+                            </Button>
+                          </Col>
+                        </Row>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              );
+            }}
           </Formik>
         </ResponsiveWrapper>
       </div>
