@@ -34,8 +34,13 @@ export class RolesGuard implements CanActivate {
     const { req } = ctx.getContext();
     const { input } = ctx.getArgs();
 
+    // Verify by either slug or id
+    const where = input.companySlug
+      ? { slug: input.companySlug }
+      : { id: input.companyId };
+
     const company = await this.companyService.findOne({
-      where: { slug: input.companySlug },
+      where,
       relations: ['members'],
     });
 

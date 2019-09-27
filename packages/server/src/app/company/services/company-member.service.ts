@@ -18,7 +18,7 @@ export class CompanyMemberService {
   public async add(input: AddMemberInput): Promise<CompanyMemberEntity> {
     const member = new CompanyMemberEntity();
     member.company = input.company;
-    member.userId = input.userId;
+    member.user = input.user;
     member.role = input.role;
     member.confirmed = input.confirmed;
     const savedMember = await this.repository.save(member);

@@ -27,6 +27,18 @@ input AddressInput {
   coord_lng: Float!
 }
 
+type CompanyAddressDto {
+  phone: String!
+  street: String!
+  street2: String
+  city: String!
+  state: String!
+  postal_code: String!
+  country: String!
+  coord_lat: Float!
+  coord_lng: Float!
+}
+
 type CompanyDto {
   id: ID!
   name: String!
@@ -35,11 +47,8 @@ type CompanyDto {
   setup_stage: Int!
 }
 
-input CompanyProfileInput {
-  profile_image: String!
-  cover_image: String!
-  about: String!
-  business_type: String!
+input CompanySlugInput {
+  companySlug: String!
 }
 
 input CoordsInput {
@@ -48,17 +57,29 @@ input CoordsInput {
 }
 
 input CreateCompanyAddressInput {
-  companySlug: String!
-  address: AddressInput!
+  phone: String!
+  street: String!
+  street2: String
+  city: String!
+  state: String!
+  postal_code: String!
+  country: String!
+  coord_lat: Float!
+  coord_lng: Float!
+}
+
+type CreateCompanyDto {
+  id: ID!
+  name: String!
+  slug: String!
+  setup_complete: Boolean!
+  setup_stage: Int!
+  address: CompanyAddressDto!
 }
 
 input CreateCompanyInput {
   name: String!
-}
-
-input CreateCompanyProfileInput {
-  companySlug: String!
-  profile: CompanyProfileInput!
+  address: CreateCompanyAddressInput!
 }
 
 input CreateJobInput {
@@ -77,6 +98,7 @@ input ForgotPasswordInput {
 
 type JobDto {
   id: ID!
+  companyName: String!
   name: String!
   slug: String!
   summary: String!
@@ -102,7 +124,6 @@ type JobInstanceDto {
   total_openings: Int!
   remaining_openings: Int!
   apply_deadline: DateTime!
-  keywords: [String!]!
 }
 
 input JobInstanceInput {
@@ -140,9 +161,8 @@ type Mutation {
   login(input: LoginInput!): UserDto!
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
-  createCompany(input: CreateCompanyInput!): CompanyDto!
-  createCompanyProfile(input: CreateCompanyProfileInput!): Boolean!
-  createCompanyAddress(input: CreateCompanyAddressInput!): Boolean!
+  createCompany(input: CreateCompanyInput!): CreateCompanyDto!
+  updateCreateCompany(input: UpdateCompanyInput!): CreateCompanyDto!
   createJob(input: CreateJobInput!): JobDto!
   addJobInstance(input: AddJobInstanceInput!): Boolean!
   addJobInstanceAddress(input: AddJobInstanceAddressInput!): Boolean!
@@ -152,6 +172,8 @@ type Query {
   me: MeSessionDto
   allUsers: [UserDto!]!
   userLocation: SearchLocationDto
+  findCompany(input: CompanySlugInput!): CompanyDto!
+  findCreateCompany(input: CompanySlugInput!): CreateCompanyDto!
   search(input: SearchInput!): SearchDto!
 }
 
@@ -197,7 +219,24 @@ input SearchPaginationInput {
 type SearchResultsDto {
   job: JobDto!
   rank: Float!
-  isTypeOf: String!
+}
+
+input UpdateCompanyAddressInput {
+  phone: String
+  street: String
+  street2: String
+  city: String
+  state: String
+  postal_code: String
+  country: String
+  coord_lat: Float
+  coord_lng: Float
+}
+
+input UpdateCompanyInput {
+  companySlug: String!
+  name: String
+  address: UpdateCompanyAddressInput
 }
 
 type UserDto {

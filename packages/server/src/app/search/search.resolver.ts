@@ -17,6 +17,7 @@ export class SearchResolver {
   @UseInterceptors(SearchInterceptor)
   async search(@Args('input') input: SearchInput) {
     const search = await this.searchService.query(input);
+
     this.logger.debug(
       `[${input.search}] yielded ${search.results.length} results`,
     );

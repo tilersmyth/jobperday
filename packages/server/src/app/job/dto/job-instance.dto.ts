@@ -16,6 +16,4 @@ export class JobInstanceDto {
   readonly remaining_openings: number;
   @Field()
   readonly apply_deadline: Date;
-  @Field(() => [String])
-  readonly keywords: string[];
 }

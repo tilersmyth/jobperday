@@ -34,3 +34,23 @@ export const ForgotPasswordSchema = Yup.object().shape({
     .email()
     .required('Required'),
 });
+
+export const CreateCompanySchema = Yup.object().shape({
+  name: Yup.string()
+    .min(3, '3 character minimum')
+    .required('Required'),
+  address: Yup.object().shape({
+    phone: Yup.string().required('Required'),
+    street: Yup.string().required('Required'),
+    city: Yup.string().required('Required'),
+    state: Yup.string().required('Required'),
+    postal_code: Yup.string().required('Required'),
+    country: Yup.string().required('Required'),
+    coord_lat: Yup.number().required(),
+    coord_lng: Yup.number().required(),
+  }),
+  formatted_address: Yup.string().when('address.street', {
+    is: '',
+    then: Yup.string().required('Required'),
+  }),
+});

@@ -5,6 +5,10 @@
 @primary-color: #cb312e;
 @success-color: #6c8d52;
 @error-color: #cb312e;
+@white: #fff;
+@black: #000;
+
+@text-color-secondary: fade(@black, 45%);
 
 @border-radius-base: 0px;
 
@@ -13,6 +17,21 @@
 @alert-error-border-color: @error-color;
 
 @layout-header-height: 64px;
+
+@background-color-base: hsv(0, 0, 96%);
+
+// Border color
+@border-color-base: hsv(0, 0, 85%);
+
+// Disabled states
+@disabled-color: fade(#000, 25%);
+@disabled-bg: @background-color-base;
+
+// Input
+@input-disabled-bg: @disabled-bg;
+@input-border-color: @border-color-base;
+@border-width-base: 1px;
+@border-style-base: solid;
 
 // Media queries breakpoints
 // Extra small screen / phone

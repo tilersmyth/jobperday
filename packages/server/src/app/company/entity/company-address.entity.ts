@@ -33,13 +33,11 @@ export class CompanyAddressEntity extends BaseEntity {
   @Column('text')
   public postal_code: string;
 
-  @Column({
-    type: 'geometry',
-    nullable: true,
-    spatialFeatureType: 'Point',
-    srid: 4326,
-  })
-  public coords: string;
+  @Column('float')
+  public coord_lat: number;
+
+  @Column('float')
+  public coord_lng: number;
 
   @UpdateDateColumn() updated_at: Date;
 

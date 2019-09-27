@@ -7,6 +7,4 @@ export class SearchResultsDto {
   readonly job: JobDto;
   @Field(() => Float)
   readonly rank: number;
-  @Field()
-  readonly isTypeOf: string;
 }

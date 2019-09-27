@@ -16,7 +16,7 @@ export const SearchSidebar: React.FunctionComponent<Props> = ({
 }) => {
   return (
     <div>
-      <Affix offsetTop={65}>
+      <Affix offsetTop={85}>
         <Card title="Search Filter" bordered={false} className="filter-card">
           <SearchFilterForm searchArgs={searchArgs} updateArgs={updateArgs} />
         </Card>

@@ -30,15 +30,7 @@ export const SearchLayout: React.SFC<Props> = ({
                 {sidebar}
               </Col>
               <Col xl={{ span: 16 }} lg={{ span: 16 }} xs={{ span: 24 }}>
-                <div
-                  style={{
-                    backgroundColor: 'green',
-                    width: '100%',
-                    minHeight: 100,
-                  }}
-                >
-                  {results}
-                </div>
+                {results}
               </Col>
             </Row>
           </div>

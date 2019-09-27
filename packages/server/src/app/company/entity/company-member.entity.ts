@@ -6,18 +6,17 @@ import {
   BaseEntity,
   ManyToOne,
   UpdateDateColumn,
+  RelationId,
 } from 'typeorm';
 
 import { CompanyEntity } from './company.entity';
+import { UserEntity } from '../../user/entity';
 import { MemberRoles } from '../../types';
 
 @Entity('company_members')
 export class CompanyMemberEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Column('text')
-  public userId: string;
 
   @Column('text')
   public role: MemberRoles;
@@ -31,6 +30,12 @@ export class CompanyMemberEntity extends BaseEntity {
   @UpdateDateColumn() updated_at: Date;
 
   @CreateDateColumn() created_at: Date;
+
+  @ManyToOne(() => UserEntity)
+  public user: UserEntity;
+
+  @RelationId((member: CompanyMemberEntity) => member.user)
+  public userId: string;
 
   @ManyToOne(() => CompanyEntity, company => company.members)
   public company: CompanyEntity;

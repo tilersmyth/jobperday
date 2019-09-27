@@ -7,6 +7,7 @@ import {
   OneToMany,
   OneToOne,
   JoinColumn,
+  RelationId,
 } from 'typeorm';
 import { Length } from 'class-validator';
 
@@ -31,7 +32,7 @@ export class CompanyEntity extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   public setup_complete: boolean;
 
-  @Column({ type: 'int', default: 0 })
+  @Column({ type: 'int', default: 1 })
   public setup_stage: number;
 
   @Column({ type: 'boolean', default: false })
@@ -45,6 +46,9 @@ export class CompanyEntity extends BaseEntity {
   @OneToOne(() => CompanyAddressEntity)
   @JoinColumn()
   public address: CompanyAddressEntity;
+
+  @RelationId((company: CompanyEntity) => company.address)
+  public addressId: string;
 
   @OneToMany(() => CompanyMemberEntity, member => member.company)
   public members: CompanyMemberEntity[];

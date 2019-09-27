@@ -41,7 +41,7 @@ export const queryToSearch = (
   }
 
   const searchValue = query.search as string;
-  if (searchValue.trim()) {
+  if (searchValue && searchValue.trim()) {
     search.search = searchValue.trim();
   }
 

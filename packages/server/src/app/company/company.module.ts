@@ -7,6 +7,7 @@ import { CompanyResolver } from './company.resolver';
 import { RolesGuard } from './guards/roles.guard';
 import { CompanyAddressService, CompanyProfileService } from './services';
 import { UserModule } from '../user/user.module';
+import { CompanySetupResolver, CompanySetupService } from './company-setup';
 
 const PROVIDERS = [
   ...companyProviders,
@@ -16,6 +17,8 @@ const PROVIDERS = [
   CompanyProfileService,
   CompanyAddressService,
   CompanyResolver,
+  CompanySetupService,
+  CompanySetupResolver,
 ];
 
 @Module({

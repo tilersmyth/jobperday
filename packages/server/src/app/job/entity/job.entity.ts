@@ -18,6 +18,9 @@ export class JobEntity extends BaseEntity {
   public id: string;
 
   @Column('text')
+  public companyName: string;
+
+  @Column('text')
   @Length(3, 150, { message: 'must be between 3 and 150 characters' })
   public name: string;
 

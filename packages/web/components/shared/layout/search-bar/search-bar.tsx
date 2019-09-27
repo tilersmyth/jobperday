@@ -4,14 +4,15 @@ import Router from 'next/router';
 import { setCookie } from 'nookies';
 import base64 from 'base-64';
 import { Formik, Field } from 'formik';
+import ReactResizeDetector from 'react-resize-detector';
 
 import { ResponsiveWrapper } from '../responsive-wrapper';
 import { JobInput } from './job-input';
 import { LocationInput } from './location-input';
 import { SearchInput } from '../../../../apollo/generated-components';
 import { SearchDrawer } from './search-drawer';
-import './style.less';
 import { searchToQuery } from '../../../../utils/search/search-query-map';
+import './style.less';
 
 interface Props {
   searchArgs: SearchInput;
@@ -24,6 +25,14 @@ export const SearchBar: React.FunctionComponent<Props> = ({
 }) => {
   const [secondary, setSecondary] = useState('');
   const [drawer, openDrawer] = useState(false);
+
+  const onWidthResize = (width: number) => {
+    // Clean up small screen behavior if resized
+    if (width >= 992) {
+      openDrawer(false);
+      setSecondary('');
+    }
+  };
 
   const openSecondary = () => {
     if (window.innerWidth < 992) {
@@ -87,8 +96,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                     <div className="filter-btn-wrapper">
                       <Button
                         className="filter-btn"
-                        shape="circle"
-                        icon="control"
+                        icon="filter"
                         size="large"
                         onClick={() => openDrawer(true)}
                       />
@@ -152,6 +160,8 @@ export const SearchBar: React.FunctionComponent<Props> = ({
         updateArgs={handleDrawerArgs}
         close={() => openDrawer(false)}
       />
+
+      <ReactResizeDetector handleWidth={true} onResize={onWidthResize} />
     </React.Fragment>
   );
 };

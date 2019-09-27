@@ -7,7 +7,17 @@ export const searchQuery = gql`
       results {
         rank
         job {
+          id
           name
+          companyName
+          type
+          instances {
+            id
+            start_date
+            apply_deadline
+            pay_rate
+            total_openings
+          }
         }
       }
     }

@@ -1,0 +1,34 @@
+.google_places_input.show_fields {
+  display: none;
+}
+
+.address_fields {
+  display: none;
+}
+
+.address_fields.show_fields {
+  display: inherit;
+}
+
+.address_fields input:read-only {
+  background: @input-disabled-bg;
+  color: @disabled-color;
+  cursor: default;
+}
+
+.address_fields input:read-only:hover,
+.address_fields input:read-only:focus {
+  border: @input-border-color;
+  border-width: @border-width-base;
+  border-style: @border-style-base;
+  box-shadow: none;
+}
+
+.change_fields_btn {
+  padding: 0;
+  color: @text-color-secondary;
+}
+
+.address_error {
+  margin-bottom: 20px;
+}

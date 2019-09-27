@@ -1,13 +1,14 @@
-import { InputType, Field, ID } from 'type-graphql';
+import { InputType, Field } from 'type-graphql';
 import { MemberRoles } from '../../types';
 import { CompanyEntity } from '../entity';
+import { UserEntity } from '../../user/entity';
 
 @InputType()
 export class AddMemberInput {
-  @Field()
+  @Field(() => CompanyEntity)
   readonly company: CompanyEntity;
-  @Field(() => ID)
-  readonly userId: string;
+  @Field(() => UserEntity)
+  readonly user: UserEntity;
   @Field()
   readonly role: MemberRoles;
   @Field()

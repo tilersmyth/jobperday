@@ -37,6 +37,7 @@ export class JobService extends CrudService<JobEntity> {
     input: CreateJobInput,
   ): Promise<JobEntity> {
     const job = new JobEntity();
+    job.companyName = company.name;
     job.name = input.job.name;
     job.slug = await this.generateSlug(input.job.name, company);
     job.type = input.job.type;

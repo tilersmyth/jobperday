@@ -10,7 +10,7 @@ import { SearchSidebar } from './search-sidebar/search-sidebar';
 import './style.less';
 import { SearchLayout } from './search-layout';
 import { SearchBar } from '../shared/layout/search-bar/search-bar';
-import { SearchResults } from './search-results';
+import { SearchResults } from './search-results/search-results';
 import { searchToQuery } from '../../utils/search/search-query-map';
 
 interface Props {
@@ -55,7 +55,7 @@ export const SearchView: React.FunctionComponent<Props> = ({ searchArgs }) => {
             results={
               <SearchResults
                 client={client}
-                search={search}
+                results={search}
                 setSearch={setSearch}
                 hasMore={hasMore}
                 setHasMore={setHasMore}

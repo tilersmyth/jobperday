@@ -3,25 +3,23 @@ import { Repository } from 'typeorm';
 
 import { CompanyAddressEntity } from '../entity';
 import { COMPANY_ADDRESS_TOKEN } from '../company.constants';
-import { AddressInput } from '../../_helpers/inputs/address.input';
+import { CompanyAddressInput } from '../inputs/company-address.input';
+import { CrudService } from '../../../base';
 
 @Injectable()
-export class CompanyAddressService {
+export class CompanyAddressService extends CrudService<CompanyAddressEntity> {
   constructor(
     @Inject(COMPANY_ADDRESS_TOKEN)
     protected readonly repository: Repository<CompanyAddressEntity>,
-  ) {}
+  ) {
+    super();
+  }
 
-  public async create(input: AddressInput): Promise<CompanyAddressEntity> {
+  public async create(
+    input: CompanyAddressInput,
+  ): Promise<CompanyAddressEntity> {
     const address = new CompanyAddressEntity();
-    address.phone = input.phone;
-    address.street = input.street;
-    address.street2 = input.street2;
-    address.city = input.city;
-    address.state = input.state;
-    address.postal_code = input.postal_code;
-    address.country = input.country;
-
+    Object.assign(address, input);
     return this.repository.save(address);
   }
 }

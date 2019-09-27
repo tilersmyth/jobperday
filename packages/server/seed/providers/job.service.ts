@@ -45,6 +45,7 @@ export class JobSeedService {
 
       for (let i = 1; i <= jobCount; i++) {
         const job = new JobEntity();
+        job.companyName = company.name;
         job.name = faker.name.jobTitle();
         job.slug = await this.generateSlug(job.name, company);
         job.summary = faker.lorem.sentence();

@@ -1,10 +1,13 @@
 import { ObjectType, Field, ID } from 'type-graphql';
+
 import { JobInstanceDto } from './job-instance.dto';
 
 @ObjectType()
 export class JobDto {
   @Field(() => ID)
   readonly id: string;
+  @Field()
+  readonly companyName: string;
   @Field()
   readonly name: string;
   @Field()

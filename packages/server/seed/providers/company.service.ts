@@ -40,7 +40,7 @@ export class CompanySeedService {
       const savedCompany = await this.repository.save(company);
 
       await this.memberService.add({
-        userId: user.id,
+        user,
         company: savedCompany,
         role: 'owner',
         confirmed: true,

@@ -21,7 +21,7 @@ export class SeedService {
     this.logger.debug('Seeding underway!');
 
     // Seed users
-    const users = await this.userService.save(3);
+    const users = await this.userService.save(15);
 
     // Seed companies
     const companies = await this.companyService.save(users);

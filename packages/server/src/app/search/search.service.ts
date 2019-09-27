@@ -58,16 +58,19 @@ export class SearchService {
         { radius },
       );
 
+      if (search) {
+        query.orderBy('rank', 'DESC');
+      }
+
       const { entities, raw } = await query
-        .orderBy('rank', 'DESC')
         .skip(pagination.skip)
         .take(pagination.take)
         .getRawAndEntities();
 
       const count = await query.getCount();
 
-      const results = entities.map((job, index) => {
-        return { job, rank: raw[index].rank, isTypeOf: 'Jobs' };
+      const results = entities.map((job, i) => {
+        return { job, rank: raw[i].rank ? raw[i].rank : 1 };
       });
 
       return { count, results };
