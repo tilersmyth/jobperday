@@ -12,12 +12,14 @@ interface FormAddressValues {
 
 interface FormValues {
   name: string;
+  slug: string;
   formatted_address: string;
   address: FormAddressValues;
 }
 
 export const STEP1_FORM_VALUES: FormValues = {
   name: '',
+  slug: '',
   formatted_address: '',
   address: {
     phone: '',

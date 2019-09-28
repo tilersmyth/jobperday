@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
-import { CompanyEntity, CompanyAddressEntity } from '../entity';
+import { CompanyEntity } from '../entity';
 import { COMPANY_TOKEN } from '../company.constants';
 import { CreateCompanyInput } from './inputs/create-company.input';
 import { CompanyMemberService } from '../services/company-member.service';
@@ -32,6 +32,11 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     return slug.generate(name);
   }
 
+  public async slugAvailable(name: string): Promise<string | null> {
+    const slug = new SlugGeneratorUtil(this.repository);
+    return slug.available(name);
+  }
+
   public async createCompany(
     user: UserEntity,
     input: CreateCompanyInput,
@@ -42,7 +47,7 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     // Save company
     const company = new CompanyEntity();
     company.name = input.name;
-    company.slug = await this.generateSlug(input.name);
+    company.slug = input.slug;
     company.address = address;
     const savedCompany = await this.repository.save(company);
 

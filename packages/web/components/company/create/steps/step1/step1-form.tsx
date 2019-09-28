@@ -9,6 +9,7 @@ import {
 } from 'react-places-autocomplete';
 import { updatedDiff } from 'deep-object-diff';
 import { ApolloConsumer } from 'react-apollo';
+import * as yup from 'yup';
 
 import { InputField } from '../../../../shared/input/input-field';
 import {
@@ -21,6 +22,7 @@ import { PlacesAutocompleteInput } from '../../../../shared/input/places-autocom
 import { STEP1_FORM_VALUES } from './step1-form-values';
 import { googleAddressParser } from './step1-utils';
 import { ErrorAlert } from '../../../../shared/alerts/error-alert';
+import { SlugField } from './slug/slug-field';
 import './style.less';
 
 interface Props {
@@ -41,6 +43,9 @@ const C: React.FunctionComponent<
   const [showFields, setShowFields] = useState(
     companySlug ? 'show_fields' : '',
   );
+
+  const [validName, setValidName] = useState('');
+
   return (
     <ApolloConsumer>
       {client => (
@@ -156,24 +161,52 @@ const C: React.FunctionComponent<
               setShowFields('');
             };
 
+            const onNameBlur = async (
+              e: React.ChangeEvent<HTMLInputElement>,
+            ) => {
+              try {
+                const { value } = e.target;
+
+                await yup.reach(CreateCompanySchema, 'name').validate(value);
+
+                setValidName(value);
+              } catch (error) {
+                console.log('fail');
+              }
+            };
+
             return (
               <form onSubmit={handleSubmit}>
-                <Row gutter={16}>
-                  <Col xl={{ span: 12 }}>
+                <Row gutter={16} className="form_top_fields">
+                  <Col xl={{ span: 14 }}>
                     <Field
+                      tabIndex="1"
                       name="name"
                       size="large"
                       placeholder="Company name"
+                      className="name_field"
                       component={InputField}
+                      onBlur={onNameBlur}
                     />
                   </Col>
-                  <Col xl={{ span: 12 }}>
+
+                  <div className="slug_preview_wrapper sm">
+                    <SlugField
+                      nameValue={validName || formValues.name}
+                      slugValue={values.slug}
+                      setSlugValue={setFieldValue}
+                    />
+                  </div>
+
+                  <Col xl={{ span: 10 }}>
                     <Field
                       name="address.phone"
                       render={(formikProps: any) => (
                         <InputMask mask="(999) 999 9999" {...formikProps.field}>
                           {(maskProps: any) => (
                             <InputField
+                              tabIndex="2"
+                              className="phone_field"
                               size="large"
                               placeholder="Phone"
                               {...maskProps}
@@ -185,6 +218,15 @@ const C: React.FunctionComponent<
                     />
                   </Col>
                 </Row>
+
+                <div className="slug_preview_wrapper lg">
+                  <SlugField
+                    nameValue={validName || formValues.name}
+                    slugValue={values.slug}
+                    setSlugValue={setFieldValue}
+                  />
+                </div>
+
                 <div className={`google_places_input ${showFields}`}>
                   <Field
                     name="formatted_address"

@@ -32,3 +32,32 @@
 .address_error {
   margin-bottom: 20px;
 }
+
+.slug_preview_wrapper {
+  display: inherit;
+  min-height: 24px;
+}
+
+.form_top_fields .ant-form-item {
+  margin-bottom: 0;
+}
+
+@media (min-width: @screen-xl-min) {
+  .slug_preview_wrapper.sm {
+    display: none;
+  }
+}
+
+@media (max-width: @screen-xl-min) {
+  .slug_preview_wrapper.lg {
+    display: none;
+  }
+
+  .slug_preview_wrapper.sm {
+    padding-left: 10px;
+  }
+
+  .form_top_fields .phone_field {
+    margin-bottom: 24px;
+  }
+}

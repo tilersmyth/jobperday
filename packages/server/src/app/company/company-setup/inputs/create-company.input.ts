@@ -6,6 +6,8 @@ import { CreateCompanyAddressInput } from './create-company-address.input';
 export class CreateCompanyInput {
   @Field()
   readonly name: string;
+  @Field()
+  readonly slug: string;
   @Field(() => CreateCompanyAddressInput)
   readonly address: CreateCompanyAddressInput;
 }

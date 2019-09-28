@@ -21,4 +21,17 @@ export class SlugGeneratorUtil<T extends BaseEntity> {
 
     return newSlug;
   }
+
+  async available(
+    name: string,
+    args?: FindConditions<T>,
+  ): Promise<string | null> {
+    const slug = slugify(name, { lower: true });
+
+    const slugExists = await this.repository.count({
+      where: { slug, ...args },
+    });
+
+    return slugExists > 0 ? null : slug;
+  }
 }

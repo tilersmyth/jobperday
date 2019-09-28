@@ -34,6 +34,7 @@ export class CompanySetupResolver {
   }
 
   // START STEP 1: CREATE COMPANY
+
   @Mutation(() => CreateCompanyDto)
   async createCompany(
     @CurrentUser() user: UserEntity,
@@ -60,6 +61,16 @@ export class CompanySetupResolver {
 
     this.logger.debug(`[updateCompany] company ${updatedCompany.name} updated`);
     return updatedCompany;
+  }
+
+  @Query(() => String)
+  async generateCompanySlug(@Args('name') name: string) {
+    return this.setupService.generateSlug(name);
+  }
+
+  @Query(() => String, { nullable: true })
+  async companySlugAvailable(@Args('name') name: string) {
+    return this.setupService.slugAvailable(name);
   }
 
   @Query(() => CreateCompanyDto)

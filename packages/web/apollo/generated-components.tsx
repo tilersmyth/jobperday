@@ -95,6 +95,7 @@ export type CreateCompanyDto = {
 
 export type CreateCompanyInput = {
   name: Scalars['String'];
+  slug: Scalars['String'];
   address: CreateCompanyAddressInput;
 };
 
@@ -221,6 +222,8 @@ export type Query = {
   allUsers: Array<UserDto>;
   userLocation?: Maybe<SearchLocationDto>;
   findCompany: CompanyDto;
+  generateCompanySlug: Scalars['String'];
+  companySlugAvailable?: Maybe<Scalars['String']>;
   findCreateCompany: CreateCompanyDto;
   search: SearchDto;
   test: Scalars['Boolean'];
@@ -228,6 +231,14 @@ export type Query = {
 
 export type QueryFindCompanyArgs = {
   input: CompanySlugInput;
+};
+
+export type QueryGenerateCompanySlugArgs = {
+  name: Scalars['String'];
+};
+
+export type QueryCompanySlugAvailableArgs = {
+  name: Scalars['String'];
 };
 
 export type QueryFindCreateCompanyArgs = {
@@ -301,6 +312,7 @@ export type UpdateCompanyAddressInput = {
 export type UpdateCompanyInput = {
   companySlug: Scalars['String'];
   name?: Maybe<Scalars['String']>;
+  slug?: Maybe<Scalars['String']>;
   address?: Maybe<UpdateCompanyAddressInput>;
 };
 
@@ -487,6 +499,24 @@ export type FindCompanyQuery = { __typename?: 'Query' } & {
     'id' | 'slug' | 'setup_stage' | 'setup_complete'
   >;
 };
+
+export type GenerateCompanySlugQueryVariables = {
+  name: Scalars['String'];
+};
+
+export type GenerateCompanySlugQuery = { __typename?: 'Query' } & Pick<
+  Query,
+  'generateCompanySlug'
+>;
+
+export type CompanySlugAvailableQueryVariables = {
+  name: Scalars['String'];
+};
+
+export type CompanySlugAvailableQuery = { __typename?: 'Query' } & Pick<
+  Query,
+  'companySlugAvailable'
+>;
 
 export type FindCreateCompanyQueryVariables = {
   input: CompanySlugInput;
@@ -1129,6 +1159,120 @@ export function withFindCompany<TProps, TChildProps = {}>(
 export type FindCompanyQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyQuery,
   FindCompanyQueryVariables
+>;
+export const GenerateCompanySlugDocument = gql`
+  query GenerateCompanySlug($name: String!) {
+    generateCompanySlug(name: $name)
+  }
+`;
+export type GenerateCompanySlugComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    GenerateCompanySlugQuery,
+    GenerateCompanySlugQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: GenerateCompanySlugQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const GenerateCompanySlugComponent = (
+  props: GenerateCompanySlugComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    GenerateCompanySlugQuery,
+    GenerateCompanySlugQueryVariables
+  >
+    query={GenerateCompanySlugDocument}
+    {...props}
+  />
+);
+
+export type GenerateCompanySlugProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  GenerateCompanySlugQuery,
+  GenerateCompanySlugQueryVariables
+> &
+  TChildProps;
+export function withGenerateCompanySlug<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    GenerateCompanySlugQuery,
+    GenerateCompanySlugQueryVariables,
+    GenerateCompanySlugProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    GenerateCompanySlugQuery,
+    GenerateCompanySlugQueryVariables,
+    GenerateCompanySlugProps<TChildProps>
+  >(GenerateCompanySlugDocument, {
+    alias: 'withGenerateCompanySlug',
+    ...operationOptions,
+  });
+}
+export type GenerateCompanySlugQueryResult = ApolloReactCommon.QueryResult<
+  GenerateCompanySlugQuery,
+  GenerateCompanySlugQueryVariables
+>;
+export const CompanySlugAvailableDocument = gql`
+  query CompanySlugAvailable($name: String!) {
+    companySlugAvailable(name: $name)
+  }
+`;
+export type CompanySlugAvailableComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    CompanySlugAvailableQuery,
+    CompanySlugAvailableQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: CompanySlugAvailableQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const CompanySlugAvailableComponent = (
+  props: CompanySlugAvailableComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    CompanySlugAvailableQuery,
+    CompanySlugAvailableQueryVariables
+  >
+    query={CompanySlugAvailableDocument}
+    {...props}
+  />
+);
+
+export type CompanySlugAvailableProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  CompanySlugAvailableQuery,
+  CompanySlugAvailableQueryVariables
+> &
+  TChildProps;
+export function withCompanySlugAvailable<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CompanySlugAvailableQuery,
+    CompanySlugAvailableQueryVariables,
+    CompanySlugAvailableProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    CompanySlugAvailableQuery,
+    CompanySlugAvailableQueryVariables,
+    CompanySlugAvailableProps<TChildProps>
+  >(CompanySlugAvailableDocument, {
+    alias: 'withCompanySlugAvailable',
+    ...operationOptions,
+  });
+}
+export type CompanySlugAvailableQueryResult = ApolloReactCommon.QueryResult<
+  CompanySlugAvailableQuery,
+  CompanySlugAvailableQueryVariables
 >;
 export const FindCreateCompanyDocument = gql`
   query FindCreateCompany($input: CompanySlugInput!) {

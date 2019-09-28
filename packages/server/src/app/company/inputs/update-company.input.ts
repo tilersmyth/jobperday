@@ -8,6 +8,8 @@ export class UpdateCompanyInput {
   readonly companySlug: string;
   @Field({ nullable: true })
   readonly name: string;
+  @Field({ nullable: true })
+  readonly slug: string;
   @Field(() => UpdateCompanyAddressInput, { nullable: true })
   readonly address: UpdateCompanyAddressInput;
 }
