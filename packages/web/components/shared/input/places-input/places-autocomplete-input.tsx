@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import { FieldProps, getIn } from 'formik';
-import { AutoComplete, Icon, Form } from 'antd';
+import { AutoComplete, Form, Icon } from 'antd';
 import PlacesAutocomplete, {
   PropTypes,
   Suggestion,
 } from 'react-places-autocomplete';
 import { InputProps } from 'antd/lib/input';
+import { ValidInputElement } from 'antd/lib/auto-complete';
+import { OptionProps } from 'antd/lib/select';
+
+import './style.less';
 
 const { Option } = AutoComplete;
 
@@ -16,6 +20,11 @@ interface Props extends FieldProps {
   showError?: boolean;
   size: InputProps['size'];
   placeholder: string;
+  children:
+    | ValidInputElement
+    | React.ReactElement<InputProps>
+    | React.ReactElement<OptionProps>
+    | Array<React.ReactElement<OptionProps>>;
 }
 
 const results = (
@@ -24,15 +33,15 @@ const results = (
   suggestions: readonly Suggestion[],
 ) => {
   if (loading) {
-    return (
+    return [
       <Option key="loading">
         <Icon type="loading" style={{ fontSize: 16 }} spin={true} />
-      </Option>
-    );
+      </Option>,
+    ];
   }
 
   if (error) {
-    return <Option key="error">{error}</Option>;
+    return [<Option key="error">{error}</Option>];
   }
 
   return suggestions.map(suggestion => (
@@ -49,6 +58,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
   handleSelect,
   searchOptions,
   showError,
+  children,
   ...input
 }) => {
   const [resultsError, setResultsError] = useState('');
@@ -69,6 +79,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
 
   return (
     <Form.Item
+      className="google_places_autocomplete"
       validateStatus={error ? 'error' : undefined}
       help={showError && errorMsg}
     >
@@ -88,13 +99,13 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
 
           return (
             <AutoComplete
-              {...field}
-              {...input}
               defaultValue={field.value}
               onSelect={onSelect}
               onSearch={onSearch}
+              dataSource={results(loading, resultsError, suggestions)}
+              {...input}
             >
-              {results(loading, resultsError, suggestions)}
+              {children}
             </AutoComplete>
           );
         }}

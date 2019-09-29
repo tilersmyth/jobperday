@@ -1,5 +1,5 @@
 import React, { forwardRef, useState } from 'react';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Button, Input } from 'antd';
 import { Formik, Field, FormikValues, FieldProps } from 'formik';
 import InputMask from 'react-input-mask';
 import {
@@ -18,7 +18,7 @@ import {
   FindCreateCompanyDocument,
 } from '../../../../../apollo/generated-components';
 import { CreateCompanySchema } from '../../../../../utils/yup-validation';
-import { PlacesAutocompleteInput } from '../../../../shared/input/places-autocomplete-input';
+import { PlacesAutocompleteInput } from '../../../../shared/input/places-input';
 import { STEP1_FORM_VALUES } from './step1-form-values';
 import { googleAddressParser } from './step1-utils';
 import { ErrorAlert } from '../../../../shared/alerts/error-alert';
@@ -239,7 +239,9 @@ const C: React.FunctionComponent<
                         showError={true}
                         size="large"
                         placeholder="Address"
-                      />
+                      >
+                        <Input tabIndex={3} />
+                      </PlacesAutocompleteInput>
                     )}
                   />
                 </div>

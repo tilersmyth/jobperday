@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Form, Button, Row, Col } from 'antd';
+import { Form, Button, Row, Col, Input, Icon } from 'antd';
 import Router from 'next/router';
 import { setCookie } from 'nookies';
 import base64 from 'base-64';
@@ -16,7 +16,7 @@ import { JobInput } from './job-input';
 import { SearchInput } from '../../../../apollo/generated-components';
 import { SearchDrawer } from './search-drawer';
 import { searchToQuery } from '../../../../utils/search/search-query-map';
-import { PlacesAutocompleteInput } from '../../input/places-autocomplete-input';
+import { PlacesAutocompleteInput } from '../../input/places-input';
 import './style.less';
 import { SearchSchema } from '../../../../utils/yup-validation';
 
@@ -116,7 +116,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
               return (
                 <Form layout="inline" onSubmit={handleSubmit}>
                   <Row gutter={16}>
-                    <Col lg={{ span: 8 }} sm={{ span: 22 }} xs={{ span: 21 }}>
+                    <Col lg={{ span: 9 }} sm={{ span: 22 }} xs={{ span: 21 }}>
                       <Field
                         name="search"
                         onFocus={openSecondary}
@@ -136,7 +136,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                     </Col>
 
                     <Col
-                      lg={{ span: 8 }}
+                      lg={{ span: 9 }}
                       xs={{ span: 24 }}
                       className={`sb-mid-col sb-secondary ${secondary}`}
                     >
@@ -151,7 +151,16 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                               handleSelect={HandlePlacesInputSelect}
                               size="large"
                               placeholder="City, state or zip"
-                            />
+                            >
+                              <Input
+                                prefix={
+                                  <Icon
+                                    type="environment"
+                                    style={{ color: 'rgba(0,0,0,.25)' }}
+                                  />
+                                }
+                              />
+                            </PlacesAutocompleteInput>
                           )}
                         />
                       </Form.Item>
