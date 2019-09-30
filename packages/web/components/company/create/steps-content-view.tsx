@@ -1,9 +1,9 @@
-import React, { useRef } from 'react';
-import { Button } from 'antd';
+import React from 'react';
 import Router from 'next/router';
-import { Formik } from 'formik';
 
 import { Step1 } from './steps/step1/step1';
+import { Step2 } from './steps/step2/step2';
+import { Step3 } from './steps/step3/step3';
 
 interface Props {
   companySlug?: string;
@@ -14,15 +14,16 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
   step,
   companySlug,
 }) => {
-  const formRef = useRef<Formik>(null);
-
-  const Submit = async () => {
-    if (formRef.current) {
-      await formRef.current.submitForm();
-    }
-  };
-
   const nextStep = (slug: string) => {
+    // last step
+    if (step === 2) {
+      Router.push(
+        '/company/[slug]/setup-complete',
+        `/company/${slug}/setup-complete`,
+      );
+      return;
+    }
+
     ++step;
 
     Router.push(
@@ -31,7 +32,7 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
     );
   };
 
-  const LastStep = () => {
+  const lastStep = () => {
     if (!companySlug) {
       return;
     }
@@ -50,24 +51,24 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
   };
 
   return (
-    <div>
-      {step === 0 && (
-        <Step1
-          formRef={formRef}
-          nextStep={nextStep}
+    <React.Fragment>
+      {step === 0 && <Step1 companySlug={companySlug} nextStep={nextStep} />}
+
+      {step === 1 && (
+        <Step2
           companySlug={companySlug}
+          nextStep={nextStep}
+          lastStep={lastStep}
         />
       )}
 
-      <Button size="large" type="primary" onClick={Submit}>
-        {step < 2 ? 'Next' : 'Done'}
-      </Button>
-
-      {step > 0 && (
-        <Button size="large" onClick={LastStep}>
-          Previous
-        </Button>
+      {step === 2 && (
+        <Step3
+          companySlug={companySlug}
+          nextStep={nextStep}
+          lastStep={lastStep}
+        />
       )}
-    </div>
+    </React.Fragment>
   );
 };

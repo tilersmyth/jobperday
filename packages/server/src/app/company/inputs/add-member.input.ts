@@ -1,4 +1,5 @@
 import { InputType, Field } from 'type-graphql';
+
 import { MemberRoles } from '../../types';
 import { CompanyEntity } from '../entity';
 import { UserEntity } from '../../user/entity';

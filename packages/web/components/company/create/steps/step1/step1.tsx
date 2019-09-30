@@ -1,5 +1,4 @@
 import React from 'react';
-import { Formik, FormikValues } from 'formik';
 import { useQuery } from 'react-apollo';
 
 import { Step1Form } from './step1-form';
@@ -9,7 +8,6 @@ import { FindCreateCompanyDocument } from '../../../../../apollo/generated-compo
 interface Props {
   companySlug?: string;
   nextStep: (id: string) => void;
-  formRef: React.RefObject<Formik<FormikValues>>;
 }
 
 export const Step1: React.FunctionComponent<Props> = props => {
@@ -29,10 +27,8 @@ export const Step1: React.FunctionComponent<Props> = props => {
       formatted_address: '',
     });
 
-    return (
-      <Step1Form formValues={existingValues} ref={props.formRef} {...props} />
-    );
+    return <Step1Form formValues={existingValues} {...props} />;
   }
 
-  return <Step1Form formValues={values} ref={props.formRef} {...props} />;
+  return <Step1Form formValues={values} {...props} />;
 };

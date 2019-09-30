@@ -10,11 +10,15 @@ import { UserAuthGuard } from '../../auth/guards/user-auth.guard';
 import { CompanySlugInput } from './inputs/company-slug.input';
 import { CompanySetupService } from './company-setup.service';
 import { CompanyDto } from '../dto/company.dto';
-import { CompanyAddressDto } from '../dto/company-address.dto';
 import { UserEntity } from '../../user/entity';
 import { CreateCompanyInput } from './inputs/create-company.input';
 import { UpdateCompanyInput } from '../inputs/update-company.input';
 import { CreateCompanyDto } from './dto/create-company.dto';
+import { CreateCompanyProfileDto } from './dto/create-company-profile.dto';
+import { CreateCompanyProfileInput } from '../inputs/create-company-profile.input';
+import { UpdateCompanyProfileInput } from '../inputs/update-company-profile.input';
+import { CompanyMemberDto } from '../dto/company-member.dto';
+import { CreateCompanyMembersInput } from './inputs/create-company-members.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Company')
@@ -49,12 +53,10 @@ export class CompanySetupResolver {
   @Role('owner')
   @UseGuards(RolesGuard)
   async updateCreateCompany(
-    @CurrentUser() user: UserEntity,
     @Company() company: CompanyEntity,
     @Args('input') input: UpdateCompanyInput,
   ) {
     const updatedCompany = await this.setupService.updateCreateCompany(
-      user,
       company,
       input,
     );
@@ -82,5 +84,82 @@ export class CompanySetupResolver {
   ) {
     return this.setupService.findCreateCompany(company);
   }
+
   // END STEP 1: CREATE COMPANY
+
+  // START STEP 2: CREATE PROFILE
+
+  @Mutation(() => CreateCompanyProfileDto)
+  @Role('owner')
+  @UseGuards(RolesGuard)
+  async createCompanyProfile(
+    @Company() company: CompanyEntity,
+    @Args('input') input: CreateCompanyProfileInput,
+  ) {
+    const profile = await this.setupService.createCompanyProfile(
+      company,
+      input,
+    );
+    this.logger.debug(
+      `[createCompanyProfile] profile created for ${company.name}`,
+    );
+    return profile;
+  }
+
+  @Mutation(() => CreateCompanyProfileDto)
+  @Role('owner')
+  @UseGuards(RolesGuard)
+  async updateCreateCompanyProfile(
+    @Args('input') input: UpdateCompanyProfileInput,
+  ) {
+    const updatedProfile = await this.setupService.updateCreateCompanyProfile(
+      input.profile,
+    );
+
+    this.logger.debug(
+      `[updateCompanyProfile] company profile:  ${updatedProfile.id}`,
+    );
+    return updatedProfile;
+  }
+
+  @Query(() => CreateCompanyProfileDto, { nullable: true })
+  @Role('owner')
+  @UseGuards(RolesGuard)
+  async findCreateCompanyProfile(
+    @Company() company: CompanyEntity,
+    @Args('input') _: CompanySlugInput,
+  ) {
+    return this.setupService.findCreateCompanyProfile(company);
+  }
+
+  // END STEP 2: CREATE PROFILE
+
+  // START STEP 3: ADD COMPANY MEMBERS
+
+  @Query(() => [CompanyMemberDto])
+  @Role('owner')
+  @UseGuards(RolesGuard)
+  async findCreateCompanyMembers(
+    @Company() company: CompanyEntity,
+    @Args('input') _: CompanySlugInput,
+  ) {
+    return this.setupService.findCreateCompanyMembers(company);
+  }
+
+  @Mutation(() => Boolean)
+  @Role('owner')
+  @UseGuards(RolesGuard)
+  async createCompanyAddMembers(
+    @Company() company: CompanyEntity,
+    @Args('input') _: CreateCompanyMembersInput,
+  ) {
+    await this.setupService.createCompanyAddMembers(company);
+
+    this.logger.debug(
+      `[addCompanyMembers] completed setup for:  ${company.name}`,
+    );
+    return true;
+  }
+
+  // END STEP 3: ADD COMPANY MEMBERS
 }

@@ -60,3 +60,8 @@ export const CreateCompanySchema = Yup.object().shape({
     then: Yup.string().required('Required'),
   }),
 });
+
+export const CreateCompanyProfileSchema = Yup.object().shape({
+  business_type: Yup.string().required('Required'),
+  about: Yup.string().required('Required'),
+});

@@ -3,7 +3,11 @@ import { Repository } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
-import { CompanyEntity } from '../entity';
+import {
+  CompanyEntity,
+  CompanyProfileEntity,
+  CompanyMemberEntity,
+} from '../entity';
 import { COMPANY_TOKEN } from '../company.constants';
 import { CreateCompanyInput } from './inputs/create-company.input';
 import { CompanyMemberService } from '../services/company-member.service';
@@ -12,6 +16,8 @@ import { CompanyAddressService } from '../services/company-address.service';
 import { CompanyProfileService } from '../services/company-profile.service';
 import { SlugGeneratorUtil } from '../../_helpers';
 import { UpdateCompanyInput } from '../inputs/update-company.input';
+import { CreateCompanyProfileInput } from '../inputs/create-company-profile.input';
+import { UpdateProfileInput } from '../inputs/update-profile.input';
 
 @Injectable()
 export class CompanySetupService extends CrudService<CompanyEntity> {
@@ -65,7 +71,6 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
   }
 
   public async updateCreateCompany(
-    user: UserEntity,
     company: CompanyEntity,
     input: UpdateCompanyInput,
   ): Promise<CompanyEntity> {
@@ -106,5 +111,47 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     company: CompanyEntity,
   ): Promise<CompanyEntity> {
     return this.repository.findOne(company.id, { relations: ['address'] });
+  }
+
+  public async createCompanyProfile(
+    company: CompanyEntity,
+    input: CreateCompanyProfileInput,
+  ): Promise<CompanyProfileEntity> {
+    const profile = await this.profileService.create(company, input.profile);
+
+    company.setup_stage = 2;
+    await company.save();
+
+    return profile;
+  }
+
+  public async updateCreateCompanyProfile(
+    profile: UpdateProfileInput,
+  ): Promise<CompanyProfileEntity> {
+    const existingProfile = await this.profileService.findOneById(profile.id);
+    Object.assign(existingProfile, profile);
+    return existingProfile.save();
+  }
+
+  public async findCreateCompanyProfile(
+    company: CompanyEntity,
+  ): Promise<CompanyProfileEntity | null> {
+    return this.profileService.findOne({ where: { company } });
+  }
+
+  public async findCreateCompanyMembers(
+    company: CompanyEntity,
+  ): Promise<CompanyMemberEntity[]> {
+    return this.memberService.find(company.id);
+  }
+
+  public async createCompanyAddMembers(
+    company: CompanyEntity,
+  ): Promise<boolean> {
+    company.setup_stage = 3;
+    company.setup_complete = true;
+    await company.save();
+
+    return true;
   }
 }

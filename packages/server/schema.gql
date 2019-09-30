@@ -47,6 +47,25 @@ type CompanyDto {
   setup_stage: Int!
 }
 
+type CompanyMemberDto {
+  id: ID!
+  role: String!
+  user: UserDto!
+}
+
+input CompanyMemberInput {
+  userId: ID
+  email: String!
+  role: String!
+}
+
+input CompanyProfileInput {
+  profile_image: String
+  cover_image: String
+  about: String!
+  business_type: String!
+}
+
 input CompanySlugInput {
   companySlug: String!
 }
@@ -81,6 +100,23 @@ input CreateCompanyInput {
   name: String!
   slug: String!
   address: CreateCompanyAddressInput!
+}
+
+input CreateCompanyMembersInput {
+  companySlug: String!
+  members: [CompanyMemberInput!]!
+}
+
+type CreateCompanyProfileDto {
+  id: ID!
+  business_type: String!
+  about: String!
+  profile_image: String!
+}
+
+input CreateCompanyProfileInput {
+  companySlug: String!
+  profile: CompanyProfileInput!
 }
 
 input CreateJobInput {
@@ -164,6 +200,9 @@ type Mutation {
   forgotPassword(input: ForgotPasswordInput!): Boolean!
   createCompany(input: CreateCompanyInput!): CreateCompanyDto!
   updateCreateCompany(input: UpdateCompanyInput!): CreateCompanyDto!
+  createCompanyProfile(input: CreateCompanyProfileInput!): CreateCompanyProfileDto!
+  updateCreateCompanyProfile(input: UpdateCompanyProfileInput!): CreateCompanyProfileDto!
+  createCompanyAddMembers(input: CreateCompanyMembersInput!): Boolean!
   createJob(input: CreateJobInput!): JobDto!
   addJobInstance(input: AddJobInstanceInput!): Boolean!
   addJobInstanceAddress(input: AddJobInstanceAddressInput!): Boolean!
@@ -177,6 +216,8 @@ type Query {
   generateCompanySlug(name: String!): String!
   companySlugAvailable(name: String!): String
   findCreateCompany(input: CompanySlugInput!): CreateCompanyDto!
+  findCreateCompanyProfile(input: CompanySlugInput!): CreateCompanyProfileDto
+  findCreateCompanyMembers(input: CompanySlugInput!): [CompanyMemberDto!]!
   search(input: SearchInput!): SearchDto!
 }
 
@@ -241,6 +282,19 @@ input UpdateCompanyInput {
   name: String
   slug: String
   address: UpdateCompanyAddressInput
+}
+
+input UpdateCompanyProfileInput {
+  companySlug: String!
+  profile: UpdateProfileInput!
+}
+
+input UpdateProfileInput {
+  id: ID!
+  profile_image: String
+  cover_image: String
+  about: String
+  business_type: String
 }
 
 type UserDto {

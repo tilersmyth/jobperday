@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
 import * as ApolloReactCommon from '@apollo/react-common';
+import * as React from 'react';
 import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 export type Maybe<T> = T | null;
@@ -62,6 +62,26 @@ export type CompanyDto = {
   setup_stage: Scalars['Int'];
 };
 
+export type CompanyMemberDto = {
+  __typename?: 'CompanyMemberDto';
+  id: Scalars['ID'];
+  role: Scalars['String'];
+  user: UserDto;
+};
+
+export type CompanyMemberInput = {
+  userId?: Maybe<Scalars['ID']>;
+  email: Scalars['String'];
+  role: Scalars['String'];
+};
+
+export type CompanyProfileInput = {
+  profile_image?: Maybe<Scalars['String']>;
+  cover_image?: Maybe<Scalars['String']>;
+  about: Scalars['String'];
+  business_type: Scalars['String'];
+};
+
 export type CompanySlugInput = {
   companySlug: Scalars['String'];
 };
@@ -97,6 +117,24 @@ export type CreateCompanyInput = {
   name: Scalars['String'];
   slug: Scalars['String'];
   address: CreateCompanyAddressInput;
+};
+
+export type CreateCompanyMembersInput = {
+  companySlug: Scalars['String'];
+  members: Array<CompanyMemberInput>;
+};
+
+export type CreateCompanyProfileDto = {
+  __typename?: 'CreateCompanyProfileDto';
+  id: Scalars['ID'];
+  business_type: Scalars['String'];
+  about: Scalars['String'];
+  profile_image: Scalars['String'];
+};
+
+export type CreateCompanyProfileInput = {
+  companySlug: Scalars['String'];
+  profile: CompanyProfileInput;
 };
 
 export type CreateJobInput = {
@@ -179,6 +217,9 @@ export type Mutation = {
   forgotPassword: Scalars['Boolean'];
   createCompany: CreateCompanyDto;
   updateCreateCompany: CreateCompanyDto;
+  createCompanyProfile: CreateCompanyProfileDto;
+  updateCreateCompanyProfile: CreateCompanyProfileDto;
+  createCompanyAddMembers: Scalars['Boolean'];
   createJob: JobDto;
   addJobInstance: Scalars['Boolean'];
   addJobInstanceAddress: Scalars['Boolean'];
@@ -204,6 +245,18 @@ export type MutationUpdateCreateCompanyArgs = {
   input: UpdateCompanyInput;
 };
 
+export type MutationCreateCompanyProfileArgs = {
+  input: CreateCompanyProfileInput;
+};
+
+export type MutationUpdateCreateCompanyProfileArgs = {
+  input: UpdateCompanyProfileInput;
+};
+
+export type MutationCreateCompanyAddMembersArgs = {
+  input: CreateCompanyMembersInput;
+};
+
 export type MutationCreateJobArgs = {
   input: CreateJobInput;
 };
@@ -225,6 +278,8 @@ export type Query = {
   generateCompanySlug: Scalars['String'];
   companySlugAvailable?: Maybe<Scalars['String']>;
   findCreateCompany: CreateCompanyDto;
+  findCreateCompanyProfile?: Maybe<CreateCompanyProfileDto>;
+  findCreateCompanyMembers: Array<CompanyMemberDto>;
   search: SearchDto;
   test: Scalars['Boolean'];
 };
@@ -242,6 +297,14 @@ export type QueryCompanySlugAvailableArgs = {
 };
 
 export type QueryFindCreateCompanyArgs = {
+  input: CompanySlugInput;
+};
+
+export type QueryFindCreateCompanyProfileArgs = {
+  input: CompanySlugInput;
+};
+
+export type QueryFindCreateCompanyMembersArgs = {
   input: CompanySlugInput;
 };
 
@@ -316,6 +379,19 @@ export type UpdateCompanyInput = {
   address?: Maybe<UpdateCompanyAddressInput>;
 };
 
+export type UpdateCompanyProfileInput = {
+  companySlug: Scalars['String'];
+  profile: UpdateProfileInput;
+};
+
+export type UpdateProfileInput = {
+  id: Scalars['ID'];
+  profile_image?: Maybe<Scalars['String']>;
+  cover_image?: Maybe<Scalars['String']>;
+  about?: Maybe<Scalars['String']>;
+  business_type?: Maybe<Scalars['String']>;
+};
+
 export type UserDto = {
   __typename?: 'UserDto';
   id: Scalars['ID'];
@@ -327,34 +403,6 @@ export type UserDto = {
   setup: Array<Scalars['String']>;
   created_at: Scalars['DateTime'];
 };
-export type SearchQueryVariables = {
-  input: SearchInput;
-};
-
-export type SearchQuery = { __typename?: 'Query' } & {
-  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
-      results: Array<
-        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
-            job: { __typename?: 'JobDto' } & Pick<
-              JobDto,
-              'id' | 'name' | 'companyName' | 'type'
-            > & {
-                instances: Array<
-                  { __typename?: 'JobInstanceDto' } & Pick<
-                    JobInstanceDto,
-                    | 'id'
-                    | 'start_date'
-                    | 'apply_deadline'
-                    | 'pay_rate'
-                    | 'total_openings'
-                  >
-                >;
-              };
-          }
-      >;
-    };
-};
-
 export type ForgotPasswordMutationVariables = {
   email: Scalars['String'];
 };
@@ -409,6 +457,34 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
+export type SearchQueryVariables = {
+  input: SearchInput;
+};
+
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
+      results: Array<
+        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
+            job: { __typename?: 'JobDto' } & Pick<
+              JobDto,
+              'id' | 'name' | 'companyName' | 'type'
+            > & {
+                instances: Array<
+                  { __typename?: 'JobInstanceDto' } & Pick<
+                    JobInstanceDto,
+                    | 'id'
+                    | 'start_date'
+                    | 'apply_deadline'
+                    | 'pay_rate'
+                    | 'total_openings'
+                  >
+                >;
+              };
+          }
+      >;
+    };
+};
+
 export type UserLocationQueryVariables = {};
 
 export type UserLocationQuery = { __typename?: 'Query' } & {
@@ -454,6 +530,36 @@ export type MeQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type CreateCompanyAddMembersMutationVariables = {
+  input: CreateCompanyMembersInput;
+};
+
+export type CreateCompanyAddMembersMutation = {
+  __typename?: 'Mutation';
+} & Pick<Mutation, 'createCompanyAddMembers'>;
+
+export type CreateCompanyProfileMutationVariables = {
+  input: CreateCompanyProfileInput;
+};
+
+export type CreateCompanyProfileMutation = { __typename?: 'Mutation' } & {
+  createCompanyProfile: { __typename?: 'CreateCompanyProfileDto' } & Pick<
+    CreateCompanyProfileDto,
+    'id'
+  >;
+};
+
+export type UpdateCreateCompanyProfileMutationVariables = {
+  input: UpdateCompanyProfileInput;
+};
+
+export type UpdateCreateCompanyProfileMutation = { __typename?: 'Mutation' } & {
+  updateCreateCompanyProfile: { __typename?: 'CreateCompanyProfileDto' } & Pick<
+    CreateCompanyProfileDto,
+    'id' | 'about' | 'business_type' | 'profile_image'
+  >;
+};
+
 export type CreateCompanyMutationVariables = {
   input: CreateCompanyInput;
 };
@@ -496,7 +602,38 @@ export type FindCompanyQueryVariables = {
 export type FindCompanyQuery = { __typename?: 'Query' } & {
   findCompany: { __typename?: 'CompanyDto' } & Pick<
     CompanyDto,
-    'id' | 'slug' | 'setup_stage' | 'setup_complete'
+    'id' | 'slug' | 'name' | 'setup_stage' | 'setup_complete'
+  >;
+};
+
+export type FindCreateCompanyMembersQueryVariables = {
+  input: CompanySlugInput;
+};
+
+export type FindCreateCompanyMembersQuery = { __typename?: 'Query' } & {
+  findCreateCompanyMembers: Array<
+    { __typename?: 'CompanyMemberDto' } & Pick<
+      CompanyMemberDto,
+      'id' | 'role'
+    > & {
+        user: { __typename?: 'UserDto' } & Pick<
+          UserDto,
+          'first_name' | 'last_name' | 'email'
+        >;
+      }
+  >;
+};
+
+export type FindCreateCompanyProfileQueryVariables = {
+  input: CompanySlugInput;
+};
+
+export type FindCreateCompanyProfileQuery = { __typename?: 'Query' } & {
+  findCreateCompanyProfile: Maybe<
+    { __typename?: 'CreateCompanyProfileDto' } & Pick<
+      CreateCompanyProfileDto,
+      'id' | 'profile_image' | 'business_type' | 'about'
+    >
   >;
 };
 
@@ -542,72 +679,6 @@ export type FindCreateCompanyQuery = { __typename?: 'Query' } & {
     };
 };
 
-export const SearchDocument = gql`
-  query Search($input: SearchInput!) {
-    search(input: $input) {
-      count
-      results {
-        rank
-        job {
-          id
-          name
-          companyName
-          type
-          instances {
-            id
-            start_date
-            apply_deadline
-            pay_rate
-            total_openings
-          }
-        }
-      }
-    }
-  }
-`;
-export type SearchComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    SearchQuery,
-    SearchQueryVariables
-  >,
-  'query'
-> &
-  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
-
-export const SearchComponent = (props: SearchComponentProps) => (
-  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
-    query={SearchDocument}
-    {...props}
-  />
-);
-
-export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  SearchQuery,
-  SearchQueryVariables
-> &
-  TChildProps;
-export function withSearch<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >(SearchDocument, {
-    alias: 'withSearch',
-    ...operationOptions,
-  });
-}
-export type SearchQueryResult = ApolloReactCommon.QueryResult<
-  SearchQuery,
-  SearchQueryVariables
->;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
     forgotPassword(input: { email: $email })
@@ -857,6 +928,72 @@ export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
+export const SearchDocument = gql`
+  query Search($input: SearchInput!) {
+    search(input: $input) {
+      count
+      results {
+        rank
+        job {
+          id
+          name
+          companyName
+          type
+          instances {
+            id
+            start_date
+            apply_deadline
+            pay_rate
+            total_openings
+          }
+        }
+      }
+    }
+  }
+`;
+export type SearchComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    SearchQuery,
+    SearchQueryVariables
+  >,
+  'query'
+> &
+  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const SearchComponent = (props: SearchComponentProps) => (
+  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
+    query={SearchDocument}
+    {...props}
+  />
+);
+
+export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchQuery,
+  SearchQueryVariables
+> &
+  TChildProps;
+export function withSearch<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >(SearchDocument, {
+    alias: 'withSearch',
+    ...operationOptions,
+  });
+}
+export type SearchQueryResult = ApolloReactCommon.QueryResult<
+  SearchQuery,
+  SearchQueryVariables
+>;
 export const UserLocationDocument = gql`
   query UserLocation {
     userLocation {
@@ -968,6 +1105,196 @@ export function withMe<TProps, TChildProps = {}>(
 export type MeQueryResult = ApolloReactCommon.QueryResult<
   MeQuery,
   MeQueryVariables
+>;
+export const CreateCompanyAddMembersDocument = gql`
+  mutation CreateCompanyAddMembers($input: CreateCompanyMembersInput!) {
+    createCompanyAddMembers(input: $input)
+  }
+`;
+export type CreateCompanyAddMembersMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCompanyAddMembersMutation,
+  CreateCompanyAddMembersMutationVariables
+>;
+export type CreateCompanyAddMembersComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateCompanyAddMembersMutation,
+    CreateCompanyAddMembersMutationVariables
+  >,
+  'mutation'
+>;
+
+export const CreateCompanyAddMembersComponent = (
+  props: CreateCompanyAddMembersComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    CreateCompanyAddMembersMutation,
+    CreateCompanyAddMembersMutationVariables
+  >
+    mutation={CreateCompanyAddMembersDocument}
+    {...props}
+  />
+);
+
+export type CreateCompanyAddMembersProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  CreateCompanyAddMembersMutation,
+  CreateCompanyAddMembersMutationVariables
+> &
+  TChildProps;
+export function withCreateCompanyAddMembers<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CreateCompanyAddMembersMutation,
+    CreateCompanyAddMembersMutationVariables,
+    CreateCompanyAddMembersProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    CreateCompanyAddMembersMutation,
+    CreateCompanyAddMembersMutationVariables,
+    CreateCompanyAddMembersProps<TChildProps>
+  >(CreateCompanyAddMembersDocument, {
+    alias: 'withCreateCompanyAddMembers',
+    ...operationOptions,
+  });
+}
+export type CreateCompanyAddMembersMutationResult = ApolloReactCommon.MutationResult<
+  CreateCompanyAddMembersMutation
+>;
+export type CreateCompanyAddMembersMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCompanyAddMembersMutation,
+  CreateCompanyAddMembersMutationVariables
+>;
+export const CreateCompanyProfileDocument = gql`
+  mutation CreateCompanyProfile($input: CreateCompanyProfileInput!) {
+    createCompanyProfile(input: $input) {
+      id
+    }
+  }
+`;
+export type CreateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+>;
+export type CreateCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables
+  >,
+  'mutation'
+>;
+
+export const CreateCompanyProfileComponent = (
+  props: CreateCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables
+  >
+    mutation={CreateCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type CreateCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+> &
+  TChildProps;
+export function withCreateCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables,
+    CreateCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables,
+    CreateCompanyProfileProps<TChildProps>
+  >(CreateCompanyProfileDocument, {
+    alias: 'withCreateCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type CreateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
+  CreateCompanyProfileMutation
+>;
+export type CreateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+>;
+export const UpdateCreateCompanyProfileDocument = gql`
+  mutation UpdateCreateCompanyProfile($input: UpdateCompanyProfileInput!) {
+    updateCreateCompanyProfile(input: $input) {
+      id
+      about
+      business_type
+      profile_image
+    }
+  }
+`;
+export type UpdateCreateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCreateCompanyProfileMutation,
+  UpdateCreateCompanyProfileMutationVariables
+>;
+export type UpdateCreateCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateCreateCompanyProfileMutation,
+    UpdateCreateCompanyProfileMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UpdateCreateCompanyProfileComponent = (
+  props: UpdateCreateCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    UpdateCreateCompanyProfileMutation,
+    UpdateCreateCompanyProfileMutationVariables
+  >
+    mutation={UpdateCreateCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type UpdateCreateCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  UpdateCreateCompanyProfileMutation,
+  UpdateCreateCompanyProfileMutationVariables
+> &
+  TChildProps;
+export function withUpdateCreateCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UpdateCreateCompanyProfileMutation,
+    UpdateCreateCompanyProfileMutationVariables,
+    UpdateCreateCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UpdateCreateCompanyProfileMutation,
+    UpdateCreateCompanyProfileMutationVariables,
+    UpdateCreateCompanyProfileProps<TChildProps>
+  >(UpdateCreateCompanyProfileDocument, {
+    alias: 'withUpdateCreateCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type UpdateCreateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
+  UpdateCreateCompanyProfileMutation
+>;
+export type UpdateCreateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCreateCompanyProfileMutation,
+  UpdateCreateCompanyProfileMutationVariables
 >;
 export const CreateCompanyDocument = gql`
   mutation CreateCompany($input: CreateCompanyInput!) {
@@ -1110,6 +1437,7 @@ export const FindCompanyDocument = gql`
     findCompany(input: $input) {
       id
       slug
+      name
       setup_stage
       setup_complete
     }
@@ -1159,6 +1487,133 @@ export function withFindCompany<TProps, TChildProps = {}>(
 export type FindCompanyQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyQuery,
   FindCompanyQueryVariables
+>;
+export const FindCreateCompanyMembersDocument = gql`
+  query FindCreateCompanyMembers($input: CompanySlugInput!) {
+    findCreateCompanyMembers(input: $input) {
+      id
+      role
+      user {
+        first_name
+        last_name
+        email
+      }
+    }
+  }
+`;
+export type FindCreateCompanyMembersComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindCreateCompanyMembersQuery,
+    FindCreateCompanyMembersQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindCreateCompanyMembersQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindCreateCompanyMembersComponent = (
+  props: FindCreateCompanyMembersComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindCreateCompanyMembersQuery,
+    FindCreateCompanyMembersQueryVariables
+  >
+    query={FindCreateCompanyMembersDocument}
+    {...props}
+  />
+);
+
+export type FindCreateCompanyMembersProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindCreateCompanyMembersQuery,
+  FindCreateCompanyMembersQueryVariables
+> &
+  TChildProps;
+export function withFindCreateCompanyMembers<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindCreateCompanyMembersQuery,
+    FindCreateCompanyMembersQueryVariables,
+    FindCreateCompanyMembersProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindCreateCompanyMembersQuery,
+    FindCreateCompanyMembersQueryVariables,
+    FindCreateCompanyMembersProps<TChildProps>
+  >(FindCreateCompanyMembersDocument, {
+    alias: 'withFindCreateCompanyMembers',
+    ...operationOptions,
+  });
+}
+export type FindCreateCompanyMembersQueryResult = ApolloReactCommon.QueryResult<
+  FindCreateCompanyMembersQuery,
+  FindCreateCompanyMembersQueryVariables
+>;
+export const FindCreateCompanyProfileDocument = gql`
+  query FindCreateCompanyProfile($input: CompanySlugInput!) {
+    findCreateCompanyProfile(input: $input) {
+      id
+      profile_image
+      business_type
+      about
+    }
+  }
+`;
+export type FindCreateCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindCreateCompanyProfileQuery,
+    FindCreateCompanyProfileQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindCreateCompanyProfileQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindCreateCompanyProfileComponent = (
+  props: FindCreateCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindCreateCompanyProfileQuery,
+    FindCreateCompanyProfileQueryVariables
+  >
+    query={FindCreateCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type FindCreateCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindCreateCompanyProfileQuery,
+  FindCreateCompanyProfileQueryVariables
+> &
+  TChildProps;
+export function withFindCreateCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindCreateCompanyProfileQuery,
+    FindCreateCompanyProfileQueryVariables,
+    FindCreateCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindCreateCompanyProfileQuery,
+    FindCreateCompanyProfileQueryVariables,
+    FindCreateCompanyProfileProps<TChildProps>
+  >(FindCreateCompanyProfileDocument, {
+    alias: 'withFindCreateCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type FindCreateCompanyProfileQueryResult = ApolloReactCommon.QueryResult<
+  FindCreateCompanyProfileQuery,
+  FindCreateCompanyProfileQueryVariables
 >;
 export const GenerateCompanySlugDocument = gql`
   query GenerateCompanySlug($name: String!) {

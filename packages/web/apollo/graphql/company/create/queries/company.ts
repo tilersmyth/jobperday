@@ -5,6 +5,7 @@ export const findCompanyQuery = gql`
     findCompany(input: $input) {
       id
       slug
+      name
       setup_stage
       setup_complete
     }

@@ -1,6 +1,6 @@
-import React, { forwardRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Button, Input } from 'antd';
-import { Formik, Field, FormikValues, FieldProps } from 'formik';
+import { Formik, Field, FieldProps } from 'formik';
 import InputMask from 'react-input-mask';
 import {
   PropTypes,
@@ -24,11 +24,12 @@ import { googleAddressParser } from './step1-utils';
 import { ErrorAlert } from '../../../../shared/alerts/error-alert';
 import { SlugField } from './slug/slug-field';
 import './style.less';
+import { CreateCompanyStepsFooter } from '../../steps-footer-view';
 
 interface Props {
   companySlug?: string;
   formValues: any;
-  nextStep: (id: string) => void;
+  nextStep: (slug: string) => void;
 }
 
 const PlacesInputOptions: PropTypes['searchOptions'] = {
@@ -36,9 +37,11 @@ const PlacesInputOptions: PropTypes['searchOptions'] = {
   componentRestrictions: { country: 'us' },
 };
 
-const C: React.FunctionComponent<
-  Props & React.RefAttributes<Formik<FormikValues>>
-> = ({ formValues, companySlug, nextStep }, ref) => {
+export const Step1Form: React.FunctionComponent<Props> = ({
+  formValues,
+  companySlug,
+  nextStep,
+}) => {
   const [addressError, setAddressError] = useState('');
   const [showFields, setShowFields] = useState(
     companySlug ? 'show_fields' : '',
@@ -50,7 +53,6 @@ const C: React.FunctionComponent<
     <ApolloConsumer>
       {client => (
         <Formik
-          ref={ref}
           validateOnBlur={false}
           validateOnChange={false}
           enableReinitialize={true}
@@ -310,6 +312,8 @@ const C: React.FunctionComponent<
                     <ErrorAlert message={addressError} />
                   </div>
                 )}
+
+                <CreateCompanyStepsFooter step={0} />
               </form>
             );
           }}
@@ -318,5 +322,3 @@ const C: React.FunctionComponent<
     </ApolloConsumer>
   );
 };
-
-export const Step1Form = forwardRef<Formik, Props>(C);

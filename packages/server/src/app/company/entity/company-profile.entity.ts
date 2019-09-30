@@ -17,10 +17,10 @@ export class CompanyProfileEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   public profile_image: string;
 
-  @Column('text')
+  @Column('text', { nullable: true })
   public cover_image: string;
 
   @Column('text')

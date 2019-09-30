@@ -29,4 +29,11 @@ export class CompanyMemberService {
 
     return savedMember;
   }
+
+  public async find(companyId: string): Promise<CompanyMemberEntity[]> {
+    return this.repository.find({
+      where: { company: companyId },
+      relations: ['user'],
+    });
+  }
 }
