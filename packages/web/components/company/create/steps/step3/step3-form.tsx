@@ -1,7 +1,10 @@
 import React from 'react';
 import { Formik } from 'formik';
 
-import { CreateCompanyAddMembersComponent } from '../../../../../apollo/generated-components';
+import {
+  CreateCompanyAddMembersComponent,
+  FindCompanyDocument,
+} from '../../../../../apollo/generated-components';
 import { CreateCompanyStepsFooter } from '../../steps-footer-view';
 import { Step3MembersView } from './step3-members/step3-members-view';
 
@@ -9,14 +12,14 @@ interface Props {
   companySlug: string;
   members: any;
   nextStep: (slug: string) => void;
-  lastStep: () => void;
+  previousStep: () => void;
 }
 
 export const Step3Form: React.FunctionComponent<Props> = ({
   members,
   companySlug,
   nextStep,
-  lastStep,
+  previousStep,
 }) => {
   return (
     <CreateCompanyAddMembersComponent>
@@ -29,7 +32,23 @@ export const Step3Form: React.FunctionComponent<Props> = ({
             try {
               const result = await submit({
                 variables: {
-                  input: { companySlug, members: [] },
+                  companySlug,
+                  input: [],
+                },
+                update(cache) {
+                  const { findCompany } = cache.readQuery<any>({
+                    query: FindCompanyDocument,
+                    variables: {
+                      companySlug,
+                    },
+                  });
+
+                  cache.writeQuery({
+                    query: FindCompanyDocument,
+                    data: {
+                      findCompany: { ...findCompany, setup_stage: 3 },
+                    },
+                  });
                 },
               });
 
@@ -51,7 +70,7 @@ export const Step3Form: React.FunctionComponent<Props> = ({
           {({ handleSubmit, values }) => (
             <form onSubmit={handleSubmit}>
               <Step3MembersView members={values} />
-              <CreateCompanyStepsFooter step={2} lastStep={lastStep} />
+              <CreateCompanyStepsFooter step={2} previousStep={previousStep} />
             </form>
           )}
         </Formik>

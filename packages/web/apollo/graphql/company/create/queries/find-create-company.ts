@@ -13,8 +13,8 @@ export const companySlugAvailableQuery = gql`
 `;
 
 export const findCreateCompanyQuery = gql`
-  query FindCreateCompany($input: CompanySlugInput!) {
-    findCreateCompany(input: $input) {
+  query FindCreateCompany($companySlug: String!) {
+    findCreateCompany(companySlug: $companySlug) {
       id
       slug
       name

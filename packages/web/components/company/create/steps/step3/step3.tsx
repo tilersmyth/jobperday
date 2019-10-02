@@ -7,7 +7,7 @@ import { Step3Form } from './step3-form';
 interface Props {
   companySlug?: string;
   nextStep: (id: string) => void;
-  lastStep: () => void;
+  previousStep: () => void;
 }
 
 export const Step3: React.FunctionComponent<Props> = props => {
@@ -18,7 +18,7 @@ export const Step3: React.FunctionComponent<Props> = props => {
   }
 
   const { data, loading, error } = useQuery(FindCreateCompanyMembersDocument, {
-    variables: { input: { companySlug } },
+    variables: { companySlug },
   });
 
   if (loading) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import Router from 'next/router';
+import { createCompanySteps } from '@jobperday/common';
 
 import { Step1 } from './steps/step1/step1';
 import { Step2 } from './steps/step2/step2';
@@ -15,24 +16,23 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
   companySlug,
 }) => {
   const nextStep = (slug: string) => {
-    // last step
-    if (step === 2) {
+    ++step;
+
+    if (step < createCompanySteps.length) {
       Router.push(
-        '/company/[slug]/setup-complete',
-        `/company/${slug}/setup-complete`,
+        '/company/create/[slug]/[step]',
+        `/company/create/${slug}/${step}`,
       );
       return;
     }
 
-    ++step;
-
     Router.push(
-      '/company/create/[slug]/[step]',
-      `/company/create/${slug}/${step}`,
+      '/company/[slug]/setup-complete',
+      `/company/${slug}/setup-complete`,
     );
   };
 
-  const lastStep = () => {
+  const previousStep = () => {
     if (!companySlug) {
       return;
     }
@@ -58,7 +58,7 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
         <Step2
           companySlug={companySlug}
           nextStep={nextStep}
-          lastStep={lastStep}
+          previousStep={previousStep}
         />
       )}
 
@@ -66,7 +66,7 @@ export const CreateCompanyStepsContent: React.FunctionComponent<Props> = ({
         <Step3
           companySlug={companySlug}
           nextStep={nextStep}
-          lastStep={lastStep}
+          previousStep={previousStep}
         />
       )}
     </React.Fragment>

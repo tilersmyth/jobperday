@@ -8,7 +8,7 @@ import { FindCreateCompanyProfileDocument } from '../../../../../apollo/generate
 interface Props {
   companySlug?: string;
   nextStep: (id: string) => void;
-  lastStep: () => void;
+  previousStep: () => void;
 }
 
 export const Step2: React.FunctionComponent<Props> = props => {
@@ -21,7 +21,7 @@ export const Step2: React.FunctionComponent<Props> = props => {
   const values = STEP2_FORM_VALUES;
 
   const { data, loading } = useQuery(FindCreateCompanyProfileDocument, {
-    variables: { input: { companySlug } },
+    variables: { companySlug },
   });
 
   if (loading) {

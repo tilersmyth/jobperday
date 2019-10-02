@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const createCompanyMembersQuery = gql`
-  query FindCreateCompanyMembers($input: CompanySlugInput!) {
-    findCreateCompanyMembers(input: $input) {
+  query FindCreateCompanyMembers($companySlug: String!) {
+    findCreateCompanyMembers(companySlug: $companySlug) {
       id
       role
       user {

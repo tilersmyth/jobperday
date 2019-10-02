@@ -72,7 +72,8 @@ export const Step1Form: React.FunctionComponent<Props> = ({
               const updatedResult = await client.mutate({
                 mutation: UpdateCreateCompanyDocument,
                 variables: {
-                  input: { companySlug, ...updatedValues },
+                  companySlug,
+                  input: updatedValues,
                 },
                 update(cache, { data: { updateCreateCompany } }) {
                   cache.writeQuery({

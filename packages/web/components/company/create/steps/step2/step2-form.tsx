@@ -12,6 +12,7 @@ import {
   CreateCompanyProfileDocument,
   UpdateCreateCompanyProfileDocument,
   FindCreateCompanyProfileDocument,
+  FindCompanyDocument,
 } from '../../../../../apollo/generated-components';
 import { CreateCompanyStepsFooter } from '../../steps-footer-view';
 
@@ -20,7 +21,7 @@ interface Props {
   profileId?: string;
   formValues: any;
   nextStep: (slug: string) => void;
-  lastStep: () => void;
+  previousStep: () => void;
 }
 
 export const Step2Form: React.FunctionComponent<Props> = ({
@@ -28,7 +29,7 @@ export const Step2Form: React.FunctionComponent<Props> = ({
   companySlug,
   profileId,
   nextStep,
-  lastStep,
+  previousStep,
 }) => {
   return (
     <ApolloConsumer>
@@ -50,10 +51,8 @@ export const Step2Form: React.FunctionComponent<Props> = ({
               const updatedResult = await client.mutate({
                 mutation: UpdateCreateCompanyProfileDocument,
                 variables: {
-                  input: {
-                    companySlug,
-                    profile: { id: profileId, ...updatedValues },
-                  },
+                  companySlug,
+                  input: updatedValues,
                 },
                 update(cache, { data: { updateCreateCompanyProfile } }) {
                   cache.writeQuery({
@@ -81,7 +80,23 @@ export const Step2Form: React.FunctionComponent<Props> = ({
               const result = await client.mutate({
                 mutation: CreateCompanyProfileDocument,
                 variables: {
-                  input: { companySlug, profile: variables },
+                  companySlug,
+                  input: variables,
+                },
+                update(cache) {
+                  const { findCompany } = cache.readQuery<any>({
+                    query: FindCompanyDocument,
+                    variables: {
+                      companySlug,
+                    },
+                  });
+
+                  cache.writeQuery({
+                    query: FindCompanyDocument,
+                    data: {
+                      findCompany: { ...findCompany, setup_stage: 2 },
+                    },
+                  });
                 },
               });
 
@@ -93,8 +108,7 @@ export const Step2Form: React.FunctionComponent<Props> = ({
                 throw Error('Error creating company profile');
               }
 
-              const newProfile = result.data.createCompanyProfile;
-              console.log(newProfile);
+              nextStep(companySlug);
             } catch (error) {
               throw error;
             }
@@ -148,7 +162,10 @@ export const Step2Form: React.FunctionComponent<Props> = ({
                     />
                   </Col>
                 </Row>
-                <CreateCompanyStepsFooter step={1} lastStep={lastStep} />
+                <CreateCompanyStepsFooter
+                  step={1}
+                  previousStep={previousStep}
+                />
               </form>
             );
           }}

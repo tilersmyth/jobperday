@@ -16,7 +16,7 @@ export const Step1: React.FunctionComponent<Props> = props => {
 
   if (companySlug) {
     const { data, loading } = useQuery(FindCreateCompanyDocument, {
-      variables: { input: { companySlug } },
+      variables: { companySlug },
     });
 
     if (loading) {

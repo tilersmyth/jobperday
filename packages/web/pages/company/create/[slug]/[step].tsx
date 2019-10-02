@@ -33,7 +33,7 @@ CreateCompanySteps.getInitialProps = async (ctx: NextPageContextApollo) => {
 
   const { data } = await ctx.apolloClient.query({
     query: FindCompanyDocument,
-    variables: { input: { companySlug: ctx.query.slug } },
+    variables: { companySlug: ctx.query.slug },
   });
 
   if (!data.findCompany) {

@@ -16,8 +16,8 @@ import { CompanyAddressService } from '../services/company-address.service';
 import { CompanyProfileService } from '../services/company-profile.service';
 import { SlugGeneratorUtil } from '../../_helpers';
 import { UpdateCompanyInput } from '../inputs/update-company.input';
-import { CreateCompanyProfileInput } from '../inputs/create-company-profile.input';
 import { UpdateProfileInput } from '../inputs/update-profile.input';
+import { CompanyProfileInput } from './inputs/company-profile.input';
 
 @Injectable()
 export class CompanySetupService extends CrudService<CompanyEntity> {
@@ -78,15 +78,14 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     // entities (company, address) so we need to determine which
     // the update applies to
 
-    const { companySlug, ...updates } = input;
-    const updateKeys = Object.keys(updates);
+    const updateKeys = Object.keys(input);
 
     const existingAddress = await this.addressService.findOneById(
       company.addressId,
     );
 
     if (updateKeys.includes('address')) {
-      Object.assign(existingAddress, updates.address);
+      Object.assign(existingAddress, input.address);
       const updatedAddress = await existingAddress.save();
 
       // Reappend updated address to company entity
@@ -96,14 +95,14 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
         return company;
       }
 
-      const { address, ...companyUpdates } = updates;
+      const { address, ...companyUpdates } = input;
       Object.assign(company, companyUpdates);
       return company.save();
     }
 
     company.address = existingAddress;
 
-    Object.assign(company, updates);
+    Object.assign(company, input);
     return company.save();
   }
 
@@ -115,9 +114,9 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
 
   public async createCompanyProfile(
     company: CompanyEntity,
-    input: CreateCompanyProfileInput,
+    input: CompanyProfileInput,
   ): Promise<CompanyProfileEntity> {
-    const profile = await this.profileService.create(company, input.profile);
+    const profile = await this.profileService.create(company, input);
 
     company.setup_stage = 2;
     await company.save();

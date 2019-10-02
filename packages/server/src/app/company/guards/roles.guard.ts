@@ -32,12 +32,12 @@ export class RolesGuard implements CanActivate {
 
     const ctx = GqlExecutionContext.create(context);
     const { req } = ctx.getContext();
-    const { input } = ctx.getArgs();
+    const args = ctx.getArgs();
 
     // Verify by either slug or id
-    const where = input.companySlug
-      ? { slug: input.companySlug }
-      : { id: input.companyId };
+    const where = args.companySlug
+      ? { slug: args.companySlug }
+      : { id: args.companyId };
 
     const company = await this.companyService.findOne({
       where,

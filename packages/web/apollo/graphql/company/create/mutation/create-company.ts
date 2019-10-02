@@ -10,8 +10,11 @@ export const createCompanyMutation = gql`
 `;
 
 export const updateCreateCompanyMutation = gql`
-  mutation UpdateCreateCompany($input: UpdateCompanyInput!) {
-    updateCreateCompany(input: $input) {
+  mutation UpdateCreateCompany(
+    $companySlug: String!
+    $input: UpdateCompanyInput!
+  ) {
+    updateCreateCompany(companySlug: $companySlug, input: $input) {
       id
       slug
       name

@@ -7,7 +7,6 @@ import { Role } from '../roles.decorator';
 import { RolesGuard } from '../guards/roles.guard';
 import { CompanyEntity } from '../entity';
 import { UserAuthGuard } from '../../auth/guards/user-auth.guard';
-import { CompanySlugInput } from './inputs/company-slug.input';
 import { CompanySetupService } from './company-setup.service';
 import { CompanyDto } from '../dto/company.dto';
 import { UserEntity } from '../../user/entity';
@@ -15,10 +14,10 @@ import { CreateCompanyInput } from './inputs/create-company.input';
 import { UpdateCompanyInput } from '../inputs/update-company.input';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { CreateCompanyProfileDto } from './dto/create-company-profile.dto';
-import { CreateCompanyProfileInput } from '../inputs/create-company-profile.input';
-import { UpdateCompanyProfileInput } from '../inputs/update-company-profile.input';
 import { CompanyMemberDto } from '../dto/company-member.dto';
-import { CreateCompanyMembersInput } from './inputs/create-company-members.input';
+import { CompanyProfileInput } from './inputs/company-profile.input';
+import { UpdateProfileInput } from '../inputs/update-profile.input';
+import { CompanyMemberInput } from './inputs/company-member.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Company')
@@ -32,7 +31,7 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async findCompany(
     @Company() company: CompanyEntity,
-    @Args('input') _: CompanySlugInput,
+    @Args('companySlug') _: string,
   ) {
     return company;
   }
@@ -54,6 +53,7 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async updateCreateCompany(
     @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
     @Args('input') input: UpdateCompanyInput,
   ) {
     const updatedCompany = await this.setupService.updateCreateCompany(
@@ -80,7 +80,7 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async findCreateCompany(
     @Company() company: CompanyEntity,
-    @Args('input') _: CompanySlugInput,
+    @Args('companySlug') _: string,
   ) {
     return this.setupService.findCreateCompany(company);
   }
@@ -94,7 +94,8 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async createCompanyProfile(
     @Company() company: CompanyEntity,
-    @Args('input') input: CreateCompanyProfileInput,
+    @Args('companySlug') _: string,
+    @Args('input') input: CompanyProfileInput,
   ) {
     const profile = await this.setupService.createCompanyProfile(
       company,
@@ -110,10 +111,11 @@ export class CompanySetupResolver {
   @Role('owner')
   @UseGuards(RolesGuard)
   async updateCreateCompanyProfile(
-    @Args('input') input: UpdateCompanyProfileInput,
+    @Args('companySlug') _: string,
+    @Args('input') input: UpdateProfileInput,
   ) {
     const updatedProfile = await this.setupService.updateCreateCompanyProfile(
-      input.profile,
+      input,
     );
 
     this.logger.debug(
@@ -127,7 +129,7 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async findCreateCompanyProfile(
     @Company() company: CompanyEntity,
-    @Args('input') _: CompanySlugInput,
+    @Args('companySlug') _: string,
   ) {
     return this.setupService.findCreateCompanyProfile(company);
   }
@@ -141,7 +143,7 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async findCreateCompanyMembers(
     @Company() company: CompanyEntity,
-    @Args('input') _: CompanySlugInput,
+    @Args('companySlug') _: string,
   ) {
     return this.setupService.findCreateCompanyMembers(company);
   }
@@ -151,7 +153,9 @@ export class CompanySetupResolver {
   @UseGuards(RolesGuard)
   async createCompanyAddMembers(
     @Company() company: CompanyEntity,
-    @Args('input') _: CreateCompanyMembersInput,
+    @Args('companySlug') _: string,
+    @Args({ name: 'input', type: () => [CompanyMemberInput], nullable: true })
+    __: CompanyMemberInput[],
   ) {
     await this.setupService.createCompanyAddMembers(company);
 

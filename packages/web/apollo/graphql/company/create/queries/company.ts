@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
 export const findCompanyQuery = gql`
-  query FindCompany($input: CompanySlugInput!) {
-    findCompany(input: $input) {
+  query FindCompany($companySlug: String!) {
+    findCompany(companySlug: $companySlug) {
       id
       slug
       name
