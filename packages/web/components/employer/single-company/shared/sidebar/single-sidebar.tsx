@@ -4,6 +4,7 @@ import { withRouter, NextRouter } from 'next/router';
 
 import { companyNavTree } from './company-nav-tree';
 import Link from 'next/link';
+import { navParserUtil } from './route-parser.util';
 
 const { Item, SubMenu } = Menu;
 
@@ -12,24 +13,8 @@ interface Props {
   companySlug: string;
 }
 
-const parsePath = (path: string) => {
-  const routeParts = path.split('/employer/[company-slug]')[1].split('/');
-
-  const count = routeParts.length;
-
-  if (count === 1) {
-    return { select: ['/'], open: [''] };
-  }
-
-  if (count === 2) {
-    return { select: [`/${routeParts[1]}`], open: [''] };
-  }
-
-  return { select: [`/${routeParts[2]}`], open: [`/${routeParts[1]}`] };
-};
-
 const C: React.FunctionComponent<Props> = ({ router, companySlug }) => {
-  const route = parsePath(router.pathname);
+  const route = navParserUtil(router.pathname);
 
   return (
     <Menu
@@ -49,18 +34,23 @@ const C: React.FunctionComponent<Props> = ({ router, companySlug }) => {
                 </span>
               }
             >
-              {nav.subMenu.map((subNav: any) => (
-                <Item key={subNav.route}>
-                  <Link
-                    href={`/employer/${companySlug}${nav.route}${subNav.route}`}
-                  >
-                    <a>
-                      <Icon type={subNav.icon} />
-                      <span>{subNav.title}</span>
-                    </a>
-                  </Link>
-                </Item>
-              ))}
+              {nav.subMenu.map((subNav: any) => {
+                const subMenuRoute =
+                  nav.route === subNav.route
+                    ? nav.route
+                    : `${nav.route}${subNav.route}`;
+
+                return (
+                  <Item key={subNav.route}>
+                    <Link href={`/employer/${companySlug}${subMenuRoute}`}>
+                      <a>
+                        <Icon type={subNav.icon} />
+                        <span>{subNav.title}</span>
+                      </a>
+                    </Link>
+                  </Item>
+                );
+              })}
             </SubMenu>
           );
         }

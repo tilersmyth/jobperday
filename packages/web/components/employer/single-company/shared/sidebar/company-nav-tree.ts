@@ -1,6 +1,6 @@
 import { MemberRoles } from '@jobperday/common';
 
-interface NavTree {
+export interface NavTree {
   route: string;
   title: string;
   icon: string;
@@ -26,6 +26,20 @@ export const companyNavTree: NavTree[] = [
     title: 'Jobs',
     icon: 'form',
     role: 'associate',
+    subMenu: [
+      {
+        route: '/jobs',
+        title: 'View All',
+        icon: 'form',
+        role: 'associate',
+      },
+      {
+        route: '/create',
+        title: 'Create',
+        icon: 'form',
+        role: 'associate',
+      },
+    ],
   },
   {
     route: '/account',

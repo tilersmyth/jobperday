@@ -222,6 +222,7 @@ type Query {
   findCreateCompanyMembers(companySlug: String!): [CompanyMemberDto!]!
   findEmployerCompanies: [MemberCompanyDto!]!
   findEmployerCompany(companySlug: String!): EmployerCompanyDto!
+  findAllJobs(companySlug: String!): [JobDto!]!
   search(input: SearchInput!): SearchDto!
 }
 

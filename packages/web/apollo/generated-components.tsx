@@ -290,6 +290,7 @@ export type Query = {
   findCreateCompanyMembers: Array<CompanyMemberDto>;
   findEmployerCompanies: Array<MemberCompanyDto>;
   findEmployerCompany: EmployerCompanyDto;
+  findAllJobs: Array<JobDto>;
   search: SearchDto;
   test: Scalars['Boolean'];
 };
@@ -319,6 +320,10 @@ export type QueryFindCreateCompanyMembersArgs = {
 };
 
 export type QueryFindEmployerCompanyArgs = {
+  companySlug: Scalars['String'];
+};
+
+export type QueryFindAllJobsArgs = {
   companySlug: Scalars['String'];
 };
 
@@ -444,6 +449,14 @@ export type SearchQuery = { __typename?: 'Query' } & {
           }
       >;
     };
+};
+
+export type FindAllJobsQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindAllJobsQuery = { __typename?: 'Query' } & {
+  findAllJobs: Array<{ __typename?: 'JobDto' } & Pick<JobDto, 'name' | 'slug'>>;
 };
 
 export type ForgotPasswordMutationVariables = {
@@ -795,6 +808,59 @@ export function withSearch<TProps, TChildProps = {}>(
 export type SearchQueryResult = ApolloReactCommon.QueryResult<
   SearchQuery,
   SearchQueryVariables
+>;
+export const FindAllJobsDocument = gql`
+  query FindAllJobs($companySlug: String!) {
+    findAllJobs(companySlug: $companySlug) {
+      name
+      slug
+    }
+  }
+`;
+export type FindAllJobsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindAllJobsQuery,
+    FindAllJobsQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindAllJobsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindAllJobsComponent = (props: FindAllJobsComponentProps) => (
+  <ApolloReactComponents.Query<FindAllJobsQuery, FindAllJobsQueryVariables>
+    query={FindAllJobsDocument}
+    {...props}
+  />
+);
+
+export type FindAllJobsProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  FindAllJobsQuery,
+  FindAllJobsQueryVariables
+> &
+  TChildProps;
+export function withFindAllJobs<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindAllJobsQuery,
+    FindAllJobsQueryVariables,
+    FindAllJobsProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindAllJobsQuery,
+    FindAllJobsQueryVariables,
+    FindAllJobsProps<TChildProps>
+  >(FindAllJobsDocument, {
+    alias: 'withFindAllJobs',
+    ...operationOptions,
+  });
+}
+export type FindAllJobsQueryResult = ApolloReactCommon.QueryResult<
+  FindAllJobsQuery,
+  FindAllJobsQueryVariables
 >;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {

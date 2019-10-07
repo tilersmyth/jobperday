@@ -1,10 +1,11 @@
 import { NextPage } from 'next';
 
-import { NextPageContextApollo } from '../../../types';
-import { checkAuth } from '../../../utils/checkAuth';
-import { MeQuery } from '../../../apollo/generated-components';
-import { redirect } from '../../../apollo/redirect';
-import { CompanyLayout } from '../../../components/employer/single-company/shared/layout/company-layout';
+import { NextPageContextApollo } from '../../../../types';
+import { checkAuth } from '../../../../utils/checkAuth';
+import { MeQuery } from '../../../../apollo/generated-components';
+import { redirect } from '../../../../apollo/redirect';
+import { CompanyLayout } from '../../../../components/employer/single-company/shared/layout/company-layout';
+import { CompanyJobsView } from '../../../../components/employer/single-company/jobs/all-jobs/company-jobs-view';
 
 interface Props {
   me?: MeQuery['me'];
@@ -23,7 +24,7 @@ const EmployerCompanyJobs: NextPage<Props> = ({ me, slug }) => {
       pageRole="associate"
       header={{ subTitle: 'Jobs' }}
     >
-      {() => <div>Jobs Page</div>}
+      {() => <CompanyJobsView companySlug={slug} />}
     </CompanyLayout>
   );
 };

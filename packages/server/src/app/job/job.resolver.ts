@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { AppLogger } from '../app.logger';
@@ -30,6 +30,16 @@ export class JobResolver {
     const job = await this.jobService.create(company, input);
     this.logger.debug(`[createJob] created job: ${job.name}`);
     return job;
+  }
+
+  @Query(() => [JobDto])
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findAllJobs(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.jobService.findAllJobs(company);
   }
 
   @Mutation(() => Boolean)

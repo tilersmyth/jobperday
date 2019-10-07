@@ -50,13 +50,14 @@ export class JobService extends CrudService<JobEntity> {
     return this.repository.save(job);
   }
 
+  public async findAllJobs(company: CompanyEntity): Promise<JobEntity[]> {
+    return this.findAll({ where: { company } });
+  }
+
   public async addInstance(input: AddJobInstanceInput): Promise<JobEntity> {
     const job = await this.findOneById(input.jobId);
-
     const instance = await this.instanceService.add(input.instance);
-
     job.instances = [instance];
-
     return this.repository.save(job);
   }
 
