@@ -18,6 +18,7 @@ import { SlugGeneratorUtil } from '../../_helpers';
 import { UpdateCompanyInput } from '../inputs/update-company.input';
 import { UpdateProfileInput } from '../inputs/update-profile.input';
 import { CompanyProfileInput } from './inputs/company-profile.input';
+import { UserService } from '../../user/user.service';
 
 @Injectable()
 export class CompanySetupService extends CrudService<CompanyEntity> {
@@ -29,6 +30,7 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     private readonly memberService: CompanyMemberService,
     private readonly profileService: CompanyProfileService,
     private readonly addressService: CompanyAddressService,
+    private readonly userService: UserService,
   ) {
     super();
   }
@@ -56,6 +58,16 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     company.slug = input.slug;
     company.address = address;
     const savedCompany = await this.repository.save(company);
+
+    if (user.realm !== 'employer') {
+      // Make user realm = employer
+      // update DB
+      const candidate = await this.userService.findOneById(user.id);
+      candidate.realm = 'employer';
+      await candidate.save();
+      // update session
+      user.realm = 'employer';
+    }
 
     // Add user as company account owner
     await this.memberService.add({

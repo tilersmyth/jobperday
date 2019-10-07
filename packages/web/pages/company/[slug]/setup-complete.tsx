@@ -8,7 +8,7 @@ import {
   FindCompanyQuery,
 } from '../../../apollo/generated-components';
 import { redirect } from '../../../apollo/redirect';
-import { SetupCompleteView } from '../../../components/company/setup-complete-view';
+import { SetupCompleteView } from '../../../components/employer/create-company/complete/setup-complete-view';
 
 interface Props {
   me: MeQuery['me'] | null;

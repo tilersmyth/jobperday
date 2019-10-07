@@ -5,7 +5,6 @@ export * from './graphql';
 export * from './database';
 export * from './decorators';
 export * from './session';
-export * from './company';
 export * from './mail';
 export * from './slug-generator.util';
 

@@ -8,10 +8,10 @@ import {
   UpdateDateColumn,
   RelationId,
 } from 'typeorm';
+import { MemberRoles } from '@jobperday/common';
 
 import { CompanyEntity } from './company.entity';
 import { UserEntity } from '../../user/entity';
-import { MemberRoles } from '../../types';
 
 @Entity('company_members')
 export class CompanyMemberEntity extends BaseEntity {

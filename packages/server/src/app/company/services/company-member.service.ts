@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { AppLogger } from '../../app.logger';
 import { CompanyMemberEntity } from '../entity';
 import { COMPANY_MEMBER_TOKEN } from '../company.constants';
-import { AddMemberInput } from '../inputs/add-member.input';
+import { AddMember } from '../interfaces/add-member.interface';
 
 @Injectable()
 export class CompanyMemberService {
@@ -15,7 +15,7 @@ export class CompanyMemberService {
     protected readonly repository: Repository<CompanyMemberEntity>,
   ) {}
 
-  public async add(input: AddMemberInput): Promise<CompanyMemberEntity> {
+  public async add(input: AddMember): Promise<CompanyMemberEntity> {
     const member = new CompanyMemberEntity();
     member.company = input.company;
     member.user = input.user;

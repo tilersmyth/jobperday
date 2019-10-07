@@ -1,6 +1,5 @@
 import { InputType, Field, ID } from 'type-graphql';
-
-import { MemberRoles } from '../../../types';
+import { MemberRoles } from '@jobperday/common';
 
 @InputType()
 export class CompanyMemberInput {

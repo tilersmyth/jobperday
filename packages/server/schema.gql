@@ -49,7 +49,7 @@ type CompanyDto {
 
 type CompanyMemberDto {
   id: ID!
-  role: String!
+  role: RoleEnum!
   user: UserDto!
 }
 
@@ -115,6 +115,15 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+type EmployerCompanyDto {
+  id: ID!
+  name: String!
+  slug: String!
+  setup_complete: Boolean!
+  setup_stage: Int!
+  member: CompanyMemberDto!
+}
+
 input ForgotPasswordInput {
   email: String!
 }
@@ -167,6 +176,13 @@ input LoginInput {
   password: String!
 }
 
+type MemberCompanyDto {
+  id: ID!
+  role: RoleEnum!
+  user: UserDto!
+  company: CompanyDto!
+}
+
 type MeSessionDto {
   id: ID!
   first_name: String!
@@ -204,6 +220,8 @@ type Query {
   findCreateCompany(companySlug: String!): CreateCompanyDto!
   findCreateCompanyProfile(companySlug: String!): CreateCompanyProfileDto
   findCreateCompanyMembers(companySlug: String!): [CompanyMemberDto!]!
+  findEmployerCompanies: [MemberCompanyDto!]!
+  findEmployerCompany(companySlug: String!): EmployerCompanyDto!
   search(input: SearchInput!): SearchDto!
 }
 
@@ -212,6 +230,13 @@ input RegisterInput {
   last_name: String!
   email: String!
   password: String!
+}
+
+enum RoleEnum {
+  owner
+  admin
+  manager
+  associate
 }
 
 type SearchCoordsDto {

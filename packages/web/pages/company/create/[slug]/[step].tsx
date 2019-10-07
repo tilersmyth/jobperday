@@ -7,7 +7,7 @@ import {
   FindCompanyDocument,
 } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { CreateCompanyView } from '../../../../components/company/create/create-company-view';
+import { CreateCompanyView } from '../../../../components/employer/create-company/stepper/create-company-view';
 
 interface Props {
   me: MeQuery['me'] | null;

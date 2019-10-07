@@ -65,7 +65,7 @@ export type CompanyDto = {
 export type CompanyMemberDto = {
   __typename?: 'CompanyMemberDto';
   id: Scalars['ID'];
-  role: Scalars['String'];
+  role: RoleEnum;
   user: UserDto;
 };
 
@@ -128,6 +128,16 @@ export type CreateJobInput = {
   job: JobInput;
 };
 
+export type EmployerCompanyDto = {
+  __typename?: 'EmployerCompanyDto';
+  id: Scalars['ID'];
+  name: Scalars['String'];
+  slug: Scalars['String'];
+  setup_complete: Scalars['Boolean'];
+  setup_stage: Scalars['Int'];
+  member: CompanyMemberDto;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -180,6 +190,14 @@ export type LocationInput = {
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
+};
+
+export type MemberCompanyDto = {
+  __typename?: 'MemberCompanyDto';
+  id: Scalars['ID'];
+  role: RoleEnum;
+  user: UserDto;
+  company: CompanyDto;
 };
 
 export type MeSessionDto = {
@@ -270,6 +288,8 @@ export type Query = {
   findCreateCompany: CreateCompanyDto;
   findCreateCompanyProfile?: Maybe<CreateCompanyProfileDto>;
   findCreateCompanyMembers: Array<CompanyMemberDto>;
+  findEmployerCompanies: Array<MemberCompanyDto>;
+  findEmployerCompany: EmployerCompanyDto;
   search: SearchDto;
   test: Scalars['Boolean'];
 };
@@ -298,6 +318,10 @@ export type QueryFindCreateCompanyMembersArgs = {
   companySlug: Scalars['String'];
 };
 
+export type QueryFindEmployerCompanyArgs = {
+  companySlug: Scalars['String'];
+};
+
 export type QuerySearchArgs = {
   input: SearchInput;
 };
@@ -308,6 +332,13 @@ export type RegisterInput = {
   email: Scalars['String'];
   password: Scalars['String'];
 };
+
+export enum RoleEnum {
+  Owner = 'owner',
+  Admin = 'admin',
+  Manager = 'manager',
+  Associate = 'associate',
+}
 
 export type SearchCoordsDto = {
   __typename?: 'SearchCoordsDto';
@@ -512,6 +543,38 @@ export type MeQuery = { __typename?: 'Query' } & {
         >;
       }
   >;
+};
+
+export type FindEmployerCompaniesQueryVariables = {};
+
+export type FindEmployerCompaniesQuery = { __typename?: 'Query' } & {
+  findEmployerCompanies: Array<
+    { __typename?: 'MemberCompanyDto' } & Pick<
+      MemberCompanyDto,
+      'id' | 'role'
+    > & {
+        company: { __typename?: 'CompanyDto' } & Pick<
+          CompanyDto,
+          'name' | 'slug' | 'setup_complete'
+        >;
+      }
+  >;
+};
+
+export type FindEmployerCompanyQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindEmployerCompanyQuery = { __typename?: 'Query' } & {
+  findEmployerCompany: { __typename?: 'EmployerCompanyDto' } & Pick<
+    EmployerCompanyDto,
+    'name' | 'slug' | 'setup_complete'
+  > & {
+      member: { __typename?: 'CompanyMemberDto' } & Pick<
+        CompanyMemberDto,
+        'role'
+      >;
+    };
 };
 
 export type CreateCompanyAddMembersMutationVariables = {
@@ -1093,6 +1156,132 @@ export function withMe<TProps, TChildProps = {}>(
 export type MeQueryResult = ApolloReactCommon.QueryResult<
   MeQuery,
   MeQueryVariables
+>;
+export const FindEmployerCompaniesDocument = gql`
+  query FindEmployerCompanies {
+    findEmployerCompanies {
+      id
+      role
+      company {
+        name
+        slug
+        setup_complete
+      }
+    }
+  }
+`;
+export type FindEmployerCompaniesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables
+  >,
+  'query'
+>;
+
+export const FindEmployerCompaniesComponent = (
+  props: FindEmployerCompaniesComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables
+  >
+    query={FindEmployerCompaniesDocument}
+    {...props}
+  />
+);
+
+export type FindEmployerCompaniesProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindEmployerCompaniesQuery,
+  FindEmployerCompaniesQueryVariables
+> &
+  TChildProps;
+export function withFindEmployerCompanies<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables,
+    FindEmployerCompaniesProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables,
+    FindEmployerCompaniesProps<TChildProps>
+  >(FindEmployerCompaniesDocument, {
+    alias: 'withFindEmployerCompanies',
+    ...operationOptions,
+  });
+}
+export type FindEmployerCompaniesQueryResult = ApolloReactCommon.QueryResult<
+  FindEmployerCompaniesQuery,
+  FindEmployerCompaniesQueryVariables
+>;
+export const FindEmployerCompanyDocument = gql`
+  query FindEmployerCompany($companySlug: String!) {
+    findEmployerCompany(companySlug: $companySlug) {
+      name
+      slug
+      setup_complete
+      member {
+        role
+      }
+    }
+  }
+`;
+export type FindEmployerCompanyComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindEmployerCompanyQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindEmployerCompanyComponent = (
+  props: FindEmployerCompanyComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables
+  >
+    query={FindEmployerCompanyDocument}
+    {...props}
+  />
+);
+
+export type FindEmployerCompanyProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindEmployerCompanyQuery,
+  FindEmployerCompanyQueryVariables
+> &
+  TChildProps;
+export function withFindEmployerCompany<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables,
+    FindEmployerCompanyProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables,
+    FindEmployerCompanyProps<TChildProps>
+  >(FindEmployerCompanyDocument, {
+    alias: 'withFindEmployerCompany',
+    ...operationOptions,
+  });
+}
+export type FindEmployerCompanyQueryResult = ApolloReactCommon.QueryResult<
+  FindEmployerCompanyQuery,
+  FindEmployerCompanyQueryVariables
 >;
 export const CreateCompanyAddMembersDocument = gql`
   mutation CreateCompanyAddMembers(
