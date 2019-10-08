@@ -2,7 +2,6 @@ import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
 import { AppLogger } from '../app.logger';
-import { CreateJobInput } from './inputs/create-job.input';
 import { JobDto } from './dto/job.dto';
 import { JobService } from './services';
 import { Company } from '../_helpers';
@@ -12,6 +11,7 @@ import { RolesGuard } from '../company/guards/roles.guard';
 import { AddJobInstanceInput } from './inputs/add-job-instance.input';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { AddJobInstanceAddressInput } from './inputs/add-job-instance-address.input';
+import { JobInput } from './inputs/job.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -21,11 +21,12 @@ export class JobResolver {
   constructor(private readonly jobService: JobService) {}
 
   @Mutation(() => JobDto)
-  @Role('admin')
+  @Role('manager')
   @UseGuards(RolesGuard)
   async createJob(
     @Company() company: CompanyEntity,
-    @Args('input') input: CreateJobInput,
+    @Args('companySlug') _: string,
+    @Args('input') input: JobInput,
   ) {
     const job = await this.jobService.create(company, input);
     this.logger.debug(`[createJob] created job: ${job.name}`);

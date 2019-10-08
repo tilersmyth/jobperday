@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@jobperday/common": "1.0.0",
-    "antd": "^3.22.1",
+    "@zeit/next-css": "^1.0.1",
+    "antd": "^3.23.6",
     "apollo-boost": "^0.4.4",
     "apollo-link-context": "^1.0.18",
     "apollo-link-error": "^1.1.11",
@@ -35,6 +36,7 @@
     "react-infinite-scroller": "^1.2.4",
     "react-input-mask": "^2.0.4",
     "react-places-autocomplete": "^7.2.1",
+    "react-quill": "^1.3.3",
     "react-resize-detector": "^4.2.1",
     "slug": "^1.1.0",
     "yup": "^0.27.0"

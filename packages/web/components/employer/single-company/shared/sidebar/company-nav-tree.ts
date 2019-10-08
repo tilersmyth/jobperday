@@ -24,19 +24,19 @@ export const companyNavTree: NavTree[] = [
   {
     route: '/jobs',
     title: 'Jobs',
-    icon: 'form',
+    icon: 'file-text',
     role: 'associate',
     subMenu: [
       {
         route: '/jobs',
-        title: 'View All',
-        icon: 'form',
+        title: 'All Jobs',
+        icon: 'file-search',
         role: 'associate',
       },
       {
         route: '/create',
-        title: 'Create',
-        icon: 'form',
+        title: 'Create New',
+        icon: 'file-add',
         role: 'associate',
       },
     ],

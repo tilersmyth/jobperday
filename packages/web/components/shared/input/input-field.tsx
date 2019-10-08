@@ -15,7 +15,11 @@ export const InputField = ({
   const { label, ...rest } = props;
 
   return (
-    <Form.Item validateStatus={error ? 'error' : undefined} help={errorMsg}>
+    <Form.Item
+      validateStatus={error ? 'error' : undefined}
+      help={errorMsg}
+      label={label}
+    >
       <Input {...field} {...rest} />
     </Form.Item>
   );

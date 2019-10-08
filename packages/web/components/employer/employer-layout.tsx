@@ -17,7 +17,7 @@ export const EmployerLayout: React.SFC<Props> = ({
   return (
     <RootLayout title={`Employer » ${title}`}>
       <Header />
-      <Content style={{ padding: '64px 10px 0 10px' }}>
+      <Content style={{ padding: '64px 10px 50px 10px' }}>
         <ResponsiveWrapper>{children}</ResponsiveWrapper>
       </Content>
     </RootLayout>

@@ -5,12 +5,12 @@ import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
 import { JOB_TOKEN } from '../job.constants';
 import { JobEntity, JobInstanceEntity } from '../entity';
-import { CreateJobInput } from '../inputs/create-job.input';
 import { CompanyEntity } from '../../company/entity';
 import { AddJobInstanceInput } from '../inputs/add-job-instance.input';
 import { JobInstanceService } from './job-instance.service';
 import { SlugGeneratorUtil } from '../../_helpers';
 import { AddJobInstanceAddressInput } from '../inputs/add-job-instance-address.input';
+import { JobInput } from '../inputs/job.input';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -34,16 +34,16 @@ export class JobService extends CrudService<JobEntity> {
 
   public async create(
     company: CompanyEntity,
-    input: CreateJobInput,
+    input: JobInput,
   ): Promise<JobEntity> {
     const job = new JobEntity();
     job.companyName = company.name;
-    job.name = input.job.name;
-    job.slug = await this.generateSlug(input.job.name, company);
-    job.type = input.job.type;
-    job.summary = input.job.summary;
-    job.description = input.job.description;
-    job.keywords = input.job.keywords ? input.job.keywords : [];
+    job.name = input.name;
+    job.slug = await this.generateSlug(input.name, company);
+    job.type = input.type;
+    job.summary = input.summary;
+    job.description = input.description;
+    job.keywords = input.keywords ? input.keywords : [];
 
     job.company = company;
 
