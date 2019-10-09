@@ -5,5 +5,5 @@ export const initialJobValues: JobInput = {
   summary: '',
   description: '',
   type: '',
-  keywords: [],
+  tags: [],
 };

@@ -6,6 +6,7 @@ import { FindAllJobsComponent } from '../../../../../apollo/generated-components
 import { JobsNoResultsView } from './jobs-no-results-view';
 import { JobsBreadcrumb } from '../shared/jobs-breadcrumb';
 import { JobsLayout } from '../shared/layout/jobs-layout';
+import { CompanyJobsTable } from './company-jobs-table';
 
 interface Props {
   companySlug: string;
@@ -49,16 +50,12 @@ export const CompanyJobsView: React.FunctionComponent<Props> = ({
           }, [jobs]);
 
           if (jobs.length === 0) {
-            return <JobsNoResultsView />;
+            return <JobsNoResultsView companySlug={companySlug} />;
           }
 
-          return (
-            <React.Fragment>
-              <p>Card content</p>
-              <p>Card content</p>
-              <p>Card content</p>
-            </React.Fragment>
-          );
+          console.log(jobs);
+
+          return <CompanyJobsTable jobs={jobs} />;
         }}
       </FindAllJobsComponent>
     </JobsLayout>

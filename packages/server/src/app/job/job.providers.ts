@@ -1,10 +1,10 @@
 import { Connection } from 'typeorm';
 
 import { DB_CON_TOKEN } from '../database/database.constants';
-import { JobEntity, JobInstanceEntity, JobAddressEntity } from './entity';
+import { JobEntity, JobPostingEntity, JobAddressEntity } from './entity';
 import {
   JOB_TOKEN,
-  JOB_INSTANCE_TOKEN,
+  JOB_POSTING_TOKEN,
   JOB_ADDRESS_TOKEN,
 } from './job.constants';
 
@@ -15,9 +15,9 @@ export const jobProviders = [
     inject: [DB_CON_TOKEN],
   },
   {
-    provide: JOB_INSTANCE_TOKEN,
+    provide: JOB_POSTING_TOKEN,
     useFactory: (connection: Connection) =>
-      connection.getRepository(JobInstanceEntity),
+      connection.getRepository(JobPostingEntity),
     inject: [DB_CON_TOKEN],
   },
   {

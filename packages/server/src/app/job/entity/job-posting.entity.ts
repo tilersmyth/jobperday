@@ -11,8 +11,8 @@ import {
 import { JobEntity } from './job.entity';
 import { JobAddressEntity } from './job-address.entity';
 
-@Entity('job_instances')
-export class JobInstanceEntity extends BaseEntity {
+@Entity('job_postings')
+export class JobPostingEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
 
@@ -42,10 +42,13 @@ export class JobInstanceEntity extends BaseEntity {
   })
   public location: object;
 
-  @ManyToOne(() => JobEntity, job => job.instances)
+  @Column('uuid')
+  public companyId: string;
+
+  @ManyToOne(() => JobEntity, job => job.postings)
   public job: JobEntity;
 
-  @ManyToOne(() => JobAddressEntity, address => address.instances)
+  @ManyToOne(() => JobAddressEntity, address => address.postings)
   public address: JobAddressEntity;
 
   @CreateDateColumn() created_at: Date;

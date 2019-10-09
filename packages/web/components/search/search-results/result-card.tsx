@@ -13,7 +13,7 @@ export const ResultCard: React.SFC<Props> = ({ result: { job } }) => {
     return new Date().getTime() - new Date(value).getTime();
   };
 
-  const instances = job.instances.sort((a, b) => {
+  const postings = job.postings.sort((a, b) => {
     const distancea = Math.abs(dateDiff(a.start_date));
     const distanceb = Math.abs(dateDiff(b.start_date));
     return distancea - distanceb;
@@ -28,16 +28,16 @@ export const ResultCard: React.SFC<Props> = ({ result: { job } }) => {
           </Descriptions.Item>
           <Descriptions.Item label="Job type">{job.type}</Descriptions.Item>
           <Descriptions.Item label="Apply deadline">
-            {moment.utc(instances[0].apply_deadline).fromNow()}
+            {moment.utc(postings[0].apply_deadline).fromNow()}
           </Descriptions.Item>
           <Descriptions.Item label="Hourly rate">
-            ${instances[0].pay_rate.toFixed(2)}
+            ${postings[0].pay_rate.toFixed(2)}
           </Descriptions.Item>
           <Descriptions.Item label="Openings">
-            {instances[0].total_openings}
+            {postings[0].total_openings}
           </Descriptions.Item>
-          <Descriptions.Item label="Upcoming instances">
-            {instances.length - 1}
+          <Descriptions.Item label="Upcoming postings">
+            {postings.length - 1}
           </Descriptions.Item>
         </Descriptions>
       </div>

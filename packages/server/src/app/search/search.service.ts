@@ -5,7 +5,6 @@ import { SearchInput } from './inputs/search.input';
 import { AppLogger } from '../app.logger';
 import { JOB_TOKEN } from '../job/job.constants';
 import { JobEntity } from '../job/entity';
-import { inspect } from 'util';
 
 @Injectable()
 export class SearchService {
@@ -26,7 +25,7 @@ export class SearchService {
 
       const query = this.repository
         .createQueryBuilder('job')
-        .innerJoinAndSelect('job.instances', 'instances');
+        .innerJoinAndSelect('job.postings', 'postings');
 
       const search = input.search.trim();
 
@@ -38,8 +37,8 @@ export class SearchService {
       }
 
       query
-        .where('instances.apply_deadline > DATE(NOW())')
-        .andWhere('instances.pay_rate >= :pay_rate', {
+        .where('postings.apply_deadline > DATE(NOW())')
+        .andWhere('postings.pay_rate >= :pay_rate', {
           pay_rate: options.pay_rate,
         });
 
@@ -54,7 +53,7 @@ export class SearchService {
       this.logger.debug(`RADIUS ${radius}`);
       query.andWhere(
         `ST_DWithin(ST_GeogFromText('SRID=4326;POINT(${coords.lng} ${coords.lat})'),
-          instances.location, :radius)`,
+        postings.location, :radius)`,
         { radius },
       );
 

@@ -4,12 +4,12 @@ import { Repository } from 'typeorm';
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
 import { JOB_TOKEN } from '../job.constants';
-import { JobEntity, JobInstanceEntity } from '../entity';
+import { JobEntity, JobPostingEntity } from '../entity';
 import { CompanyEntity } from '../../company/entity';
-import { AddJobInstanceInput } from '../inputs/add-job-instance.input';
-import { JobInstanceService } from './job-instance.service';
+import { AddJobPostingInput } from '../inputs/add-job-posting.input';
+import { JobPostingService } from './job-posting.service';
 import { SlugGeneratorUtil } from '../../_helpers';
-import { AddJobInstanceAddressInput } from '../inputs/add-job-instance-address.input';
+import { AddJobPostingAddressInput } from '../inputs/add-job-posting-address.input';
 import { JobInput } from '../inputs/job.input';
 
 @Injectable()
@@ -19,7 +19,7 @@ export class JobService extends CrudService<JobEntity> {
   constructor(
     @Inject(JOB_TOKEN)
     protected readonly repository: Repository<JobEntity>,
-    protected instanceService: JobInstanceService,
+    protected postingService: JobPostingService,
   ) {
     super();
   }
@@ -43,7 +43,7 @@ export class JobService extends CrudService<JobEntity> {
     job.type = input.type;
     job.summary = input.summary;
     job.description = input.description;
-    job.keywords = input.keywords ? input.keywords : [];
+    job.tags = input.tags ? input.tags : [];
 
     job.company = company;
 
@@ -54,18 +54,16 @@ export class JobService extends CrudService<JobEntity> {
     return this.findAll({ where: { company } });
   }
 
-  public async addInstance(input: AddJobInstanceInput): Promise<JobEntity> {
+  public async addPosting(input: AddJobPostingInput): Promise<JobEntity> {
     const job = await this.findOneById(input.jobId);
-    const instance = await this.instanceService.add(input.instance);
-    job.instances = [instance];
+    const posting = await this.postingService.add(input.posting);
+    job.postings = [posting];
     return this.repository.save(job);
   }
 
-  public async addInstanceAddress(
-    input: AddJobInstanceAddressInput,
-  ): Promise<JobInstanceEntity> {
-    const instance = await this.instanceService.addAddress(input);
-
-    return instance;
+  public async addPostingAddress(
+    input: AddJobPostingAddressInput,
+  ): Promise<JobPostingEntity> {
+    return this.postingService.addAddress(input);
   }
 }

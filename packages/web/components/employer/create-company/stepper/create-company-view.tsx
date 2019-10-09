@@ -19,7 +19,7 @@ export const CreateCompanyView: React.SFC<Props> = ({
   return (
     <EmployerLayout title="Company Setup">
       <PageHeader
-        style={{ marginTop: 20 }}
+        className="steps-header"
         onBack={() => null}
         title="Create company"
       />

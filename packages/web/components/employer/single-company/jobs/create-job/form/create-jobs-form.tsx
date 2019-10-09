@@ -45,7 +45,7 @@ export const CompanyCreateJobsForm: React.FunctionComponent<
 
       <Field name="description" component={TextEditorInput} />
 
-      <Field name="keywords" component={SelectTagsField} />
+      <Field name="tags" component={SelectTagsField} />
 
       <Button type="primary" htmlType="submit" size="large" block={true}>
         Submit

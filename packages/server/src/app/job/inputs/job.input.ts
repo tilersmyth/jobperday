@@ -11,5 +11,5 @@ export class JobInput {
   @Field()
   readonly type: string;
   @Field(() => [String], { nullable: true })
-  readonly keywords: string[];
+  readonly tags: string[];
 }

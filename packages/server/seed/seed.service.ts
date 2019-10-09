@@ -4,7 +4,7 @@ import { AppLogger } from '../src/app';
 import { UserSeedService } from './providers/user.service';
 import { CompanySeedService } from './providers/company.service';
 import { JobSeedService } from './providers/job.service';
-import { JobInstanceSeedService } from './providers/job-instance.service';
+import { JobPostingSeedService } from './providers/job-posting.service';
 
 @Injectable()
 export class SeedService {
@@ -14,7 +14,7 @@ export class SeedService {
     private readonly userService: UserSeedService,
     private readonly companyService: CompanySeedService,
     private readonly jobService: JobSeedService,
-    private readonly instanceService: JobInstanceSeedService,
+    private readonly postingService: JobPostingSeedService,
   ) {}
 
   async seed() {
@@ -29,7 +29,7 @@ export class SeedService {
     // Seed jobs
     const jobs = await this.jobService.save(companies);
 
-    // Add instances to jobs
-    await this.instanceService.save(jobs);
+    // Add postings to jobs
+    await this.postingService.save(jobs);
   }
 }

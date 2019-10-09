@@ -5,7 +5,6 @@ import faker from 'faker';
 import { AppLogger } from '../../src/app';
 import { USER_TOKEN } from '../../src/app/user/user.constants';
 import { UserEntity } from '../../src/app/user/entity';
-import { inspect } from 'util';
 
 @Injectable()
 export class UserSeedService {

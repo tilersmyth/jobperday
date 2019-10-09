@@ -83,7 +83,6 @@ export const CompanyLayout: React.FunctionComponent<Props> = ({
       >
         <PageHeader
           className="company-single-header"
-          style={{ marginTop: 20 }}
           title={
             <Link href={`/employer/${companySlug}`}>
               <a>{findEmployerCompany.name}</a>

@@ -1,7 +1,7 @@
 import { InputType, Field, Int } from 'type-graphql';
 
 @InputType()
-export class JobInstanceInput {
+export class JobPostingInput {
   @Field()
   readonly start_date: Date;
   @Field()

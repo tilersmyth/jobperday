@@ -8,7 +8,7 @@ import {
   OneToMany,
 } from 'typeorm';
 
-import { JobInstanceEntity } from './job-instance.entity';
+import { JobPostingEntity } from './job-posting.entity';
 
 @Entity('job_addresses')
 export class JobAddressEntity extends BaseEntity {
@@ -39,8 +39,8 @@ export class JobAddressEntity extends BaseEntity {
   @Column('float')
   public coord_lng: number;
 
-  @OneToMany(() => JobInstanceEntity, instance => instance.address)
-  public instances: JobInstanceEntity[];
+  @OneToMany(() => JobPostingEntity, posting => posting.address)
+  public postings: JobPostingEntity[];
 
   @UpdateDateColumn() updated_at: Date;
 

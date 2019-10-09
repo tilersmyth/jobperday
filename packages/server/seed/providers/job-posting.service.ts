@@ -4,14 +4,14 @@ import faker from 'faker';
 import moment from 'moment';
 
 import { AppLogger } from '../../src/app';
-import { JobEntity, JobInstanceEntity } from '../../src/app/job/entity';
-import { JOB_INSTANCE_TOKEN } from '../../src/app/job/job.constants';
+import { JobEntity, JobPostingEntity } from '../../src/app/job/entity';
+import { JOB_POSTING_TOKEN } from '../../src/app/job/job.constants';
 import { randomCoordGen } from '../utils/randomCoordGen.util';
 import { randomNum } from '../utils/randomNum.util';
 
 @Injectable()
-export class JobInstanceSeedService {
-  private logger = new AppLogger(JobInstanceSeedService.name);
+export class JobPostingSeedService {
+  private logger = new AppLogger(JobPostingSeedService.name);
 
   private datePlusDays(days: number) {
     return moment()
@@ -26,21 +26,21 @@ export class JobInstanceSeedService {
   }
 
   constructor(
-    @Inject(JOB_INSTANCE_TOKEN)
-    protected readonly repository: Repository<JobInstanceEntity>,
+    @Inject(JOB_POSTING_TOKEN)
+    protected readonly repository: Repository<JobPostingEntity>,
   ) {}
 
-  async save(jobs: JobEntity[]): Promise<JobInstanceEntity[]> {
-    const instances: JobInstanceEntity[] = [];
+  async save(jobs: JobEntity[]): Promise<JobPostingEntity[]> {
+    const postings: JobPostingEntity[] = [];
     for (const job of jobs) {
-      // State instance constants
+      // State posting constants
       const pay_rate = faker.finance.amount(10, 30, 0);
       const location = randomCoordGen();
-      // End instance constants
+      // End posting constants
 
-      const instanceCount: number = randomNum(1, 5);
+      const postingCount: number = randomNum(1, 5);
 
-      for (let i = 0; i < instanceCount; i++) {
+      for (let i = 0; i < postingCount; i++) {
         const apply_deadline = faker.date.between(
           this.datePlusDays(4 + i),
           this.datePlusDays(5 + i),
@@ -55,21 +55,22 @@ export class JobInstanceSeedService {
           this.datePlusHrs(start_date, randomNum(6, 24)),
         );
 
-        const instance = new JobInstanceEntity();
-        instance.start_date = start_date;
-        instance.end_date = end_date;
-        instance.pay_rate = pay_rate;
-        instance.total_openings = randomNum(1, 8);
-        instance.apply_deadline = apply_deadline;
-        instance.location = location;
-        instance.job = job;
-        const newInstance = await this.repository.save(instance);
-        instances.push(newInstance);
+        const posting = new JobPostingEntity();
+        posting.start_date = start_date;
+        posting.end_date = end_date;
+        posting.pay_rate = pay_rate;
+        posting.total_openings = randomNum(1, 8);
+        posting.apply_deadline = apply_deadline;
+        posting.location = location;
+        posting.companyId = job.company.id;
+        posting.job = job;
+        const newPosting = await this.repository.save(posting);
+        postings.push(newPosting);
       }
     }
 
-    this.logger.log(`${instances.length} job instances created`);
+    this.logger.log(`${postings.length} job postings created`);
 
-    return instances;
+    return postings;
   }
 }

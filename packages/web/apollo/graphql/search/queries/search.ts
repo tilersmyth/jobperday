@@ -11,7 +11,7 @@ export const searchQuery = gql`
           name
           companyName
           type
-          instances {
+          postings {
             id
             start_date
             apply_deadline

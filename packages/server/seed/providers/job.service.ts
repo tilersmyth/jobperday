@@ -26,16 +26,16 @@ export class JobSeedService {
     return slug.generate(name, { company });
   }
 
-  private keywordGenerator() {
+  private tagGenerator() {
     const count = randomNum(1, 4);
 
-    const keywords: string[] = [];
+    const tags: string[] = [];
     for (let i = 1; i <= count; i++) {
       const word = faker.company.catchPhraseNoun();
-      keywords.push(word);
+      tags.push(word);
     }
 
-    return keywords;
+    return tags;
   }
 
   async save(companies: CompanyEntity[]): Promise<JobEntity[]> {
@@ -51,7 +51,7 @@ export class JobSeedService {
         job.summary = faker.lorem.sentence();
         job.description = faker.lorem.paragraph();
         job.type = faker.name.jobType();
-        job.keywords = this.keywordGenerator();
+        job.tags = this.tagGenerator();
         job.company = company;
         const savedJob = await this.repository.save(job);
 

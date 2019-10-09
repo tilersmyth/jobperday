@@ -1,8 +1,10 @@
 import React from 'react';
+import Link from 'next/link';
 import { Card, PageHeader, Icon, Result, Button } from 'antd';
 
 import { FindCompanyQuery } from '../../../../apollo/generated-components';
 import { EmployerLayout } from '../../employer-layout';
+import './style.less';
 
 interface Props {
   company: FindCompanyQuery['findCompany'];
@@ -18,7 +20,7 @@ export const SetupCompleteView: React.SFC<Props> = ({ company }) => {
   return (
     <EmployerLayout title="Setup Complete">
       <PageHeader
-        style={{ marginTop: 20 }}
+        className="steps-header"
         onBack={() => null}
         backIcon={<Icon type="home" />}
         title="Company setup complete"
@@ -29,10 +31,19 @@ export const SetupCompleteView: React.SFC<Props> = ({ company }) => {
           title={<Title name={company.name} />}
           subTitle="Approval generally takes less than 24 hours. In the meantime create a job!"
           extra={[
-            <Button key="buy">Home</Button>,
-            <Button type="primary" key="console">
-              Create job
-            </Button>,
+            <Link key="home" href={`/employer/${company.slug}`}>
+              <a>
+                <Button>Home</Button>
+              </a>
+            </Link>,
+            <Link
+              key="create-job"
+              href={`/employer/${company.slug}/jobs/create`}
+            >
+              <a>
+                <Button type="primary">Create job</Button>
+              </a>
+            </Link>,
           ]}
         />
       </Card>

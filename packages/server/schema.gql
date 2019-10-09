@@ -3,16 +3,16 @@
 # !!!   DO NOT MODIFY THIS FILE BY YOURSELF   !!!
 # -----------------------------------------------
 
-input AddJobInstanceAddressInput {
+input AddJobPostingAddressInput {
   companySlug: String!
-  instanceId: ID!
+  postingId: ID!
   address: AddressInput!
 }
 
-input AddJobInstanceInput {
+input AddJobPostingInput {
   companySlug: String!
   jobId: ID!
-  instance: JobInstanceInput!
+  posting: JobPostingInput!
 }
 
 input AddressInput {
@@ -130,9 +130,10 @@ type JobDto {
   slug: String!
   summary: String!
   description: String!
+  created_at: DateTime!
   type: String!
-  keywords: [String!]!
-  instances: [JobInstanceDto!]!
+  tags: [String!]!
+  postings: [JobPostingDto!]!
 }
 
 input JobInput {
@@ -140,10 +141,10 @@ input JobInput {
   summary: String!
   description: String!
   type: String!
-  keywords: [String!]
+  tags: [String!]
 }
 
-type JobInstanceDto {
+type JobPostingDto {
   id: ID!
   start_date: DateTime!
   end_date: DateTime!
@@ -153,7 +154,7 @@ type JobInstanceDto {
   apply_deadline: DateTime!
 }
 
-input JobInstanceInput {
+input JobPostingInput {
   start_date: DateTime!
   end_date: DateTime!
   pay_rate: String!
@@ -201,8 +202,8 @@ type Mutation {
   updateCreateCompanyProfile(input: UpdateProfileInput!, companySlug: String!): CreateCompanyProfileDto!
   createCompanyAddMembers(input: [CompanyMemberInput!], companySlug: String!): Boolean!
   createJob(input: JobInput!, companySlug: String!): JobDto!
-  addJobInstance(input: AddJobInstanceInput!): Boolean!
-  addJobInstanceAddress(input: AddJobInstanceAddressInput!): Boolean!
+  addJobPosting(input: AddJobPostingInput!): Boolean!
+  addJobPostingAddress(input: AddJobPostingAddressInput!): Boolean!
 }
 
 type Query {

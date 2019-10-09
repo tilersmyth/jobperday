@@ -10,17 +10,18 @@ interface Props {
   extra?: React.ReactNode;
 }
 
-export const JobsLayout: React.FunctionComponent<Props> = ({
-  children,
-  breadcrumbs,
-  companySlug,
-  extra,
-}) => (
-  <Card
-    bordered={false}
-    title={<JobsBreadcrumbNav routes={breadcrumbs} companySlug={companySlug} />}
-    extra={extra}
-  >
-    {children}
-  </Card>
-);
+export const JobsLayout: React.FunctionComponent<
+  Props & React.HTMLAttributes<HTMLDivElement>
+> = ({ children, breadcrumbs, companySlug, ...rest }) => {
+  return (
+    <Card
+      bordered={false}
+      title={
+        <JobsBreadcrumbNav routes={breadcrumbs} companySlug={companySlug} />
+      }
+      {...rest}
+    >
+      {children}
+    </Card>
+  );
+};

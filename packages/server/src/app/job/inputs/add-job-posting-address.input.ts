@@ -3,11 +3,11 @@ import { InputType, Field, ID } from 'type-graphql';
 import { AddressInput } from '../../_helpers/inputs/address.input';
 
 @InputType()
-export class AddJobInstanceAddressInput {
+export class AddJobPostingAddressInput {
   @Field()
   readonly companySlug: string;
   @Field(() => ID)
-  readonly instanceId: string;
+  readonly postingId: string;
   @Field(() => AddressInput)
   readonly address: AddressInput;
 }

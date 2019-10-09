@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 import { Length, MaxLength } from 'class-validator';
 
-import { JobInstanceEntity } from './job-instance.entity';
+import { JobPostingEntity } from './job-posting.entity';
 import { CompanyEntity } from '../../company/entity/company.entity';
 
 @Entity('jobs')
@@ -40,10 +40,10 @@ export class JobEntity extends BaseEntity {
   public type: string;
 
   @Column({ type: 'text', array: true })
-  public keywords: string[];
+  public tags: string[];
 
-  @OneToMany(() => JobInstanceEntity, instance => instance.job)
-  public instances: JobInstanceEntity[];
+  @OneToMany(() => JobPostingEntity, posting => posting.job)
+  public postings: JobPostingEntity[];
 
   @ManyToOne(() => CompanyEntity, company => company.jobs)
   public company: CompanyEntity;
