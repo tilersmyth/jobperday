@@ -39,6 +39,9 @@ export class JobAddressEntity extends BaseEntity {
   @Column('float')
   public coord_lng: number;
 
+  @Column('uuid')
+  public companyId: string;
+
   @OneToMany(() => JobPostingEntity, posting => posting.address)
   public postings: JobPostingEntity[];
 

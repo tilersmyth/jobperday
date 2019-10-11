@@ -10,8 +10,8 @@ import { Role } from '../company/roles.decorator';
 import { RolesGuard } from '../company/guards/roles.guard';
 import { AddJobPostingInput } from './inputs/add-job-posting.input';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
-import { AddJobPostingAddressInput } from './inputs/add-job-posting-address.input';
 import { JobInput } from './inputs/job.input';
+import { JobPostingDto } from './dto/job-posting.dto';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -43,21 +43,25 @@ export class JobResolver {
     return this.jobService.findAllJobs(company);
   }
 
-  @Mutation(() => Boolean)
-  @Role('admin')
+  @Query(() => [JobPostingDto])
+  @Role('manager')
   @UseGuards(RolesGuard)
-  async addJobPosting(@Args('input') input: AddJobPostingInput) {
-    const posting = await this.jobService.addPosting(input);
-    this.logger.debug(`[addPosting] job posting added: ${posting.name}`);
-    return true;
+  async findCurrentPostings(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.jobService.findCurrentPostings(company);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => JobPostingDto)
   @Role('admin')
   @UseGuards(RolesGuard)
-  async addJobPostingAddress(@Args('input') input: AddJobPostingAddressInput) {
-    const posting = await this.jobService.addPostingAddress(input);
-    this.logger.debug(`[addPostingAddress] address added to ${posting.id}`);
-    return true;
+  async createPosting(
+    @Args('companySlug') _: string,
+    @Args('input') input: AddJobPostingInput,
+  ) {
+    const posting = await this.jobService.addPosting(input);
+    this.logger.debug(`[addPosting] job posting added: ${posting.name}`);
+    return posting;
   }
 }

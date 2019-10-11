@@ -4,10 +4,8 @@ import { AddressInput } from '../../_helpers/inputs/address.input';
 
 @InputType()
 export class AddJobPostingAddressInput {
-  @Field()
-  readonly companySlug: string;
-  @Field(() => ID)
-  readonly postingId: string;
-  @Field(() => AddressInput)
-  readonly address: AddressInput;
+  @Field(() => ID, { nullable: true })
+  readonly addressId: string;
+  @Field(() => AddressInput, { nullable: true })
+  readonly newAddress: AddressInput;
 }

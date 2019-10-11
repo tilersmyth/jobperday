@@ -4,14 +4,13 @@
 # -----------------------------------------------
 
 input AddJobPostingAddressInput {
-  companySlug: String!
-  postingId: ID!
-  address: AddressInput!
+  addressId: ID
+  newAddress: AddressInput
 }
 
 input AddJobPostingInput {
-  companySlug: String!
   jobId: ID!
+  address: AddJobPostingAddressInput!
   posting: JobPostingInput!
 }
 
@@ -202,8 +201,7 @@ type Mutation {
   updateCreateCompanyProfile(input: UpdateProfileInput!, companySlug: String!): CreateCompanyProfileDto!
   createCompanyAddMembers(input: [CompanyMemberInput!], companySlug: String!): Boolean!
   createJob(input: JobInput!, companySlug: String!): JobDto!
-  addJobPosting(input: AddJobPostingInput!): Boolean!
-  addJobPostingAddress(input: AddJobPostingAddressInput!): Boolean!
+  createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
 }
 
 type Query {
@@ -219,6 +217,7 @@ type Query {
   findEmployerCompanies: [MemberCompanyDto!]!
   findEmployerCompany(companySlug: String!): EmployerCompanyDto!
   findAllJobs(companySlug: String!): [JobDto!]!
+  findCurrentPostings(companySlug: String!): [JobPostingDto!]!
   search(input: SearchInput!): SearchDto!
 }
 

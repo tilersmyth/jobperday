@@ -9,7 +9,6 @@ import { CompanyEntity } from '../../company/entity';
 import { AddJobPostingInput } from '../inputs/add-job-posting.input';
 import { JobPostingService } from './job-posting.service';
 import { SlugGeneratorUtil } from '../../_helpers';
-import { AddJobPostingAddressInput } from '../inputs/add-job-posting-address.input';
 import { JobInput } from '../inputs/job.input';
 
 @Injectable()
@@ -54,16 +53,16 @@ export class JobService extends CrudService<JobEntity> {
     return this.findAll({ where: { company } });
   }
 
-  public async addPosting(input: AddJobPostingInput): Promise<JobEntity> {
-    const job = await this.findOneById(input.jobId);
-    const posting = await this.postingService.add(input.posting);
-    job.postings = [posting];
-    return this.repository.save(job);
+  public async findCurrentPostings(
+    company: CompanyEntity,
+  ): Promise<JobPostingEntity[]> {
+    return this.postingService.findCurrent(company.id);
   }
 
-  public async addPostingAddress(
-    input: AddJobPostingAddressInput,
-  ): Promise<JobPostingEntity> {
-    return this.postingService.addAddress(input);
+  public async addPosting(input: AddJobPostingInput): Promise<JobEntity> {
+    const job = await this.findOneById(input.jobId);
+    const posting = await this.postingService.add(input);
+    job.postings = [posting];
+    return this.repository.save(job);
   }
 }

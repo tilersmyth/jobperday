@@ -31,6 +31,9 @@ export class JobPostingEntity extends BaseEntity {
   @Column({ type: 'int' })
   public remaining_openings: number;
 
+  @Column({ type: 'boolean', default: false })
+  public active: boolean;
+
   @Column('timestamp')
   public apply_deadline: Date;
 
