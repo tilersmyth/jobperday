@@ -61,4 +61,10 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
       where: { companyId, apply_deadline: LessThan(new Date()) },
     });
   }
+
+  public async findPostingAddresses(companyId: string) {
+    return this.addressReposity.find({
+      where: { companyId },
+    });
+  }
 }

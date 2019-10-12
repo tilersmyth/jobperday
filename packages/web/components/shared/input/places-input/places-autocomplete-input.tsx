@@ -17,10 +17,9 @@ interface Props extends FieldProps {
   handleChange: (value: string) => void;
   handleSelect: (value: string, option: object) => void;
   searchOptions: PropTypes['searchOptions'];
+  label?: string;
   showError?: boolean;
-  size: InputProps['size'];
-  placeholder: string;
-  children:
+  children?:
     | ValidInputElement
     | React.ReactElement<InputProps>
     | React.ReactElement<OptionProps>
@@ -57,6 +56,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
   handleChange,
   handleSelect,
   searchOptions,
+  label,
   showError,
   children,
   ...input
@@ -80,6 +80,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
   return (
     <Form.Item
       className="google_places_autocomplete"
+      label={label}
       validateStatus={error ? 'error' : undefined}
       help={showError && errorMsg}
     >
@@ -104,9 +105,8 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
               onSearch={onSearch}
               dataSource={results(loading, resultsError, suggestions)}
               {...input}
-            >
-              {children}
-            </AutoComplete>
+              children={children}
+            />
           );
         }}
       </PlacesAutocomplete>

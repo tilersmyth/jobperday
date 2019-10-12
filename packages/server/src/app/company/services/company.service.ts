@@ -3,9 +3,9 @@ import { Repository } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
-import { CompanyEntity } from '../entity';
+import { CompanyEntity, CompanyAddressEntity } from '../entity';
 import { COMPANY_TOKEN } from '../company.constants';
-import { CompanyProfileService } from './company-profile.service';
+import { CompanyAddressService } from './company-address.service';
 
 @Injectable()
 export class CompanyService extends CrudService<CompanyEntity> {
@@ -14,8 +14,14 @@ export class CompanyService extends CrudService<CompanyEntity> {
   constructor(
     @Inject(COMPANY_TOKEN)
     protected readonly repository: Repository<CompanyEntity>,
-    private readonly profileService: CompanyProfileService,
+    private readonly addressService: CompanyAddressService,
   ) {
     super();
+  }
+
+  public async findCompanyAddress(
+    addressId: string,
+  ): Promise<CompanyAddressEntity> {
+    return this.addressService.findOneById(addressId);
   }
 }

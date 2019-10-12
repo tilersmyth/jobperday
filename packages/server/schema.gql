@@ -122,6 +122,18 @@ input ForgotPasswordInput {
   email: String!
 }
 
+type JobAddressDto {
+  id: ID!
+  street: String!
+  street2: String
+  city: String!
+  state: String!
+  postal_code: String!
+  country: String!
+  coord_lat: Float!
+  coord_lng: Float!
+}
+
 type JobDto {
   id: ID!
   companyName: String!
@@ -218,6 +230,7 @@ type Query {
   findEmployerCompany(companySlug: String!): EmployerCompanyDto!
   findAllJobs(companySlug: String!): [JobDto!]!
   findCurrentPostings(companySlug: String!): [JobPostingDto!]!
+  findJobAddresses(companySlug: String!): [JobAddressDto!]!
   search(input: SearchInput!): SearchDto!
 }
 

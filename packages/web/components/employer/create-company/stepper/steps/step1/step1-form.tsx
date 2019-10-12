@@ -18,9 +18,11 @@ import {
   FindCreateCompanyDocument,
 } from '../../../../../../apollo/generated-components';
 import { CreateCompanySchema } from '../../../../../../utils/yup-validation';
-import { PlacesAutocompleteInput } from '../../../../../shared/input/places-input';
+import {
+  PlacesAutocompleteInput,
+  googleAddressParser,
+} from '../../../../../shared/input/places-input';
 import { STEP1_FORM_VALUES } from './step1-form-values';
-import { googleAddressParser } from './step1-utils';
 import { ErrorAlert } from '../../../../../shared/alerts/error-alert';
 import { SlugField } from './slug/slug-field';
 import './style.less';
@@ -124,7 +126,7 @@ export const Step1Form: React.FunctionComponent<Props> = ({
 
               const geo = await geocodeByAddress(value);
               const coords = await getLatLng(geo[0]);
-              const address = googleAddressParser(geo);
+              const address = googleAddressParser(STEP1_FORM_VALUES, geo);
               address.coord_lat = coords.lat;
               address.coord_lng = coords.lng;
               address.phone = values.address.phone;
@@ -233,6 +235,8 @@ export const Step1Form: React.FunctionComponent<Props> = ({
                 <div className={`google_places_input ${showFields}`}>
                   <Field
                     name="formatted_address"
+                    size="large"
+                    placeholder="Address"
                     render={(formikProps: FieldProps) => (
                       <PlacesAutocompleteInput
                         {...formikProps}
@@ -240,8 +244,6 @@ export const Step1Form: React.FunctionComponent<Props> = ({
                         handleChange={HandlePlacesInputChange}
                         handleSelect={HandlePlacesInputSelect}
                         showError={true}
-                        size="large"
-                        placeholder="Address"
                       >
                         <Input tabIndex={3} />
                       </PlacesAutocompleteInput>

@@ -4,6 +4,8 @@ import { Form, Row, Col } from 'antd';
 
 import { FindAllJobsQuery } from '../../../../../../apollo/generated-components';
 import { SelectJobInput } from './inputs';
+import { SelectAddressView } from './inputs/select-address-input/select-address-view';
+import './style.less';
 
 interface Props extends FormikProps<FormikValues> {
   companySlug: string;
@@ -29,7 +31,7 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
           />
         </Col>
         <Col lg={{ span: 12 }}>
-          <div>Address placeholder</div>
+          <SelectAddressView companySlug={companySlug} />
         </Col>
       </Row>
       <br />

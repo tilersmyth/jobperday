@@ -143,14 +143,14 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                       <Form.Item>
                         <Field
                           name="location.locality"
+                          size="large"
+                          placeholder="City, state or zip"
                           render={(formikProps: FieldProps) => (
                             <PlacesAutocompleteInput
                               {...formikProps}
                               searchOptions={PlacesInputOptions}
                               handleChange={HandlePlacesInputChange}
                               handleSelect={HandlePlacesInputSelect}
-                              size="large"
-                              placeholder="City, state or zip"
                             >
                               <Input
                                 prefix={

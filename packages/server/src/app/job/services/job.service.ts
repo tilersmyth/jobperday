@@ -10,6 +10,8 @@ import { AddJobPostingInput } from '../inputs/add-job-posting.input';
 import { JobPostingService } from './job-posting.service';
 import { SlugGeneratorUtil } from '../../_helpers';
 import { JobInput } from '../inputs/job.input';
+import { JobAddress } from '../interfaces/job-address.interface';
+import { CompanyService } from '../../company/services';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -19,6 +21,7 @@ export class JobService extends CrudService<JobEntity> {
     @Inject(JOB_TOKEN)
     protected readonly repository: Repository<JobEntity>,
     protected postingService: JobPostingService,
+    protected companyService: CompanyService,
   ) {
     super();
   }
@@ -64,5 +67,23 @@ export class JobService extends CrudService<JobEntity> {
     const posting = await this.postingService.add(input);
     job.postings = [posting];
     return this.repository.save(job);
+  }
+
+  public async findJobAddresses(company: CompanyEntity): Promise<JobAddress[]> {
+    try {
+      // 1. Find company address first
+      const companyAddress = await this.companyService.findCompanyAddress(
+        company.addressId,
+      );
+
+      // 2. Find all associated posting addresses
+      const postingAddresses = await this.postingService.findPostingAddresses(
+        company.id,
+      );
+
+      return [companyAddress, ...postingAddresses];
+    } catch (error) {
+      throw error;
+    }
   }
 }

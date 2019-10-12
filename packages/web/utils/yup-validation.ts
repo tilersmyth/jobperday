@@ -1,75 +1,86 @@
-import * as Yup from 'yup';
+import { string, number, object, ref, array } from 'yup';
 
-export const RegisterSchema = Yup.object().shape({
-  first_name: Yup.string()
+export const RegisterSchema = object().shape({
+  first_name: string()
     .min(3, '3 character minimum')
     .max(50, '50 character maximum')
     .required('Required'),
-  last_name: Yup.string()
+  last_name: string()
     .min(3, '3 character minimum')
     .max(50, '50 character maximum')
     .required('Required'),
-  email: Yup.string()
+  email: string()
     .email()
     .required('Required'),
-  password: Yup.string()
+  password: string()
     .min(8, '8 character minimum')
     .required('Required'),
-  confirm_password: Yup.string()
-    .oneOf([Yup.ref('password')], 'Passwords must match')
+  confirm_password: string()
+    .oneOf([ref('password')], 'Passwords must match')
     .required('Required'),
 });
 
-export const LoginSchema = Yup.object().shape({
-  email: Yup.string()
+export const LoginSchema = object().shape({
+  email: string()
     .email()
     .required('Required'),
-  password: Yup.string()
+  password: string()
     .min(8, '8 character minimum')
     .required('Required'),
 });
 
-export const ForgotPasswordSchema = Yup.object().shape({
-  email: Yup.string()
+export const ForgotPasswordSchema = object().shape({
+  email: string()
     .email()
     .required('Required'),
 });
 
-export const SearchSchema = Yup.object().shape({
-  location: Yup.object().shape({
-    locality: Yup.string().required(),
+export const SearchSchema = object().shape({
+  location: object().shape({
+    locality: string().required(),
   }),
 });
 
-export const CreateCompanySchema = Yup.object().shape({
-  name: Yup.string()
+export const CreateCompanySchema = object().shape({
+  name: string()
     .min(3, '3 character minimum')
     .required('Required'),
-  address: Yup.object().shape({
-    phone: Yup.string().required('Required'),
-    street: Yup.string().required('Required'),
-    city: Yup.string().required('Required'),
-    state: Yup.string().required('Required'),
-    postal_code: Yup.string().required('Required'),
-    country: Yup.string().required('Required'),
-    coord_lat: Yup.number().required(),
-    coord_lng: Yup.number().required(),
+  address: object().shape({
+    phone: string().required('Required'),
+    street: string().required('Required'),
+    city: string().required('Required'),
+    state: string().required('Required'),
+    postal_code: string().required('Required'),
+    country: string().required('Required'),
+    coord_lat: number().required(),
+    coord_lng: number().required(),
   }),
-  formatted_address: Yup.string().when('address.street', {
+  formatted_address: string().when('address.street', {
     is: '',
-    then: Yup.string().required('Required'),
+    then: string().required('Required'),
   }),
 });
 
-export const CreateCompanyProfileSchema = Yup.object().shape({
-  business_type: Yup.string().required('Required'),
-  about: Yup.string().required('Required'),
+export const CreateCompanyProfileSchema = object().shape({
+  business_type: string().required('Required'),
+  about: string().required('Required'),
 });
 
-export const CreateJobSchema = Yup.object().shape({
-  name: Yup.string().required('Required'),
-  summary: Yup.string().required('Required'),
-  description: Yup.string().required('Required'),
-  type: Yup.string().required('Required'),
-  keywords: Yup.array().of(Yup.string()),
+export const CreateJobSchema = object().shape({
+  name: string().required('Required'),
+  summary: string().required('Required'),
+  description: string().required('Required'),
+  type: string().required('Required'),
+  keywords: array().of(string()),
+});
+
+export const addressSchema = object().shape({
+  street: string().required(),
+  street2: string(),
+  city: string().required(),
+  state: string().required(),
+  postal_code: string().required(),
+  country: string().required(),
+  coord_lat: number().required(),
+  coord_lng: number().required(),
 });

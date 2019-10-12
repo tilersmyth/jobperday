@@ -1,5 +1,3 @@
-import { STEP1_FORM_VALUES } from './step1-form-values';
-
 const addressComponents: any = {
   street_number: 'street',
   route: 'street',
@@ -11,7 +9,10 @@ const addressComponents: any = {
   postal_code: 'postal_code',
 };
 
-export const googleAddressParser = (result: google.maps.GeocoderResult[]) => {
+export const googleAddressParser = (
+  initialValues: any,
+  result: google.maps.GeocoderResult[],
+) => {
   const { address_components, formatted_address } = result[0];
 
   return address_components.reduce(
@@ -33,6 +34,6 @@ export const googleAddressParser = (result: google.maps.GeocoderResult[]) => {
 
       return acc;
     },
-    STEP1_FORM_VALUES.address,
+    initialValues,
   );
 };

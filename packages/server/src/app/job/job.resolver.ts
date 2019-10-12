@@ -12,6 +12,7 @@ import { AddJobPostingInput } from './inputs/add-job-posting.input';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { JobInput } from './inputs/job.input';
 import { JobPostingDto } from './dto/job-posting.dto';
+import { JobAddressDto } from './dto/job-address.dto';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -51,6 +52,16 @@ export class JobResolver {
     @Args('companySlug') _: string,
   ) {
     return this.jobService.findCurrentPostings(company);
+  }
+
+  @Query(() => [JobAddressDto])
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findJobAddresses(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.jobService.findJobAddresses(company);
   }
 
   @Mutation(() => JobPostingDto)
