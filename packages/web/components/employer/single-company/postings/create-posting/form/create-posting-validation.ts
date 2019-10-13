@@ -9,11 +9,17 @@ export const createPostingSchema = object().shape({
     }),
   }),
   posting: object().shape({
-    start_date: date().required(),
-    end_date: date().required(),
+    start_date: date()
+      .required()
+      .typeError('Required'),
+    end_date: date()
+      .required()
+      .typeError('Required'),
     pay_rate: string().required(),
     total_openings: number().required(),
-    apply_deadline: date().required(),
+    apply_deadline: date()
+      .required()
+      .typeError('Required'),
   }),
   newAddressFormatted: string().when('address.addressId', {
     is: '',

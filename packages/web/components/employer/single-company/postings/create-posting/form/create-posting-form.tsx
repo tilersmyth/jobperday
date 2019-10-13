@@ -3,8 +3,13 @@ import { FormikProps, Field, FormikValues } from 'formik';
 import { Form, Row, Col } from 'antd';
 
 import { FindAllJobsQuery } from '../../../../../../apollo/generated-components';
-import { SelectJobInput } from './inputs';
-import { SelectAddressView } from './inputs/select-address-input/select-address-view';
+import {
+  SelectJobInput,
+  SelectAddressView,
+  PayRateInput,
+  OpeningsInput,
+  DatepickerInput,
+} from './inputs';
 import './style.less';
 
 interface Props extends FormikProps<FormikValues> {
@@ -18,7 +23,11 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
   jobs,
 }) => {
   return (
-    <Form layout="vertical" onSubmit={handleSubmit}>
+    <Form
+      layout="vertical"
+      onSubmit={handleSubmit}
+      className="job_posting_form"
+    >
       <Row gutter={16}>
         <Col lg={{ span: 12 }}>
           <Field
@@ -34,10 +43,53 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
           <SelectAddressView companySlug={companySlug} />
         </Col>
       </Row>
-      <br />
-      <br />
-      <br />
-      <br />
+      <Row gutter={16}>
+        <Col lg={{ span: 16 }}>
+          <Field
+            name="posting.pay_rate"
+            size="large"
+            placeholder="Pay rate"
+            component={PayRateInput}
+          />
+        </Col>
+        <Col lg={{ span: 8 }}>
+          <Field
+            name="posting.total_openings"
+            size="large"
+            placeholder="Openings"
+            component={OpeningsInput}
+          />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col lg={{ span: 8 }}>
+          <Field
+            name="posting.start_date"
+            size="large"
+            label="Start time"
+            placeholder="Start time"
+            component={DatepickerInput}
+          />
+        </Col>
+        <Col lg={{ span: 8 }}>
+          <Field
+            name="posting.end_date"
+            size="large"
+            label="End time"
+            placeholder="End time"
+            component={DatepickerInput}
+          />
+        </Col>
+        <Col lg={{ span: 8 }}>
+          <Field
+            name="posting.apply_deadline"
+            size="large"
+            label="Application deadline"
+            placeholder="Application deadline"
+            component={DatepickerInput}
+          />
+        </Col>
+      </Row>
     </Form>
   );
 };

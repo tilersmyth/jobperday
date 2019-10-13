@@ -41,6 +41,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
       title="Create Job Posting"
       {...modal}
       maskClosable={false}
+      destroyOnClose={true}
       width={800}
       footer={
         hasJobs && [

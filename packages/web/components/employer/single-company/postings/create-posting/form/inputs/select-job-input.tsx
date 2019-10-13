@@ -3,7 +3,7 @@ import Router from 'next/router';
 import { Select, Form, Divider, Icon } from 'antd';
 import { FieldProps, getIn } from 'formik';
 
-import { FindAllJobsQuery } from '../../../../../../../../apollo/generated-components';
+import { FindAllJobsQuery } from '../../../../../../../apollo/generated-components';
 
 const { Option } = Select;
 

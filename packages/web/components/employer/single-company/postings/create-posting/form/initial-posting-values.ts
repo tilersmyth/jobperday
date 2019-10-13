@@ -15,8 +15,8 @@ export const initialPostingValues: InitialValues = {
   posting: {
     start_date: '',
     end_date: '',
-    pay_rate: '',
-    total_openings: 0,
+    pay_rate: '15',
+    total_openings: 1,
     apply_deadline: '',
   },
   newAddressFormatted: '',
