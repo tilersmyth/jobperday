@@ -9,6 +9,7 @@ import {
   PayRateInput,
   OpeningsInput,
   DatepickerInput,
+  ActiveSwitch,
 } from './inputs';
 import './style.less';
 
@@ -28,6 +29,7 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
       onSubmit={handleSubmit}
       className="job_posting_form"
     >
+      <Field name="posting.active" size="large" component={ActiveSwitch} />
       <Row gutter={16}>
         <Col lg={{ span: 12 }}>
           <Field
@@ -84,8 +86,8 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
           <Field
             name="posting.apply_deadline"
             size="large"
-            label="Application deadline"
-            placeholder="Application deadline"
+            label="Deadline to apply"
+            placeholder="Deadline to apply"
             component={DatepickerInput}
           />
         </Col>

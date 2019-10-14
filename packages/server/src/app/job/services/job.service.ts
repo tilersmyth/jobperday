@@ -12,6 +12,7 @@ import { SlugGeneratorUtil } from '../../_helpers';
 import { JobInput } from '../inputs/job.input';
 import { JobAddress } from '../interfaces/job-address.interface';
 import { CompanyService } from '../../company/services';
+import { inspect } from 'util';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -62,28 +63,18 @@ export class JobService extends CrudService<JobEntity> {
     return this.postingService.findCurrent(company.id);
   }
 
-  public async addPosting(input: AddJobPostingInput): Promise<JobEntity> {
+  public async addPosting(
+    input: AddJobPostingInput,
+    company: CompanyEntity,
+  ): Promise<JobPostingEntity> {
     const job = await this.findOneById(input.jobId);
-    const posting = await this.postingService.add(input);
-    job.postings = [posting];
-    return this.repository.save(job);
+    return this.postingService.add(input, job, company);
   }
 
   public async findJobAddresses(company: CompanyEntity): Promise<JobAddress[]> {
-    try {
-      // 1. Find company address first
-      const companyAddress = await this.companyService.findCompanyAddress(
-        company.addressId,
-      );
+    const test = await this.companyService.findAllCompanyAddresses(company);
 
-      // 2. Find all associated posting addresses
-      const postingAddresses = await this.postingService.findPostingAddresses(
-        company.id,
-      );
-
-      return [companyAddress, ...postingAddresses];
-    } catch (error) {
-      throw error;
-    }
+    this.logger.debug(inspect(test));
+    return test;
   }
 }

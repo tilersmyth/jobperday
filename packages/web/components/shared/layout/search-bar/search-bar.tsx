@@ -143,25 +143,31 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                       <Form.Item>
                         <Field
                           name="location.locality"
-                          size="large"
-                          placeholder="City, state or zip"
-                          render={(formikProps: FieldProps) => (
-                            <PlacesAutocompleteInput
-                              {...formikProps}
-                              searchOptions={PlacesInputOptions}
-                              handleChange={HandlePlacesInputChange}
-                              handleSelect={HandlePlacesInputSelect}
-                            >
-                              <Input
-                                prefix={
-                                  <Icon
-                                    type="environment"
-                                    style={{ color: 'rgba(0,0,0,.25)' }}
-                                  />
-                                }
-                              />
-                            </PlacesAutocompleteInput>
-                          )}
+                          render={(formikProps: FieldProps) => {
+                            const inputProps = {
+                              size: 'large',
+                              placeholder: 'City, state or zip',
+                            };
+
+                            return (
+                              <PlacesAutocompleteInput
+                                {...formikProps}
+                                {...inputProps}
+                                searchOptions={PlacesInputOptions}
+                                handleChange={HandlePlacesInputChange}
+                                handleSelect={HandlePlacesInputSelect}
+                              >
+                                <Input
+                                  prefix={
+                                    <Icon
+                                      type="environment"
+                                      style={{ color: 'rgba(0,0,0,.25)' }}
+                                    />
+                                  }
+                                />
+                              </PlacesAutocompleteInput>
+                            );
+                          }}
                         />
                       </Form.Item>
                     </Col>

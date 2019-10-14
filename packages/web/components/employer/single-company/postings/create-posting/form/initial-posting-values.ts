@@ -3,23 +3,24 @@ import {
   AddressInput,
 } from '../../../../../../apollo/generated-components';
 
-interface InitialValues extends AddJobPostingInput {
-  newAddressFormatted: '';
+export interface PostingInitialValues extends AddJobPostingInput {
+  addressFormatted: '';
 }
 
-export const initialPostingValues: InitialValues = {
+export const initialPostingValues: PostingInitialValues = {
   jobId: '',
   address: {
     addressId: '',
   },
   posting: {
+    active: true,
     start_date: '',
     end_date: '',
     pay_rate: '15',
     total_openings: 1,
     apply_deadline: '',
   },
-  newAddressFormatted: '',
+  addressFormatted: '',
 };
 
 export const initialPostingAddressValues: AddressInput = {

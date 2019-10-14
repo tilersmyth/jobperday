@@ -49,15 +49,21 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
     user: UserEntity,
     input: CreateCompanyInput,
   ): Promise<CompanyEntity> {
-    // Save address
-    const address = await this.addressService.create(input.address);
-
+    const { address, ...companyProps } = input;
     // Save company
     const company = new CompanyEntity();
-    company.name = input.name;
-    company.slug = input.slug;
-    company.address = address;
+    Object.assign(company, companyProps);
     const savedCompany = await this.repository.save(company);
+
+    // Save address
+    const savedAddress = await this.addressService.create(
+      savedCompany,
+      address,
+    );
+
+    // Set as primary company address
+    savedCompany.address = savedAddress;
+    await savedCompany.save();
 
     if (user.realm !== 'employer') {
       // Make user realm = employer
@@ -76,8 +82,6 @@ export class CompanySetupService extends CrudService<CompanyEntity> {
       role: 'owner',
       confirmed: true,
     });
-
-    savedCompany.address = address;
 
     return savedCompany;
   }

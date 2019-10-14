@@ -5,6 +5,8 @@ export class JobPostingDto {
   @Field(() => ID)
   readonly id: string;
   @Field()
+  readonly active: boolean;
+  @Field()
   readonly start_date: Date;
   @Field()
   readonly end_date: Date;

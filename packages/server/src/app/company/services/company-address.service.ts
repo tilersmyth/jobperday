@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 
-import { CompanyAddressEntity } from '../entity';
+import { CompanyAddressEntity, CompanyEntity } from '../entity';
 import { COMPANY_ADDRESS_TOKEN } from '../company.constants';
 import { CompanyAddressInput } from '../inputs/company-address.input';
 import { CrudService } from '../../../base';
@@ -16,10 +16,12 @@ export class CompanyAddressService extends CrudService<CompanyAddressEntity> {
   }
 
   public async create(
+    company: CompanyEntity,
     input: CompanyAddressInput,
   ): Promise<CompanyAddressEntity> {
     const address = new CompanyAddressEntity();
     Object.assign(address, input);
+    address.company = company;
     return this.repository.save(address);
   }
 }

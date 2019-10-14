@@ -3,6 +3,8 @@ import { InputType, Field, Int } from 'type-graphql';
 @InputType()
 export class JobPostingInput {
   @Field()
+  readonly active: boolean;
+  @Field()
   readonly start_date: Date;
   @Field()
   readonly end_date: Date;

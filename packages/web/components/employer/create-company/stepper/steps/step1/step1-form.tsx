@@ -17,7 +17,10 @@ import {
   UpdateCreateCompanyDocument,
   FindCreateCompanyDocument,
 } from '../../../../../../apollo/generated-components';
-import { CreateCompanySchema } from '../../../../../../utils/yup-validation';
+import {
+  CreateCompanySchema,
+  addressSchema,
+} from '../../../../../../utils/yup-validation';
 import {
   PlacesAutocompleteInput,
   googleAddressParser,
@@ -111,6 +114,7 @@ export const Step1Form: React.FunctionComponent<Props> = ({
               }
 
               const newCompany = result.data.createCompany;
+
               nextStep(newCompany.slug);
             } catch (error) {
               throw error;
@@ -126,19 +130,15 @@ export const Step1Form: React.FunctionComponent<Props> = ({
 
               const geo = await geocodeByAddress(value);
               const coords = await getLatLng(geo[0]);
-              const address = googleAddressParser(STEP1_FORM_VALUES, geo);
+              const address = googleAddressParser(
+                STEP1_FORM_VALUES.address,
+                geo,
+              );
               address.coord_lat = coords.lat;
               address.coord_lng = coords.lng;
-              address.phone = values.address.phone;
 
               try {
-                await CreateCompanySchema.validate({
-                  name: 'n/a',
-                  address: {
-                    ...address,
-                    phone: '555-555-5555',
-                  },
-                });
+                await addressSchema.validate(address);
                 setFieldValue('address', address);
                 setShowFields('show_fields');
               } catch (error) {
@@ -158,11 +158,7 @@ export const Step1Form: React.FunctionComponent<Props> = ({
             };
 
             const editFields = () => {
-              const addressReset = Object.assign(STEP1_FORM_VALUES.address, {
-                phone: values.address.phone,
-              });
-
-              setFieldValue('address', addressReset);
+              setFieldValue('address', STEP1_FORM_VALUES.address);
               setShowFields('');
             };
 
@@ -205,7 +201,7 @@ export const Step1Form: React.FunctionComponent<Props> = ({
 
                   <Col xl={{ span: 10 }}>
                     <Field
-                      name="address.phone"
+                      name="phone"
                       render={(formikProps: any) => (
                         <InputMask mask="(999) 999 9999" {...formikProps.field}>
                           {(maskProps: any) => (
@@ -235,19 +231,25 @@ export const Step1Form: React.FunctionComponent<Props> = ({
                 <div className={`google_places_input ${showFields}`}>
                   <Field
                     name="formatted_address"
-                    size="large"
-                    placeholder="Address"
-                    render={(formikProps: FieldProps) => (
-                      <PlacesAutocompleteInput
-                        {...formikProps}
-                        searchOptions={PlacesInputOptions}
-                        handleChange={HandlePlacesInputChange}
-                        handleSelect={HandlePlacesInputSelect}
-                        showError={true}
-                      >
-                        <Input tabIndex={3} />
-                      </PlacesAutocompleteInput>
-                    )}
+                    render={(formikProps: FieldProps) => {
+                      const inputProps = {
+                        size: 'large',
+                        placeholder: 'Address',
+                      };
+
+                      return (
+                        <PlacesAutocompleteInput
+                          {...formikProps}
+                          {...inputProps}
+                          searchOptions={PlacesInputOptions}
+                          handleChange={HandlePlacesInputChange}
+                          handleSelect={HandlePlacesInputSelect}
+                          showError={true}
+                        >
+                          <Input tabIndex={3} />
+                        </PlacesAutocompleteInput>
+                      );
+                    }}
                   />
                 </div>
                 <div className={`address_fields ${showFields}`}>

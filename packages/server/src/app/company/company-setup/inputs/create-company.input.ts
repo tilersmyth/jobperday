@@ -8,6 +8,8 @@ export class CreateCompanyInput {
   readonly name: string;
   @Field()
   readonly slug: string;
+  @Field()
+  readonly phone: string;
   @Field(() => CreateCompanyAddressInput)
   readonly address: CreateCompanyAddressInput;
 }

@@ -27,7 +27,6 @@ input AddressInput {
 }
 
 type CompanyAddressDto {
-  phone: String!
   street: String!
   street2: String
   city: String!
@@ -71,7 +70,6 @@ input CoordsInput {
 }
 
 input CreateCompanyAddressInput {
-  phone: String!
   street: String!
   street2: String
   city: String!
@@ -86,6 +84,7 @@ type CreateCompanyDto {
   id: ID!
   name: String!
   slug: String!
+  phone: String!
   setup_complete: Boolean!
   setup_stage: Int!
   address: CompanyAddressDto!
@@ -94,6 +93,7 @@ type CreateCompanyDto {
 input CreateCompanyInput {
   name: String!
   slug: String!
+  phone: String!
   address: CreateCompanyAddressInput!
 }
 
@@ -157,6 +157,7 @@ input JobInput {
 
 type JobPostingDto {
   id: ID!
+  active: Boolean!
   start_date: DateTime!
   end_date: DateTime!
   pay_rate: Int!
@@ -166,6 +167,7 @@ type JobPostingDto {
 }
 
 input JobPostingInput {
+  active: Boolean!
   start_date: DateTime!
   end_date: DateTime!
   pay_rate: String!
@@ -300,6 +302,7 @@ input UpdateCompanyAddressInput {
 input UpdateCompanyInput {
   name: String
   slug: String
+  phone: String
   address: UpdateCompanyAddressInput
 }
 

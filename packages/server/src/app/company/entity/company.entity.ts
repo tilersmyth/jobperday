@@ -8,6 +8,7 @@ import {
   OneToOne,
   JoinColumn,
   RelationId,
+  ManyToOne,
 } from 'typeorm';
 import { Length } from 'class-validator';
 
@@ -29,6 +30,9 @@ export class CompanyEntity extends BaseEntity {
   @Length(3, 110, { message: 'must be between 3 and 110 characters' })
   public slug: string;
 
+  @Column('text')
+  public phone: string;
+
   @Column({ type: 'boolean', default: false })
   public setup_complete: boolean;
 
@@ -43,8 +47,7 @@ export class CompanyEntity extends BaseEntity {
   @OneToOne(() => CompanyProfileEntity)
   public profile: CompanyProfileEntity;
 
-  @OneToOne(() => CompanyAddressEntity)
-  @JoinColumn()
+  @ManyToOne(() => CompanyAddressEntity)
   public address: CompanyAddressEntity;
 
   @RelationId((company: CompanyEntity) => company.address)

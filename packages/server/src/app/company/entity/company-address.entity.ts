@@ -5,15 +5,15 @@ import {
   CreateDateColumn,
   BaseEntity,
   UpdateDateColumn,
+  ManyToOne,
+  RelationId,
 } from 'typeorm';
+import { CompanyEntity } from '.';
 
 @Entity('company_addresses')
 export class CompanyAddressEntity extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   public id: string;
-
-  @Column('text')
-  public phone: string;
 
   @Column('text')
   public street: string;
@@ -38,6 +38,12 @@ export class CompanyAddressEntity extends BaseEntity {
 
   @Column('float')
   public coord_lng: number;
+
+  @ManyToOne(() => CompanyEntity)
+  public company: CompanyEntity;
+
+  @RelationId((address: CompanyAddressEntity) => address.company)
+  public companyId: string;
 
   @UpdateDateColumn() updated_at: Date;
 

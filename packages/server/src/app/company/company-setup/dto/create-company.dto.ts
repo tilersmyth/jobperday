@@ -11,6 +11,8 @@ export class CreateCompanyDto {
   @Field()
   readonly slug: string;
   @Field()
+  readonly phone: string;
+  @Field()
   readonly setup_complete: boolean;
   @Field(() => Int)
   readonly setup_stage: number;

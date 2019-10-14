@@ -68,11 +68,12 @@ export class JobResolver {
   @Role('admin')
   @UseGuards(RolesGuard)
   async createPosting(
+    @Company() company: CompanyEntity,
     @Args('companySlug') _: string,
     @Args('input') input: AddJobPostingInput,
   ) {
-    const posting = await this.jobService.addPosting(input);
-    this.logger.debug(`[addPosting] job posting added: ${posting.name}`);
+    const posting = await this.jobService.addPosting(input, company);
+    this.logger.debug(`[addPosting] job posting added: ${posting.id}`);
     return posting;
   }
 }

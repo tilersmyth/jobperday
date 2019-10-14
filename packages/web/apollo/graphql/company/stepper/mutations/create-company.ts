@@ -18,8 +18,8 @@ export const updateCreateCompanyMutation = gql`
       id
       slug
       name
+      phone
       address {
-        phone
         street
         street2
         city

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
-import * as React from 'react';
 import * as ApolloReactCommon from '@apollo/react-common';
+import * as React from 'react';
 import * as ApolloReactComponents from '@apollo/react-components';
 import * as ApolloReactHoc from '@apollo/react-hoc';
 export type Maybe<T> = T | null;
@@ -41,7 +41,6 @@ export type AddressInput = {
 
 export type CompanyAddressDto = {
   __typename?: 'CompanyAddressDto';
-  phone: Scalars['String'];
   street: Scalars['String'];
   street2?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -87,7 +86,6 @@ export type CoordsInput = {
 };
 
 export type CreateCompanyAddressInput = {
-  phone: Scalars['String'];
   street: Scalars['String'];
   street2?: Maybe<Scalars['String']>;
   city: Scalars['String'];
@@ -103,6 +101,7 @@ export type CreateCompanyDto = {
   id: Scalars['ID'];
   name: Scalars['String'];
   slug: Scalars['String'];
+  phone: Scalars['String'];
   setup_complete: Scalars['Boolean'];
   setup_stage: Scalars['Int'];
   address: CompanyAddressDto;
@@ -111,6 +110,7 @@ export type CreateCompanyDto = {
 export type CreateCompanyInput = {
   name: Scalars['String'];
   slug: Scalars['String'];
+  phone: Scalars['String'];
   address: CreateCompanyAddressInput;
 };
 
@@ -174,6 +174,7 @@ export type JobInput = {
 export type JobPostingDto = {
   __typename?: 'JobPostingDto';
   id: Scalars['ID'];
+  active: Scalars['Boolean'];
   start_date: Scalars['DateTime'];
   end_date: Scalars['DateTime'];
   pay_rate: Scalars['Int'];
@@ -183,6 +184,7 @@ export type JobPostingDto = {
 };
 
 export type JobPostingInput = {
+  active: Scalars['Boolean'];
   start_date: Scalars['DateTime'];
   end_date: Scalars['DateTime'];
   pay_rate: Scalars['String'];
@@ -438,6 +440,15 @@ export type UserDto = {
   setup: Array<Scalars['String']>;
   created_at: Scalars['DateTime'];
 };
+export type CreateJobMutationVariables = {
+  companySlug: Scalars['String'];
+  input: JobInput;
+};
+
+export type CreateJobMutation = { __typename?: 'Mutation' } & {
+  createJob: { __typename?: 'JobDto' } & Pick<JobDto, 'id'>;
+};
+
 export type FindAllJobsQueryVariables = {
   companySlug: Scalars['String'];
 };
@@ -458,15 +469,6 @@ export type CreatePostingMutationVariables = {
 
 export type CreatePostingMutation = { __typename?: 'Mutation' } & {
   createPosting: { __typename?: 'JobPostingDto' } & Pick<JobPostingDto, 'id'>;
-};
-
-export type CreateJobMutationVariables = {
-  companySlug: Scalars['String'];
-  input: JobInput;
-};
-
-export type CreateJobMutation = { __typename?: 'Mutation' } & {
-  createJob: { __typename?: 'JobDto' } & Pick<JobDto, 'id'>;
 };
 
 export type FindJobAddressesQueryVariables = {
@@ -507,6 +509,34 @@ export type FindCurrentPostingsQuery = { __typename?: 'Query' } & {
       | 'apply_deadline'
     >
   >;
+};
+
+export type SearchQueryVariables = {
+  input: SearchInput;
+};
+
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
+      results: Array<
+        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
+            job: { __typename?: 'JobDto' } & Pick<
+              JobDto,
+              'id' | 'name' | 'companyName' | 'type'
+            > & {
+                postings: Array<
+                  { __typename?: 'JobPostingDto' } & Pick<
+                    JobPostingDto,
+                    | 'id'
+                    | 'start_date'
+                    | 'apply_deadline'
+                    | 'pay_rate'
+                    | 'total_openings'
+                  >
+                >;
+              };
+          }
+      >;
+    };
 };
 
 export type ForgotPasswordMutationVariables = {
@@ -608,66 +638,6 @@ export type MeQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type SearchQueryVariables = {
-  input: SearchInput;
-};
-
-export type SearchQuery = { __typename?: 'Query' } & {
-  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
-      results: Array<
-        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
-            job: { __typename?: 'JobDto' } & Pick<
-              JobDto,
-              'id' | 'name' | 'companyName' | 'type'
-            > & {
-                postings: Array<
-                  { __typename?: 'JobPostingDto' } & Pick<
-                    JobPostingDto,
-                    | 'id'
-                    | 'start_date'
-                    | 'apply_deadline'
-                    | 'pay_rate'
-                    | 'total_openings'
-                  >
-                >;
-              };
-          }
-      >;
-    };
-};
-
-export type FindEmployerCompaniesQueryVariables = {};
-
-export type FindEmployerCompaniesQuery = { __typename?: 'Query' } & {
-  findEmployerCompanies: Array<
-    { __typename?: 'MemberCompanyDto' } & Pick<
-      MemberCompanyDto,
-      'id' | 'role'
-    > & {
-        company: { __typename?: 'CompanyDto' } & Pick<
-          CompanyDto,
-          'name' | 'slug' | 'setup_complete'
-        >;
-      }
-  >;
-};
-
-export type FindEmployerCompanyQueryVariables = {
-  companySlug: Scalars['String'];
-};
-
-export type FindEmployerCompanyQuery = { __typename?: 'Query' } & {
-  findEmployerCompany: { __typename?: 'EmployerCompanyDto' } & Pick<
-    EmployerCompanyDto,
-    'name' | 'slug' | 'setup_complete'
-  > & {
-      member: { __typename?: 'CompanyMemberDto' } & Pick<
-        CompanyMemberDto,
-        'role'
-      >;
-    };
-};
-
 export type CreateCompanyAddMembersMutationVariables = {
   companySlug: Scalars['String'];
   input?: Maybe<Array<CompanyMemberInput>>;
@@ -720,11 +690,10 @@ export type UpdateCreateCompanyMutationVariables = {
 export type UpdateCreateCompanyMutation = { __typename?: 'Mutation' } & {
   updateCreateCompany: { __typename?: 'CreateCompanyDto' } & Pick<
     CreateCompanyDto,
-    'id' | 'slug' | 'name'
+    'id' | 'slug' | 'name' | 'phone'
   > & {
       address: { __typename?: 'CompanyAddressDto' } & Pick<
         CompanyAddressDto,
-        | 'phone'
         | 'street'
         | 'street2'
         | 'city'
@@ -804,11 +773,10 @@ export type FindCreateCompanyQueryVariables = {
 export type FindCreateCompanyQuery = { __typename?: 'Query' } & {
   findCreateCompany: { __typename?: 'CreateCompanyDto' } & Pick<
     CreateCompanyDto,
-    'id' | 'slug' | 'name'
+    'id' | 'slug' | 'name' | 'phone'
   > & {
       address: { __typename?: 'CompanyAddressDto' } & Pick<
         CompanyAddressDto,
-        | 'phone'
         | 'street'
         | 'street2'
         | 'city'
@@ -821,6 +789,94 @@ export type FindCreateCompanyQuery = { __typename?: 'Query' } & {
     };
 };
 
+export type FindEmployerCompaniesQueryVariables = {};
+
+export type FindEmployerCompaniesQuery = { __typename?: 'Query' } & {
+  findEmployerCompanies: Array<
+    { __typename?: 'MemberCompanyDto' } & Pick<
+      MemberCompanyDto,
+      'id' | 'role'
+    > & {
+        company: { __typename?: 'CompanyDto' } & Pick<
+          CompanyDto,
+          'name' | 'slug' | 'setup_complete'
+        >;
+      }
+  >;
+};
+
+export type FindEmployerCompanyQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindEmployerCompanyQuery = { __typename?: 'Query' } & {
+  findEmployerCompany: { __typename?: 'EmployerCompanyDto' } & Pick<
+    EmployerCompanyDto,
+    'name' | 'slug' | 'setup_complete'
+  > & {
+      member: { __typename?: 'CompanyMemberDto' } & Pick<
+        CompanyMemberDto,
+        'role'
+      >;
+    };
+};
+
+export const CreateJobDocument = gql`
+  mutation CreateJob($companySlug: String!, $input: JobInput!) {
+    createJob(companySlug: $companySlug, input: $input) {
+      id
+    }
+  }
+`;
+export type CreateJobMutationFn = ApolloReactCommon.MutationFunction<
+  CreateJobMutation,
+  CreateJobMutationVariables
+>;
+export type CreateJobComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateJobMutation,
+    CreateJobMutationVariables
+  >,
+  'mutation'
+>;
+
+export const CreateJobComponent = (props: CreateJobComponentProps) => (
+  <ApolloReactComponents.Mutation<CreateJobMutation, CreateJobMutationVariables>
+    mutation={CreateJobDocument}
+    {...props}
+  />
+);
+
+export type CreateJobProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  CreateJobMutation,
+  CreateJobMutationVariables
+> &
+  TChildProps;
+export function withCreateJob<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CreateJobMutation,
+    CreateJobMutationVariables,
+    CreateJobProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    CreateJobMutation,
+    CreateJobMutationVariables,
+    CreateJobProps<TChildProps>
+  >(CreateJobDocument, {
+    alias: 'withCreateJob',
+    ...operationOptions,
+  });
+}
+export type CreateJobMutationResult = ApolloReactCommon.MutationResult<
+  CreateJobMutation
+>;
+export type CreateJobMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateJobMutation,
+  CreateJobMutationVariables
+>;
 export const FindAllJobsDocument = gql`
   query FindAllJobs($companySlug: String!) {
     findAllJobs(companySlug: $companySlug) {
@@ -935,62 +991,6 @@ export type CreatePostingMutationResult = ApolloReactCommon.MutationResult<
 export type CreatePostingMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreatePostingMutation,
   CreatePostingMutationVariables
->;
-export const CreateJobDocument = gql`
-  mutation CreateJob($companySlug: String!, $input: JobInput!) {
-    createJob(companySlug: $companySlug, input: $input) {
-      id
-    }
-  }
-`;
-export type CreateJobMutationFn = ApolloReactCommon.MutationFunction<
-  CreateJobMutation,
-  CreateJobMutationVariables
->;
-export type CreateJobComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    CreateJobMutation,
-    CreateJobMutationVariables
-  >,
-  'mutation'
->;
-
-export const CreateJobComponent = (props: CreateJobComponentProps) => (
-  <ApolloReactComponents.Mutation<CreateJobMutation, CreateJobMutationVariables>
-    mutation={CreateJobDocument}
-    {...props}
-  />
-);
-
-export type CreateJobProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  CreateJobMutation,
-  CreateJobMutationVariables
-> &
-  TChildProps;
-export function withCreateJob<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    CreateJobMutation,
-    CreateJobMutationVariables,
-    CreateJobProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    CreateJobMutation,
-    CreateJobMutationVariables,
-    CreateJobProps<TChildProps>
-  >(CreateJobDocument, {
-    alias: 'withCreateJob',
-    ...operationOptions,
-  });
-}
-export type CreateJobMutationResult = ApolloReactCommon.MutationResult<
-  CreateJobMutation
->;
-export type CreateJobMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateJobMutation,
-  CreateJobMutationVariables
 >;
 export const FindJobAddressesDocument = gql`
   query FindJobAddresses($companySlug: String!) {
@@ -1121,6 +1121,72 @@ export function withFindCurrentPostings<TProps, TChildProps = {}>(
 export type FindCurrentPostingsQueryResult = ApolloReactCommon.QueryResult<
   FindCurrentPostingsQuery,
   FindCurrentPostingsQueryVariables
+>;
+export const SearchDocument = gql`
+  query Search($input: SearchInput!) {
+    search(input: $input) {
+      count
+      results {
+        rank
+        job {
+          id
+          name
+          companyName
+          type
+          postings {
+            id
+            start_date
+            apply_deadline
+            pay_rate
+            total_openings
+          }
+        }
+      }
+    }
+  }
+`;
+export type SearchComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    SearchQuery,
+    SearchQueryVariables
+  >,
+  'query'
+> &
+  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const SearchComponent = (props: SearchComponentProps) => (
+  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
+    query={SearchDocument}
+    {...props}
+  />
+);
+
+export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchQuery,
+  SearchQueryVariables
+> &
+  TChildProps;
+export function withSearch<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >(SearchDocument, {
+    alias: 'withSearch',
+    ...operationOptions,
+  });
+}
+export type SearchQueryResult = ApolloReactCommon.QueryResult<
+  SearchQuery,
+  SearchQueryVariables
 >;
 export const ForgotPasswordDocument = gql`
   mutation ForgotPassword($email: String!) {
@@ -1483,198 +1549,6 @@ export type MeQueryResult = ApolloReactCommon.QueryResult<
   MeQuery,
   MeQueryVariables
 >;
-export const SearchDocument = gql`
-  query Search($input: SearchInput!) {
-    search(input: $input) {
-      count
-      results {
-        rank
-        job {
-          id
-          name
-          companyName
-          type
-          postings {
-            id
-            start_date
-            apply_deadline
-            pay_rate
-            total_openings
-          }
-        }
-      }
-    }
-  }
-`;
-export type SearchComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    SearchQuery,
-    SearchQueryVariables
-  >,
-  'query'
-> &
-  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
-
-export const SearchComponent = (props: SearchComponentProps) => (
-  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
-    query={SearchDocument}
-    {...props}
-  />
-);
-
-export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  SearchQuery,
-  SearchQueryVariables
-> &
-  TChildProps;
-export function withSearch<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >(SearchDocument, {
-    alias: 'withSearch',
-    ...operationOptions,
-  });
-}
-export type SearchQueryResult = ApolloReactCommon.QueryResult<
-  SearchQuery,
-  SearchQueryVariables
->;
-export const FindEmployerCompaniesDocument = gql`
-  query FindEmployerCompanies {
-    findEmployerCompanies {
-      id
-      role
-      company {
-        name
-        slug
-        setup_complete
-      }
-    }
-  }
-`;
-export type FindEmployerCompaniesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindEmployerCompaniesQuery,
-    FindEmployerCompaniesQueryVariables
-  >,
-  'query'
->;
-
-export const FindEmployerCompaniesComponent = (
-  props: FindEmployerCompaniesComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindEmployerCompaniesQuery,
-    FindEmployerCompaniesQueryVariables
-  >
-    query={FindEmployerCompaniesDocument}
-    {...props}
-  />
-);
-
-export type FindEmployerCompaniesProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindEmployerCompaniesQuery,
-  FindEmployerCompaniesQueryVariables
-> &
-  TChildProps;
-export function withFindEmployerCompanies<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindEmployerCompaniesQuery,
-    FindEmployerCompaniesQueryVariables,
-    FindEmployerCompaniesProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindEmployerCompaniesQuery,
-    FindEmployerCompaniesQueryVariables,
-    FindEmployerCompaniesProps<TChildProps>
-  >(FindEmployerCompaniesDocument, {
-    alias: 'withFindEmployerCompanies',
-    ...operationOptions,
-  });
-}
-export type FindEmployerCompaniesQueryResult = ApolloReactCommon.QueryResult<
-  FindEmployerCompaniesQuery,
-  FindEmployerCompaniesQueryVariables
->;
-export const FindEmployerCompanyDocument = gql`
-  query FindEmployerCompany($companySlug: String!) {
-    findEmployerCompany(companySlug: $companySlug) {
-      name
-      slug
-      setup_complete
-      member {
-        role
-      }
-    }
-  }
-`;
-export type FindEmployerCompanyComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindEmployerCompanyQuery,
-    FindEmployerCompanyQueryVariables
-  >,
-  'query'
-> &
-  (
-    | { variables: FindEmployerCompanyQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const FindEmployerCompanyComponent = (
-  props: FindEmployerCompanyComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindEmployerCompanyQuery,
-    FindEmployerCompanyQueryVariables
-  >
-    query={FindEmployerCompanyDocument}
-    {...props}
-  />
-);
-
-export type FindEmployerCompanyProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindEmployerCompanyQuery,
-  FindEmployerCompanyQueryVariables
-> &
-  TChildProps;
-export function withFindEmployerCompany<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindEmployerCompanyQuery,
-    FindEmployerCompanyQueryVariables,
-    FindEmployerCompanyProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindEmployerCompanyQuery,
-    FindEmployerCompanyQueryVariables,
-    FindEmployerCompanyProps<TChildProps>
-  >(FindEmployerCompanyDocument, {
-    alias: 'withFindEmployerCompany',
-    ...operationOptions,
-  });
-}
-export type FindEmployerCompanyQueryResult = ApolloReactCommon.QueryResult<
-  FindEmployerCompanyQuery,
-  FindEmployerCompanyQueryVariables
->;
 export const CreateCompanyAddMembersDocument = gql`
   mutation CreateCompanyAddMembers(
     $companySlug: String!
@@ -1943,8 +1817,8 @@ export const UpdateCreateCompanyDocument = gql`
       id
       slug
       name
+      phone
       address {
-        phone
         street
         street2
         city
@@ -2316,8 +2190,8 @@ export const FindCreateCompanyDocument = gql`
       id
       slug
       name
+      phone
       address {
-        phone
         street
         street2
         city
@@ -2379,4 +2253,130 @@ export function withFindCreateCompany<TProps, TChildProps = {}>(
 export type FindCreateCompanyQueryResult = ApolloReactCommon.QueryResult<
   FindCreateCompanyQuery,
   FindCreateCompanyQueryVariables
+>;
+export const FindEmployerCompaniesDocument = gql`
+  query FindEmployerCompanies {
+    findEmployerCompanies {
+      id
+      role
+      company {
+        name
+        slug
+        setup_complete
+      }
+    }
+  }
+`;
+export type FindEmployerCompaniesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables
+  >,
+  'query'
+>;
+
+export const FindEmployerCompaniesComponent = (
+  props: FindEmployerCompaniesComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables
+  >
+    query={FindEmployerCompaniesDocument}
+    {...props}
+  />
+);
+
+export type FindEmployerCompaniesProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindEmployerCompaniesQuery,
+  FindEmployerCompaniesQueryVariables
+> &
+  TChildProps;
+export function withFindEmployerCompanies<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables,
+    FindEmployerCompaniesProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindEmployerCompaniesQuery,
+    FindEmployerCompaniesQueryVariables,
+    FindEmployerCompaniesProps<TChildProps>
+  >(FindEmployerCompaniesDocument, {
+    alias: 'withFindEmployerCompanies',
+    ...operationOptions,
+  });
+}
+export type FindEmployerCompaniesQueryResult = ApolloReactCommon.QueryResult<
+  FindEmployerCompaniesQuery,
+  FindEmployerCompaniesQueryVariables
+>;
+export const FindEmployerCompanyDocument = gql`
+  query FindEmployerCompany($companySlug: String!) {
+    findEmployerCompany(companySlug: $companySlug) {
+      name
+      slug
+      setup_complete
+      member {
+        role
+      }
+    }
+  }
+`;
+export type FindEmployerCompanyComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindEmployerCompanyQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindEmployerCompanyComponent = (
+  props: FindEmployerCompanyComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables
+  >
+    query={FindEmployerCompanyDocument}
+    {...props}
+  />
+);
+
+export type FindEmployerCompanyProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindEmployerCompanyQuery,
+  FindEmployerCompanyQueryVariables
+> &
+  TChildProps;
+export function withFindEmployerCompany<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables,
+    FindEmployerCompanyProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindEmployerCompanyQuery,
+    FindEmployerCompanyQueryVariables,
+    FindEmployerCompanyProps<TChildProps>
+  >(FindEmployerCompanyDocument, {
+    alias: 'withFindEmployerCompany',
+    ...operationOptions,
+  });
+}
+export type FindEmployerCompanyQueryResult = ApolloReactCommon.QueryResult<
+  FindEmployerCompanyQuery,
+  FindEmployerCompanyQueryVariables
 >;

@@ -3,8 +3,6 @@ import { ObjectType, Field, Float } from 'type-graphql';
 @ObjectType()
 export class CompanyAddressDto {
   @Field()
-  readonly phone: string;
-  @Field()
   readonly street: string;
   @Field({ nullable: true })
   readonly street2: string;

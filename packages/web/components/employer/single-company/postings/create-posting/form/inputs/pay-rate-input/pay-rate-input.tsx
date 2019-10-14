@@ -26,7 +26,7 @@ export const PayRateInput: React.FunctionComponent<FieldProps> = ({
               `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             }
             parser={value => `${value}`.replace(/\$\s?|(,*)/g, '')}
-            onChange={value => setFieldValue(field.name, value)}
+            onChange={value => setFieldValue(field.name, `${value}`)}
           />
         </Form.Item>
       </Col>
@@ -35,6 +35,7 @@ export const PayRateInput: React.FunctionComponent<FieldProps> = ({
           <InputNumber
             size="large"
             disabled={true}
+            formatter={value => `$ ${value}`}
             value={isNaN(field.value) ? field.value : field.value * 0.75}
           />
         </Form.Item>

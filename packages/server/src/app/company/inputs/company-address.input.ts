@@ -3,8 +3,6 @@ import { InputType, Field, Float } from 'type-graphql';
 @InputType()
 export class CompanyAddressInput {
   @Field()
-  readonly phone: string;
-  @Field()
   readonly street: string;
   @Field({ nullable: true })
   readonly street2: string;

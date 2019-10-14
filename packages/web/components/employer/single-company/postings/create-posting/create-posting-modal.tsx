@@ -8,7 +8,10 @@ import {
 } from '../../../../../apollo/generated-components';
 import { CreatePostingsModalNoJobs } from './create-posting-modal-no-jobs';
 import { createPostingSchema } from './form/create-posting-validation';
-import { initialPostingValues } from './form/initial-posting-values';
+import {
+  initialPostingValues,
+  PostingInitialValues,
+} from './form/initial-posting-values';
 import { CreatePostingForm } from './form/create-posting-form';
 
 interface Props {
@@ -22,7 +25,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
   companySlug,
   ...modal
 }) => {
-  const formRef = useRef<Formik>(null);
+  const formRef = useRef<Formik<PostingInitialValues>>(null);
   const [hasJobs, setHasJobs] = useState(false);
 
   const handleSubmit = async (_: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -42,6 +45,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
       {...modal}
       maskClosable={false}
       destroyOnClose={true}
+      closable={false}
       width={800}
       footer={
         hasJobs && [
@@ -74,14 +78,15 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
 
           return (
             <CreatePostingComponent>
-              {() => (
+              {post => (
                 <Formik
                   ref={formRef}
                   validateOnBlur={false}
                   validateOnChange={false}
-                  onSubmit={async input => {
+                  onSubmit={async ({ addressFormatted, ...input }) => {
                     try {
                       console.log(input);
+                      await post({ variables: { companySlug, input } });
                       modal.onOk();
                     } catch (err) {
                       console.log(err);
@@ -91,13 +96,15 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
                   initialValues={initialPostingValues}
                   validationSchema={createPostingSchema}
                 >
-                  {formikProps => (
-                    <CreatePostingForm
-                      {...formikProps}
-                      jobs={jobs}
-                      companySlug={companySlug}
-                    />
-                  )}
+                  {formikProps => {
+                    return (
+                      <CreatePostingForm
+                        {...formikProps}
+                        jobs={jobs}
+                        companySlug={companySlug}
+                      />
+                    );
+                  }}
                 </Formik>
               )}
             </CreatePostingComponent>

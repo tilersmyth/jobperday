@@ -12,7 +12,7 @@ export const OpeningsInput: React.FunctionComponent<FieldProps> = ({
 
   return (
     <Form.Item
-      label="Remaining Openings"
+      label="Openings"
       validateStatus={error ? 'error' : undefined}
       help={errorMsg}
     >

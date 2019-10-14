@@ -35,6 +35,7 @@ export class CompanySeedService {
       company.slug = await this.generateSlug(companyName);
       company.setup_complete = true;
       company.active = true;
+      company.phone = '555-555-5555';
       const savedCompany = await this.repository.save(company);
 
       await this.memberService.add({

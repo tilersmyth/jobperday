@@ -45,8 +45,8 @@ export const CreateCompanySchema = object().shape({
   name: string()
     .min(3, '3 character minimum')
     .required('Required'),
+  phone: string().required('Required'),
   address: object().shape({
-    phone: string().required('Required'),
     street: string().required('Required'),
     city: string().required('Required'),
     state: string().required('Required'),

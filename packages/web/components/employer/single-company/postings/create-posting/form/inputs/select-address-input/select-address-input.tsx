@@ -69,7 +69,10 @@ export const SelectAddressInput: React.FunctionComponent<Props> = ({
         {...inputProps}
         showSearch={true}
         optionFilterProp="children"
-        onChange={(value: string) => setFieldValue(name, value)}
+        onChange={(value: string) => {
+          setFieldValue(name, value);
+          setFieldValue('address.addressId', value);
+        }}
         filterOption={(input, { props }) => {
           const { children } = props;
 

@@ -17,7 +17,7 @@ export const SelectAddressView: React.FunctionComponent<Props> = ({
     <React.Fragment>
       {!newAddress && (
         <Field
-          name="address.addressId"
+          name="addressFormatted"
           size="large"
           placeholder="Location"
           companySlug={companySlug}
@@ -28,8 +28,8 @@ export const SelectAddressView: React.FunctionComponent<Props> = ({
 
       {newAddress && (
         <Field
-          label="Location"
-          name="newAddressFormatted"
+          label="New Location"
+          name="addressFormatted"
           size="large"
           placeholder="Start typing"
           component={SelectGooglePlacesInput}
