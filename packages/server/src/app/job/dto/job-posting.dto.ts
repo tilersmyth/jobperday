@@ -1,5 +1,7 @@
 import { ObjectType, Field, ID, Int } from 'type-graphql';
 
+import { JobDto } from './job.dto';
+
 @ObjectType()
 export class JobPostingDto {
   @Field(() => ID)
@@ -18,4 +20,6 @@ export class JobPostingDto {
   readonly remaining_openings: number;
   @Field()
   readonly apply_deadline: Date;
+  @Field(() => JobDto)
+  readonly job: JobDto;
 }

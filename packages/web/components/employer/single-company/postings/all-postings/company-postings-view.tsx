@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'antd';
-import { JobsLayout } from '../../jobs/shared/layout/jobs-layout';
+import { postingPaginationConfig } from '@jobperday/common';
 
-import { FindCurrentPostingsComponent } from '../../../../../apollo/generated-components';
+import { JobsLayout } from '../../jobs/shared/layout/jobs-layout';
 import { JobsBreadcrumb } from '../../jobs/shared/jobs-breadcrumb';
-import { PostingsNoResultsView } from './postings-no-results-view';
 import { CreatePostingModal } from '../create-posting/create-posting-modal';
+import { CompanyPostingsTable } from './company-postings-table';
+import { CompanyPostingsData } from './company-postings-data';
 
 interface Props {
   companySlug: string;
@@ -13,10 +14,12 @@ interface Props {
 
 const breadcrumbRoutes: JobsBreadcrumb[] = [{ path: '/', title: 'Postings' }];
 
+// Results to show per page
+const queryLimit: number = postingPaginationConfig.limit;
+
 export const CompanyPostingsView: React.FunctionComponent<Props> = ({
   companySlug,
 }) => {
-  const [hasPostings, setHasPostings] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
   return (
@@ -25,47 +28,63 @@ export const CompanyPostingsView: React.FunctionComponent<Props> = ({
         breadcrumbs={breadcrumbRoutes}
         companySlug={companySlug}
         extra={
-          hasPostings && (
-            <Button onClick={() => setModalVisible(true)}>Create Job</Button>
-          )
+          <Button type="primary" onClick={() => setModalVisible(true)}>
+            Post Position
+          </Button>
         }
       >
-        <FindCurrentPostingsComponent variables={{ companySlug }}>
-          {({ loading, error, data }) => {
-            if (loading) {
-              return <div>loading...</div>;
-            }
-
-            if (error || !data) {
+        <CompanyPostingsData variables={{ companySlug, input: {} }}>
+          {({ error, loading, data, fetchMore }) => {
+            if (error) {
               return <div>error</div>;
             }
 
-            const postings = data.findCurrentPostings;
+            return (
+              <CompanyPostingsTable
+                loading={loading}
+                data={
+                  (data && data.findCurrentPostings) || {
+                    count: 0,
+                    postings: [],
+                  }
+                }
+                onLoadMore={({ current }) => {
+                  const skip = current ? queryLimit * (current - 1) : 0;
+                  return {
+                    page: current,
+                    client: fetchMore({
+                      variables: {
+                        companySlug,
+                        input: {
+                          skip,
+                          limit: queryLimit,
+                        },
+                      },
+                      updateQuery: (prev, { fetchMoreResult }) => {
+                        if (!fetchMoreResult) {
+                          return prev;
+                        }
 
-            useEffect(() => {
-              setHasPostings(postings.length > 0);
-            }, [postings]);
-
-            if (postings.length === 0) {
-              return (
-                <PostingsNoResultsView
-                  companySlug={companySlug}
-                  openModal={setModalVisible}
-                />
-              );
-            }
-
-            console.log(postings);
-
-            return <div>has postings</div>;
+                        return Object.assign({}, prev, {
+                          count: prev.findCurrentPostings.count,
+                          postings: [
+                            ...prev.findCurrentPostings.postings,
+                            ...fetchMoreResult.findCurrentPostings.postings,
+                          ],
+                        });
+                      },
+                    }),
+                  };
+                }}
+              />
+            );
           }}
-        </FindCurrentPostingsComponent>
+        </CompanyPostingsData>
       </JobsLayout>
       <CreatePostingModal
         companySlug={companySlug}
         visible={modalVisible}
-        onCancel={() => setModalVisible(false)}
-        onOk={() => setModalVisible(false)}
+        setVisible={setModalVisible}
       />
     </React.Fragment>
   );

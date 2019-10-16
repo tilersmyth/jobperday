@@ -15,7 +15,6 @@ input AddJobPostingInput {
 }
 
 input AddressInput {
-  phone: String
   street: String
   street2: String
   city: String!
@@ -164,6 +163,7 @@ type JobPostingDto {
   total_openings: Int!
   remaining_openings: Int!
   apply_deadline: DateTime!
+  job: JobDto!
 }
 
 input JobPostingInput {
@@ -173,6 +173,11 @@ input JobPostingInput {
   pay_rate: String!
   total_openings: Int!
   apply_deadline: DateTime!
+}
+
+type JobPostingResultsDto {
+  count: Int!
+  postings: [JobPostingDto!]!
 }
 
 input LocationInput {
@@ -218,6 +223,11 @@ type Mutation {
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
 }
 
+input PaginationInput {
+  skip: Int = 0
+  limit: Int = 10
+}
+
 type Query {
   me: MeSessionDto
   allUsers: [UserDto!]!
@@ -231,7 +241,7 @@ type Query {
   findEmployerCompanies: [MemberCompanyDto!]!
   findEmployerCompany(companySlug: String!): EmployerCompanyDto!
   findAllJobs(companySlug: String!): [JobDto!]!
-  findCurrentPostings(companySlug: String!): [JobPostingDto!]!
+  findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
   search(input: SearchInput!): SearchDto!
 }

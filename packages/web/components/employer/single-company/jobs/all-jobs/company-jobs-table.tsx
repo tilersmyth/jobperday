@@ -28,9 +28,6 @@ const columns = [
 ];
 
 export const CompanyJobsTable: React.FunctionComponent<Props> = ({ jobs }) => {
-  const currentTime = moment();
-  console.log(currentTime);
-
   const data = jobs.map(job => {
     return {
       key: job.id,

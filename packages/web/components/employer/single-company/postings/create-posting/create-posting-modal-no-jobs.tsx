@@ -11,7 +11,7 @@ export const CreatePostingsModalNoJobs: React.FunctionComponent<Props> = ({
 }) => (
   <Empty
     image={Empty.PRESENTED_IMAGE_SIMPLE}
-    description="Oops, looks like no jobs exist either. Create your first job to post!"
+    description="Oops, looks like no jobs exist. Create your first job to post!"
   >
     <Link href={`/employer/${companySlug}/jobs/create`}>
       <a>

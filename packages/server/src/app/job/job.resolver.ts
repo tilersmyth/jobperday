@@ -13,6 +13,8 @@ import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { JobInput } from './inputs/job.input';
 import { JobPostingDto } from './dto/job-posting.dto';
 import { JobAddressDto } from './dto/job-address.dto';
+import { JobPostingResultsDto } from './dto/job-posting-results.dto';
+import { PaginationInput } from '../_helpers/inputs/pagination.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -44,14 +46,15 @@ export class JobResolver {
     return this.jobService.findAllJobs(company);
   }
 
-  @Query(() => [JobPostingDto])
+  @Query(() => JobPostingResultsDto)
   @Role('manager')
   @UseGuards(RolesGuard)
   async findCurrentPostings(
     @Company() company: CompanyEntity,
     @Args('companySlug') _: string,
+    @Args('input') input: PaginationInput,
   ) {
-    return this.jobService.findCurrentPostings(company);
+    return this.jobService.findCurrentPostings(company, input);
   }
 
   @Query(() => [JobAddressDto])

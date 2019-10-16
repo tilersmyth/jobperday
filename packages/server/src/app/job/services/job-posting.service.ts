@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Repository, LessThan } from 'typeorm';
+import { Repository, MoreThan } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
@@ -9,6 +9,8 @@ import { AddJobPostingAddressInput } from '../inputs/add-job-posting-address.inp
 import { AddJobPostingInput } from '../inputs/add-job-posting.input';
 import { CompanyEntity, CompanyAddressEntity } from '../../company/entity';
 import { CompanyService } from '../../company/services';
+import { inspect } from 'util';
+import { PaginationInput } from '../../_helpers/inputs/pagination.input';
 
 @Injectable()
 export class JobPostingService extends CrudService<JobPostingEntity> {
@@ -65,9 +67,23 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
     return this.repository.save(posting);
   }
 
-  public async findCurrent(companyId: string) {
-    return this.repository.find({
-      where: { companyId, apply_deadline: LessThan(new Date()) },
-    });
+  public async findCurrent(companyId: string, input: PaginationInput) {
+    // return this.repository.find({
+    //   where: { companyId, apply_deadline: MoreThan(new Date()) },
+    //   relations: ['job'],
+    // });
+
+    const query = this.repository
+      .createQueryBuilder('posting')
+      .where('posting.companyId = :companyId', { companyId })
+      .andWhere('posting.apply_deadline > :now', { now: new Date() })
+      .leftJoinAndSelect('posting.job', 'job')
+      .skip(input.skip)
+      .take(input.limit);
+
+    const count = await query.getCount();
+    const postings = await query.getMany();
+
+    return { count, postings };
   }
 }

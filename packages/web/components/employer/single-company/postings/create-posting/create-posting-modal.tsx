@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { Modal, Button } from 'antd';
+import { Modal, Button, notification } from 'antd';
 import { Formik } from 'formik';
+import { ApolloConsumer } from 'react-apollo';
 
 import {
   FindAllJobsComponent,
-  CreatePostingComponent,
+  CreatePostingDocument,
+  CreatePostingClientDocument,
 } from '../../../../../apollo/generated-components';
 import { CreatePostingsModalNoJobs } from './create-posting-modal-no-jobs';
 import { createPostingSchema } from './form/create-posting-validation';
@@ -17,8 +19,7 @@ import { CreatePostingForm } from './form/create-posting-form';
 interface Props {
   companySlug: string;
   visible: boolean;
-  onOk: () => void;
-  onCancel: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
+  setVisible: (value: boolean) => void;
 }
 
 export const CreatePostingModal: React.FunctionComponent<Props> = ({
@@ -41,7 +42,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
 
   return (
     <Modal
-      title="Create Job Posting"
+      title="Post Position"
       {...modal}
       maskClosable={false}
       destroyOnClose={true}
@@ -49,7 +50,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
       width={800}
       footer={
         hasJobs && [
-          <Button key="back" onClick={modal.onCancel}>
+          <Button key="back" onClick={() => modal.setVisible(false)}>
             Cancel
           </Button>,
           <Button key="submit" type="primary" onClick={handleSubmit}>
@@ -77,17 +78,48 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
           }
 
           return (
-            <CreatePostingComponent>
-              {post => (
+            <ApolloConsumer>
+              {client => (
                 <Formik
                   ref={formRef}
                   validateOnBlur={false}
                   validateOnChange={false}
                   onSubmit={async ({ addressFormatted, ...input }) => {
                     try {
-                      console.log(input);
-                      await post({ variables: { companySlug, input } });
-                      modal.onOk();
+                      const posting = await client.mutate({
+                        mutation: CreatePostingDocument,
+                        variables: { companySlug, input },
+                        update(_, result) {
+                          if (!result.data) {
+                            throw new Error('Create posting error');
+                          }
+
+                          client.mutate({
+                            mutation: CreatePostingClientDocument,
+                            variables: {
+                              postingId: result.data.createPosting.id,
+                              companySlug,
+                            },
+                          });
+                        },
+                      });
+
+                      if (!posting || !posting.data) {
+                        throw new Error('Create posting error');
+                      }
+
+                      modal.setVisible(false);
+
+                      const { createPosting } = posting.data;
+
+                      setTimeout(
+                        () =>
+                          notification.success({
+                            message: 'Position posted',
+                            description: `${createPosting.job.name} successfully posted!`,
+                          }),
+                        400,
+                      );
                     } catch (err) {
                       console.log(err);
                       throw err;
@@ -107,7 +139,7 @@ export const CreatePostingModal: React.FunctionComponent<Props> = ({
                   }}
                 </Formik>
               )}
-            </CreatePostingComponent>
+            </ApolloConsumer>
           );
         }}
       </FindAllJobsComponent>

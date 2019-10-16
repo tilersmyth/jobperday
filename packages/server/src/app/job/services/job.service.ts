@@ -13,6 +13,8 @@ import { JobInput } from '../inputs/job.input';
 import { JobAddress } from '../interfaces/job-address.interface';
 import { CompanyService } from '../../company/services';
 import { inspect } from 'util';
+import { JobPostingResultsDto } from '../dto/job-posting-results.dto';
+import { PaginationInput } from '../../_helpers/inputs/pagination.input';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -59,8 +61,9 @@ export class JobService extends CrudService<JobEntity> {
 
   public async findCurrentPostings(
     company: CompanyEntity,
-  ): Promise<JobPostingEntity[]> {
-    return this.postingService.findCurrent(company.id);
+    input: PaginationInput,
+  ): Promise<JobPostingResultsDto> {
+    return this.postingService.findCurrent(company.id, input);
   }
 
   public async addPosting(
