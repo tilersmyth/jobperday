@@ -79,4 +79,14 @@ export class JobResolver {
     this.logger.debug(`[addPosting] job posting added: ${posting.id}`);
     return posting;
   }
+
+  @Query(() => JobPostingDto)
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findPosting(
+    @Args('companySlug') _: string,
+    @Args('postingId') id: string,
+  ) {
+    return this.jobService.findPosting(id);
+  }
 }

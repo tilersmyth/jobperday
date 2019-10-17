@@ -86,4 +86,12 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
 
     return { count, postings };
   }
+
+  public async findSingle(id: string) {
+    return this.repository
+      .createQueryBuilder('posting')
+      .where('posting.id = :id', { id })
+      .leftJoinAndSelect('posting.job', 'job')
+      .getOne();
+  }
 }

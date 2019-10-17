@@ -3,11 +3,13 @@ import moment from 'moment';
 import { Table } from 'antd';
 import { PaginationConfig } from 'antd/lib/table';
 import { ApolloQueryResult } from 'apollo-boost';
+import Link from 'next/link';
 import { postingPaginationConfig } from '@jobperday/common';
 
 import { FindCurrentPostingsQuery } from '../../../../../apollo/generated-components';
 
 interface Props {
+  companySlug: string;
   loading: boolean;
   data: FindCurrentPostingsQuery['findCurrentPostings'];
   onLoadMore: (
@@ -18,45 +20,53 @@ interface Props {
   };
 }
 
-const columns = [
-  {
-    title: 'Job',
-    dataIndex: 'job',
-    key: 'job',
-    render: (text: string) => <a>{text}</a>,
-  },
-  {
-    title: 'Hourly rate',
-    dataIndex: 'rate',
-    key: 'rate',
-  },
-  {
-    title: 'Openings',
-    dataIndex: 'openings',
-    key: 'openings',
-  },
-  {
-    title: 'Start',
-    dataIndex: 'start',
-    key: 'start',
-  },
-  {
-    title: 'End',
-    dataIndex: 'end',
-    key: 'end',
-  },
-  {
-    title: 'Deadline',
-    dataIndex: 'deadline',
-    key: 'deadline',
-  },
-];
-
 export const CompanyPostingsTable: React.FunctionComponent<Props> = ({
+  companySlug,
   data,
   loading,
   onLoadMore,
 }) => {
+  const columns = [
+    {
+      title: 'Job',
+      dataIndex: 'job',
+      key: 'job',
+      render: (name: string, row: any) => {
+        console.log(row);
+        return (
+          <Link href={`/employer/${companySlug}/postings/${row.key}`}>
+            <a>{name}</a>
+          </Link>
+        );
+      },
+    },
+    {
+      title: 'Hourly rate',
+      dataIndex: 'rate',
+      key: 'rate',
+    },
+    {
+      title: 'Openings',
+      dataIndex: 'openings',
+      key: 'openings',
+    },
+    {
+      title: 'Start',
+      dataIndex: 'start',
+      key: 'start',
+    },
+    {
+      title: 'End',
+      dataIndex: 'end',
+      key: 'end',
+    },
+    {
+      title: 'Deadline',
+      dataIndex: 'deadline',
+      key: 'deadline',
+    },
+  ];
+
   const [config, setConfig] = useState({ page: 1, data, loading });
 
   useEffect(() => {
@@ -79,7 +89,6 @@ export const CompanyPostingsTable: React.FunctionComponent<Props> = ({
     <Table
       loading={config.loading}
       dataSource={dataSource}
-      size="middle"
       columns={columns}
       onChange={async update => {
         const refetch = onLoadMore(update);

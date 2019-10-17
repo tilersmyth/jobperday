@@ -80,4 +80,8 @@ export class JobService extends CrudService<JobEntity> {
     this.logger.debug(inspect(test));
     return test;
   }
+
+  public async findPosting(id: string): Promise<JobPostingEntity> {
+    return this.postingService.findSingle(id);
+  }
 }

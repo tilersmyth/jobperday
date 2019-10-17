@@ -4,15 +4,16 @@ import Link from 'next/link';
 
 import { FindAllJobsComponent } from '../../../../../apollo/generated-components';
 import { JobsNoResultsView } from './jobs-no-results-view';
-import { JobsBreadcrumb } from '../shared/jobs-breadcrumb';
-import { JobsLayout } from '../shared/layout/jobs-layout';
 import { CompanyJobsTable } from './company-jobs-table';
+import { CompanyBreadcrumb, CompanyCardContent } from '../../../shared';
 
 interface Props {
   companySlug: string;
 }
 
-const breadcrumbRoutes: JobsBreadcrumb[] = [{ path: '/', title: 'Jobs' }];
+const breadcrumbRoutes: CompanyBreadcrumb[] = [
+  { path: '/jobs', title: 'Jobs' },
+];
 
 const CreateJobButton: React.FunctionComponent<Props> = ({ companySlug }) => (
   <Link href={`/employer/${companySlug}/jobs/create`}>
@@ -28,7 +29,7 @@ export const CompanyJobsView: React.FunctionComponent<Props> = ({
   const [hasJobs, setHasJobs] = useState(false);
 
   return (
-    <JobsLayout
+    <CompanyCardContent
       breadcrumbs={breadcrumbRoutes}
       companySlug={companySlug}
       extra={hasJobs && <CreateJobButton companySlug={companySlug} />}
@@ -58,6 +59,6 @@ export const CompanyJobsView: React.FunctionComponent<Props> = ({
           return <CompanyJobsTable jobs={jobs} />;
         }}
       </FindAllJobsComponent>
-    </JobsLayout>
+    </CompanyCardContent>
   );
 };

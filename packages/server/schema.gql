@@ -243,6 +243,7 @@ type Query {
   findAllJobs(companySlug: String!): [JobDto!]!
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
+  findPosting(postingId: String!, companySlug: String!): JobPostingDto!
   search(input: SearchInput!): SearchDto!
 }
 

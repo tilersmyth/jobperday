@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import { postingPaginationConfig } from '@jobperday/common';
 
-import { JobsLayout } from '../../jobs/shared/layout/jobs-layout';
-import { JobsBreadcrumb } from '../../jobs/shared/jobs-breadcrumb';
 import { CreatePostingModal } from '../create-posting/create-posting-modal';
 import { CompanyPostingsTable } from './company-postings-table';
 import { CompanyPostingsData } from './company-postings-data';
+import { CompanyBreadcrumb, CompanyCardContent } from '../../../shared';
+import './style.less';
 
 interface Props {
   companySlug: string;
 }
 
-const breadcrumbRoutes: JobsBreadcrumb[] = [{ path: '/', title: 'Postings' }];
+const breadcrumbRoutes: CompanyBreadcrumb[] = [
+  { path: '/', title: 'Postings' },
+];
 
 // Results to show per page
 const queryLimit: number = postingPaginationConfig.limit;
@@ -24,7 +26,8 @@ export const CompanyPostingsView: React.FunctionComponent<Props> = ({
 
   return (
     <React.Fragment>
-      <JobsLayout
+      <CompanyCardContent
+        className="company-postings-card"
         breadcrumbs={breadcrumbRoutes}
         companySlug={companySlug}
         extra={
@@ -41,6 +44,7 @@ export const CompanyPostingsView: React.FunctionComponent<Props> = ({
 
             return (
               <CompanyPostingsTable
+                companySlug={companySlug}
                 loading={loading}
                 data={
                   (data && data.findCurrentPostings) || {
@@ -80,7 +84,7 @@ export const CompanyPostingsView: React.FunctionComponent<Props> = ({
             );
           }}
         </CompanyPostingsData>
-      </JobsLayout>
+      </CompanyCardContent>
       <CreatePostingModal
         companySlug={companySlug}
         visible={modalVisible}

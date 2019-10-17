@@ -5,15 +5,14 @@ import { CreateJobComponent } from '../../../../../apollo/generated-components';
 import { CreateJobSchema } from '../../../../../utils/yup-validation';
 import { CompanyCreateJobsForm } from './form/create-jobs-form';
 import { initialJobValues } from './initial-job-values';
-import { JobsBreadcrumb } from '../shared/jobs-breadcrumb';
-import { JobsLayout } from '../shared/layout/jobs-layout';
+import { CompanyCardContent, CompanyBreadcrumb } from '../../../shared';
 
 interface Props {
   companySlug: string;
 }
 
-const breadcrumbRoutes: JobsBreadcrumb[] = [
-  { path: '/', title: 'Jobs' },
+const breadcrumbRoutes: CompanyBreadcrumb[] = [
+  { path: '/jobs', title: 'Jobs' },
   { path: '/create', title: 'Create Job' },
 ];
 
@@ -21,7 +20,10 @@ export const CompanyCreateJobsView: React.FunctionComponent<Props> = ({
   companySlug,
 }) => {
   return (
-    <JobsLayout breadcrumbs={breadcrumbRoutes} companySlug={companySlug}>
+    <CompanyCardContent
+      breadcrumbs={breadcrumbRoutes}
+      companySlug={companySlug}
+    >
       <CreateJobComponent>
         {create => (
           <Formik
@@ -42,6 +44,6 @@ export const CompanyCreateJobsView: React.FunctionComponent<Props> = ({
           </Formik>
         )}
       </CreateJobComponent>
-    </JobsLayout>
+    </CompanyCardContent>
   );
 };
