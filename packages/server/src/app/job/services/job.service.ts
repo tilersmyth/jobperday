@@ -59,6 +59,13 @@ export class JobService extends CrudService<JobEntity> {
     return this.findAll({ where: { company } });
   }
 
+  public async findSingle(
+    company: CompanyEntity,
+    jobSlug: string,
+  ): Promise<JobEntity> {
+    return this.findOne({ where: { company, slug: jobSlug } });
+  }
+
   public async findCurrentPostings(
     company: CompanyEntity,
     input: PaginationInput,

@@ -1,10 +1,10 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../types';
-import { checkAuth } from '../../../../utils/checkAuth';
+import { fetchMe } from '../../../../utils';
 import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { CompanyLayout } from '../../../../components/employer/single-company/shared/layout/company-layout';
+import { SingleCompanyLayout } from '../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
 
 interface Props {
   me?: MeQuery['me'];
@@ -17,21 +17,20 @@ const EmployerCompanyAccountProfile: NextPage<Props> = ({ me, slug }) => {
   }
 
   return (
-    <CompanyLayout
+    <SingleCompanyLayout
       pageTitle="Profile"
-      companySlug={slug}
       pageRole="manager"
-      header={{ subTitle: 'Profile' }}
+      companySlug={slug}
     >
-      {() => <div>Account Profile Page</div>}
-    </CompanyLayout>
+      <div>Account Profile Page</div>
+    </SingleCompanyLayout>
   );
 };
 
 EmployerCompanyAccountProfile.getInitialProps = async (
   ctx: NextPageContextApollo,
 ) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   if (!me) {
     redirect(ctx, '/login');

@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../types';
-import { checkAuth } from '../../../../utils/checkAuth';
+import { fetchMe } from '../../../../utils';
 import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { CompanyLayout } from '../../../../components/employer/single-company/shared/layout/company-layout';
-import { CompanyPostingsView } from '../../../../components/employer/single-company/postings/all-postings/company-postings-view';
+import { CompanyPostingsView } from '../../../../components/company/single-company/postings/all-postings/company-postings-view';
+import { SingleCompanyLayout } from '../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
 
 interface Props {
   me?: MeQuery['me'];
@@ -18,21 +18,20 @@ const EmployerCompanyPostings: NextPage<Props> = ({ me, slug }) => {
   }
 
   return (
-    <CompanyLayout
-      pageTitle=""
+    <SingleCompanyLayout
+      pageTitle="Postings"
+      pageRole="manager"
       companySlug={slug}
-      pageRole="associate"
-      header={{ subTitle: 'Postings' }}
     >
-      {() => <CompanyPostingsView companySlug={slug} />}
-    </CompanyLayout>
+      <CompanyPostingsView />
+    </SingleCompanyLayout>
   );
 };
 
 EmployerCompanyPostings.getInitialProps = async (
   ctx: NextPageContextApollo,
 ) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   if (!me) {
     redirect(ctx, '/login');

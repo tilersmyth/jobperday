@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../types';
-import { checkAuth } from '../utils/checkAuth';
+import { fetchMe } from '../utils';
 import { SearchView } from '../components/search/search-view';
 import { MeQuery, SearchInput } from '../apollo/generated-components';
 import { SearchLocation } from '../utils/search/search-location.util';
@@ -21,7 +21,7 @@ const Search: NextPage<Props> = ({ me, searchArgs }) => {
 };
 
 Search.getInitialProps = async (ctx: NextPageContextApollo) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   const { query } = ctx;
 

@@ -15,14 +15,26 @@ export const findEmployerCompaniesQuery = gql`
 `;
 
 export const findEmployerCompanyQuery = gql`
+  fragment CompanyParts on EmployerCompanyDto {
+    id
+    name
+    slug
+    setup_complete
+    member {
+      role
+    }
+  }
+
   query FindEmployerCompany($companySlug: String!) {
     findEmployerCompany(companySlug: $companySlug) {
-      name
-      slug
-      setup_complete
-      member {
-        role
-      }
+      ...CompanyParts
+    }
+    setCompany @client
+  }
+
+  query CurrentCompany {
+    currentCompany @client {
+      ...CompanyParts
     }
   }
 `;

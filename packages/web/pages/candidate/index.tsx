@@ -2,7 +2,7 @@ import { NextPage } from 'next';
 import Router from 'next/router';
 
 import { NextPageContextApollo } from '../../types';
-import { checkAuth } from '../../utils/checkAuth';
+import { fetchMe } from '../../utils';
 import { CandidateView } from '../../components/candidate/candidate-view';
 import { MeQuery, SearchInput } from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
@@ -22,7 +22,7 @@ const Candidate: NextPage<Props> = ({ me, searchArgs }) => {
 };
 
 Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
   const searchArgs = new SearchModel();
 
   if (!me) {

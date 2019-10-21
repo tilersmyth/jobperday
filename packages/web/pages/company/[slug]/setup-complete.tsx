@@ -1,22 +1,20 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../types';
-import { checkAuth } from '../../../utils/checkAuth';
+import { fetchMe } from '../../../utils';
 import {
-  MeQuery,
   FindCompanyDocument,
   FindCompanyQuery,
 } from '../../../apollo/generated-components';
 import { redirect } from '../../../apollo/redirect';
-import { SetupCompleteView } from '../../../components/employer/create-company/complete/setup-complete-view';
+import { SetupCompleteView } from '../../../components/company/create-company/complete/setup-complete-view';
 
 interface Props {
-  me: MeQuery['me'] | null;
-  company: FindCompanyQuery['findCompany'] | null;
+  company?: FindCompanyQuery['findCompany'] | null;
 }
 
-const CompanySetupComplete: NextPage<Props> = ({ me, company }) => {
-  if (!me || !company) {
+const CompanySetupComplete: NextPage<Props> = ({ company }) => {
+  if (!company) {
     return null;
   }
 
@@ -24,11 +22,11 @@ const CompanySetupComplete: NextPage<Props> = ({ me, company }) => {
 };
 
 CompanySetupComplete.getInitialProps = async (ctx: NextPageContextApollo) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   if (!me) {
     redirect(ctx, '/login');
-    return { me, company: null };
+    return {};
   }
 
   const { data } = await ctx.apolloClient.query({

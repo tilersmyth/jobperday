@@ -1,11 +1,11 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../../types';
-import { checkAuth } from '../../../../../utils/checkAuth';
+import { fetchMe } from '../../../../../utils';
 import { MeQuery } from '../../../../../apollo/generated-components';
 import { redirect } from '../../../../../apollo/redirect';
-import { CompanyLayout } from '../../../../../components/employer/single-company/shared/layout/company-layout';
-import { CompanyCreateJobsView } from '../../../../../components/employer/single-company/jobs/create-job/create-jobs-view';
+import { CompanyCreateJobsView } from '../../../../../components/company/single-company/jobs/create-job/create-jobs-view';
+import { SingleCompanyLayout } from '../../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
 
 interface Props {
   me?: MeQuery['me'];
@@ -18,21 +18,20 @@ const EmployerCompanyCreateJobs: NextPage<Props> = ({ me, slug }) => {
   }
 
   return (
-    <CompanyLayout
-      pageTitle=""
-      companySlug={slug}
+    <SingleCompanyLayout
+      pageTitle="Create Job"
       pageRole="associate"
-      header={{ subTitle: 'Jobs' }}
+      companySlug={slug}
     >
-      {() => <CompanyCreateJobsView companySlug={slug} />}
-    </CompanyLayout>
+      <CompanyCreateJobsView />}
+    </SingleCompanyLayout>
   );
 };
 
 EmployerCompanyCreateJobs.getInitialProps = async (
   ctx: NextPageContextApollo,
 ) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   if (!me) {
     redirect(ctx, '/login');

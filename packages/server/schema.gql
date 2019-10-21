@@ -241,6 +241,7 @@ type Query {
   findEmployerCompanies: [MemberCompanyDto!]!
   findEmployerCompany(companySlug: String!): EmployerCompanyDto!
   findAllJobs(companySlug: String!): [JobDto!]!
+  findJob(jobSlug: String!, companySlug: String!): JobDto!
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
   findPosting(postingId: String!, companySlug: String!): JobPostingDto!

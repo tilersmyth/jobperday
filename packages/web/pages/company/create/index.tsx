@@ -1,10 +1,10 @@
 import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../types';
-import { checkAuth } from '../../../utils/checkAuth';
+import { fetchMe } from '../../../utils';
 import { MeQuery } from '../../../apollo/generated-components';
 import { redirect } from '../../../apollo/redirect';
-import { CreateCompanyView } from '../../../components/employer/create-company/stepper/create-company-view';
+import { CreateCompanyView } from '../../../components/company/create-company/stepper/create-company-view';
 
 interface Props {
   me: MeQuery['me'] | null;
@@ -19,7 +19,7 @@ const CreateCompany: NextPage<Props> = ({ me }) => {
 };
 
 CreateCompany.getInitialProps = async (ctx: NextPageContextApollo) => {
-  const me = await checkAuth(ctx);
+  const me = await fetchMe(ctx);
 
   if (!me) {
     redirect(ctx, '/login');

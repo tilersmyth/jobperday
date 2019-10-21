@@ -46,6 +46,17 @@ export class JobResolver {
     return this.jobService.findAllJobs(company);
   }
 
+  @Query(() => JobDto)
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findJob(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+    @Args('jobSlug') jobSlug: string,
+  ) {
+    return this.jobService.findSingle(company, jobSlug);
+  }
+
   @Query(() => JobPostingResultsDto)
   @Role('manager')
   @UseGuards(RolesGuard)
