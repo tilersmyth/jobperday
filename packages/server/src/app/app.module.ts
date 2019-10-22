@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { CompanyModule } from './company/company.module';
 import { JobModule } from './job/job.module';
 import { SearchModule } from './search/search.module';
+import { ApplicationModule } from './application/application.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { SearchModule } from './search/search.module';
       useClass: GqlConfigService,
     }),
     SearchModule,
+    ApplicationModule,
   ],
 })
 export class AppModule {

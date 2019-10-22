@@ -16,7 +16,10 @@ const breadcrumbRoutes: CompanyBreadcrumb[] = [
 ];
 
 const CreateJobButton: React.FunctionComponent<Props> = ({ companySlug }) => (
-  <Link href={`/employer/${companySlug}/jobs/create`}>
+  <Link
+    as={`/employer/${companySlug}/jobs/create`}
+    href={`/employer/[company-slug]/jobs/create`}
+  >
     <a>
       <Button>Create Job</Button>
     </a>
@@ -51,7 +54,7 @@ export const CompanyJobsView: React.FunctionComponent<Props> = ({
             return <JobsNoResultsView companySlug={companySlug} />;
           }
 
-          return <CompanyJobsTable companySlug={companySlug} jobs={jobs} />;
+          return <CompanyJobsTable jobs={jobs} />;
         }}
       </FindAllJobsComponent>
     </CompanyCardContent>

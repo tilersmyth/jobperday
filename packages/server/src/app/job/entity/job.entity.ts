@@ -11,6 +11,7 @@ import { Length, MaxLength } from 'class-validator';
 
 import { JobPostingEntity } from './job-posting.entity';
 import { CompanyEntity } from '../../company/entity/company.entity';
+import { ApplicationEntity } from '../../application/entity/application.entity';
 
 @Entity('jobs')
 export class JobEntity extends BaseEntity {
@@ -41,6 +42,9 @@ export class JobEntity extends BaseEntity {
 
   @Column({ type: 'text', array: true })
   public tags: string[];
+
+  @ManyToOne(() => ApplicationEntity, { nullable: true })
+  public default_application: ApplicationEntity;
 
   @OneToMany(() => JobPostingEntity, posting => posting.job)
   public postings: JobPostingEntity[];

@@ -10,6 +10,7 @@ import {
 
 import { JobEntity } from './job.entity';
 import { CompanyAddressEntity } from '../../company/entity';
+import { ApplicationEntity } from '../../application/entity/application.entity';
 
 @Entity('job_postings')
 export class JobPostingEntity extends BaseEntity {
@@ -47,6 +48,9 @@ export class JobPostingEntity extends BaseEntity {
 
   @Column('uuid')
   public companyId: string;
+
+  @ManyToOne(() => ApplicationEntity, { nullable: true })
+  public application: ApplicationEntity;
 
   @ManyToOne(() => JobEntity, job => job.postings)
   public job: JobEntity;

@@ -23,7 +23,7 @@ const EmployerCompanyCreateJobs: NextPage<Props> = ({ me, slug }) => {
       pageRole="associate"
       companySlug={slug}
     >
-      <CompanyCreateJobsView />}
+      <CompanyCreateJobsView />
     </SingleCompanyLayout>
   );
 };

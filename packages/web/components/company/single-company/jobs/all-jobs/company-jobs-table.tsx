@@ -2,25 +2,32 @@ import React from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
 import Link from 'next/link';
+import { useQuery } from 'react-apollo';
 
-import { FindAllJobsQuery } from '../../../../../apollo/generated-components';
+import {
+  FindAllJobsQuery,
+  CurrentCompanyDocument,
+} from '../../../../../apollo/generated-components';
 
 interface Props {
   jobs: FindAllJobsQuery['findAllJobs'];
-  companySlug: string;
 }
 
-export const CompanyJobsTable: React.FunctionComponent<Props> = ({
-  companySlug,
-  jobs,
-}) => {
+export const CompanyJobsTable: React.FunctionComponent<Props> = ({ jobs }) => {
+  const {
+    data: { currentCompany },
+  } = useQuery<any>(CurrentCompanyDocument);
+
   const columns = [
     {
       title: 'Name',
       dataIndex: 'name',
       key: 'name',
       render: (name: string, row: any) => (
-        <Link href={`/employer/${companySlug}/jobs/${row.key}`}>
+        <Link
+          as={`/employer/${currentCompany.slug}/jobs/${row.key}`}
+          href={`/employer/[company-slug]/jobs/[job-slug]`}
+        >
           <a>{name}</a>
         </Link>
       ),

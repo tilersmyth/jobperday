@@ -25,6 +25,32 @@ input AddressInput {
   coord_lng: Float!
 }
 
+type ApplicationDto {
+  id: ID!
+  title: String!
+  fields: [ApplicationFieldDto!]!
+}
+
+type ApplicationFieldDto {
+  id: ID!
+  question: String!
+  required: Boolean!
+  type: [FieldsEnum!]!
+  options: [String!]!
+}
+
+input ApplicationFieldInput {
+  question: String!
+  required: Boolean!
+  type: [FieldsEnum!]!
+  options: [String!]
+}
+
+input ApplicationInput {
+  title: String!
+  fields: [ApplicationFieldInput!]!
+}
+
 type CompanyAddressDto {
   street: String!
   street2: String
@@ -115,6 +141,13 @@ type EmployerCompanyDto {
   setup_complete: Boolean!
   setup_stage: Int!
   member: CompanyMemberDto!
+}
+
+enum FieldsEnum {
+  input
+  textarea
+  radio
+  checkbox
 }
 
 input ForgotPasswordInput {
@@ -221,6 +254,7 @@ type Mutation {
   createCompanyAddMembers(input: [CompanyMemberInput!], companySlug: String!): Boolean!
   createJob(input: JobInput!, companySlug: String!): JobDto!
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
+  createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
 }
 
 input PaginationInput {

@@ -10,7 +10,7 @@ import { UserModule } from '../user/user.module';
 const PROVIDERS = [...jobProviders, JobService, JobPostingService, JobResolver];
 
 @Module({
-  providers: [...PROVIDERS, JobService, JobResolver],
+  providers: [...PROVIDERS],
   imports: [DatabaseModule, UserModule, CompanyModule],
 })
 export class JobModule {}
