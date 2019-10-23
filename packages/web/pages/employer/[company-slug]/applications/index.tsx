@@ -4,31 +4,33 @@ import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { CompanyJobsView } from '../../../../components/company/single-company/jobs/all-jobs/company-jobs-view';
 import { SingleCompanyLayout } from '../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
+import { ListApplicationsView } from '../../../../components/company/single-company/applications/list';
 
 interface Props {
   me?: MeQuery['me'];
   slug?: string;
 }
 
-const EmployerCompanyJobs: NextPage<Props> = ({ me, slug }) => {
+const CompanyApplicationsPage: NextPage<Props> = ({ me, slug }) => {
   if (!me || !slug) {
     return null;
   }
 
   return (
     <SingleCompanyLayout
-      pageTitle="Jobs"
-      pageRole="associate"
+      pageTitle="Applications"
+      pageRole="manager"
       companySlug={slug}
     >
-      <CompanyJobsView />
+      <ListApplicationsView />
     </SingleCompanyLayout>
   );
 };
 
-EmployerCompanyJobs.getInitialProps = async (ctx: NextPageContextApollo) => {
+CompanyApplicationsPage.getInitialProps = async (
+  ctx: NextPageContextApollo,
+) => {
   const me = await fetchMe(ctx);
 
   if (!me) {
@@ -46,4 +48,4 @@ EmployerCompanyJobs.getInitialProps = async (ctx: NextPageContextApollo) => {
   return { me, slug };
 };
 
-export default EmployerCompanyJobs;
+export default CompanyApplicationsPage;

@@ -35,15 +35,22 @@ type ApplicationFieldDto {
   id: ID!
   question: String!
   required: Boolean!
-  type: [FieldsEnum!]!
+  type: ApplicationFieldsEnum!
   options: [String!]!
 }
 
 input ApplicationFieldInput {
   question: String!
   required: Boolean!
-  type: [FieldsEnum!]!
+  type: ApplicationFieldsEnum!
   options: [String!]
+}
+
+enum ApplicationFieldsEnum {
+  input
+  textarea
+  radio
+  checkbox
 }
 
 input ApplicationInput {
@@ -141,13 +148,6 @@ type EmployerCompanyDto {
   setup_complete: Boolean!
   setup_stage: Int!
   member: CompanyMemberDto!
-}
-
-enum FieldsEnum {
-  input
-  textarea
-  radio
-  checkbox
 }
 
 input ForgotPasswordInput {

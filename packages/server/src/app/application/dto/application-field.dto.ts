@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from 'type-graphql';
+import { ApplicationFieldOptions } from '@jobperday/common';
 
-import { ApplicationFieldTypes } from '../types';
 import { ApplicationFieldsEnum } from '../enums';
 
 @ObjectType()
@@ -12,7 +12,7 @@ export class ApplicationFieldDto {
   @Field()
   readonly required: boolean;
   @Field(() => ApplicationFieldsEnum)
-  readonly type: ApplicationFieldTypes;
+  readonly type: ApplicationFieldOptions;
   @Field(() => [String])
   readonly options: string[];
 }

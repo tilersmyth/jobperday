@@ -4,32 +4,33 @@ import { NextPageContextApollo } from '../../../../../types';
 import { fetchMe } from '../../../../../utils';
 import { MeQuery } from '../../../../../apollo/generated-components';
 import { redirect } from '../../../../../apollo/redirect';
-import { SingleJobView } from '../../../../../components/company/single-company/jobs/single-job/single-job-view';
 import { SingleCompanyLayout } from '../../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
+import { CreateApplicationView } from '../../../../../components/company/single-company/applications';
 
 interface Props {
   me?: MeQuery['me'];
   slug?: string;
-  jobSlug?: string;
 }
 
-const JobAppBuilder: NextPage<Props> = ({ slug, jobSlug }) => {
-  if (!slug || !jobSlug) {
+const CompanyCreateApplicationsPage: NextPage<Props> = ({ me, slug }) => {
+  if (!me || !slug) {
     return null;
   }
 
   return (
     <SingleCompanyLayout
-      pageTitle="App Builder"
+      pageTitle="Applications"
       pageRole="manager"
       companySlug={slug}
     >
-      <SingleJobView jobSlug={jobSlug} />
+      <CreateApplicationView />
     </SingleCompanyLayout>
   );
 };
 
-JobAppBuilder.getInitialProps = async (ctx: NextPageContextApollo) => {
+CompanyCreateApplicationsPage.getInitialProps = async (
+  ctx: NextPageContextApollo,
+) => {
   const me = await fetchMe(ctx);
 
   if (!me) {
@@ -43,9 +44,8 @@ JobAppBuilder.getInitialProps = async (ctx: NextPageContextApollo) => {
   }
 
   const slug = ctx.query['company-slug'] as string;
-  const jobSlug = ctx.query['job-slug'] as string;
 
-  return { slug, jobSlug };
+  return { me, slug };
 };
 
-export default JobAppBuilder;
+export default CompanyCreateApplicationsPage;

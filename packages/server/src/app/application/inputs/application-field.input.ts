@@ -1,7 +1,7 @@
 import { InputType, Field } from 'type-graphql';
+import { ApplicationFieldOptions } from '@jobperday/common';
 
 import { ApplicationFieldsEnum } from '../enums';
-import { ApplicationFieldTypes } from '../types';
 
 @InputType()
 export class ApplicationFieldInput {
@@ -10,7 +10,7 @@ export class ApplicationFieldInput {
   @Field()
   readonly required: boolean;
   @Field(() => ApplicationFieldsEnum)
-  readonly type: ApplicationFieldTypes;
+  readonly type: ApplicationFieldOptions;
   @Field(() => [String], { nullable: true })
   readonly options: string[];
 }

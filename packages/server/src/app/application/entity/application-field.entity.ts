@@ -7,9 +7,9 @@ import {
   ManyToOne,
 } from 'typeorm';
 import { Length } from 'class-validator';
+import { ApplicationFieldOptions } from '@jobperday/common';
 
 import { ApplicationEntity } from './application.entity';
-import { ApplicationFieldTypes } from '../types';
 
 @Entity('application_fields')
 export class ApplicationFieldEntity extends BaseEntity {
@@ -24,7 +24,7 @@ export class ApplicationFieldEntity extends BaseEntity {
   public required: boolean;
 
   @Column('text')
-  public type: ApplicationFieldTypes;
+  public type: ApplicationFieldOptions;
 
   @Column({ type: 'text', array: true })
   public options: string[] = [];

@@ -8,5 +8,5 @@ export enum ApplicationFieldsEnum {
 }
 
 registerEnumType(ApplicationFieldsEnum, {
-  name: 'FieldsEnum',
+  name: 'ApplicationFieldsEnum',
 });
