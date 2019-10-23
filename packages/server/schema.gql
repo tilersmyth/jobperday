@@ -47,7 +47,7 @@ input ApplicationFieldInput {
 }
 
 enum ApplicationFieldsEnum {
-  input
+  text
   textarea
   radio
   checkbox

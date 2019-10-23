@@ -3,16 +3,20 @@ import { Modal, Button } from 'antd';
 import { Formik } from 'formik';
 
 import { createApplicationFieldSchema } from '../../validation';
-import { initialApplicationFieldValues } from '../../initial-values/application-field-values';
 import { ApplicationFieldInput } from '../../../../../../../apollo/generated-components';
 import { AddApplicatonFieldForm } from './add-field-form';
+import { ModalState } from './modal-types';
 
 interface Props {
-  visible: boolean;
-  setVisible: (value: boolean) => void;
+  state: ModalState;
+  setState: (state: ModalState) => void;
+  onSubmit: (values: ApplicationFieldInput, fieldIndex?: number) => void;
 }
 
-export const AddFieldModal: React.FunctionComponent<Props> = ({ ...modal }) => {
+export const AddFieldModal: React.FunctionComponent<Props> = ({
+  onSubmit,
+  ...modal
+}) => {
   const formRef = useRef<Formik<ApplicationFieldInput>>(null);
 
   const handleSubmit = async (_: React.MouseEvent<HTMLElement, MouseEvent>) => {
@@ -29,17 +33,22 @@ export const AddFieldModal: React.FunctionComponent<Props> = ({ ...modal }) => {
   return (
     <Modal
       title="Add Application Field"
-      {...modal}
+      visible={modal.state.visible}
       maskClosable={false}
       destroyOnClose={true}
       closable={false}
       width={600}
       footer={[
-        <Button key="back" onClick={() => modal.setVisible(false)}>
+        <Button
+          key="back"
+          onClick={() => modal.setState({ ...modal.state, visible: false })}
+        >
           Cancel
         </Button>,
         <Button key="submit" type="primary" onClick={handleSubmit}>
-          Add Field
+          {typeof modal.state.editField !== 'undefined'
+            ? 'Update Field'
+            : 'Add Field'}
         </Button>,
       ]}
     >
@@ -47,15 +56,8 @@ export const AddFieldModal: React.FunctionComponent<Props> = ({ ...modal }) => {
         ref={formRef}
         validateOnBlur={false}
         validateOnChange={false}
-        onSubmit={async () => {
-          try {
-            modal.setVisible(false);
-          } catch (err) {
-            console.log(err);
-            throw err;
-          }
-        }}
-        initialValues={initialApplicationFieldValues}
+        onSubmit={values => onSubmit(values, modal.state.editField)}
+        initialValues={modal.state.initialValues}
         validationSchema={createApplicationFieldSchema}
       >
         {formikProps => <AddApplicatonFieldForm {...formikProps} />}

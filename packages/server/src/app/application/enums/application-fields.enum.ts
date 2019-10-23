@@ -1,7 +1,7 @@
 import { registerEnumType } from 'type-graphql';
 
 export enum ApplicationFieldsEnum {
-  input = 'input',
+  text = 'text',
   textarea = 'textarea',
   radio = 'radio',
   checkbox = 'checkbox',
