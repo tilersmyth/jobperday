@@ -11,11 +11,14 @@ import { CompanyMemberService } from '../src/app/company/services';
 import { jobProviders } from '../src/app/job/job.providers';
 import { JobSeedService } from './providers/job.service';
 import { JobPostingSeedService } from './providers/job-posting.service';
+import { ApplicationSeedService } from './providers/application.service';
+import { applicationProviders } from 'server/src/app/application/application.providers';
 
 const PROVIDERS = [
   ...userProviders,
   ...companyProviders,
   ...jobProviders,
+  ...applicationProviders,
   SeedDBService,
   SeedService,
   UserSeedService,
@@ -23,6 +26,7 @@ const PROVIDERS = [
   CompanyMemberService,
   JobSeedService,
   JobPostingSeedService,
+  ApplicationSeedService,
 ];
 
 @Module({

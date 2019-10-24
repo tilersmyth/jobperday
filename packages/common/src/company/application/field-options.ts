@@ -4,7 +4,7 @@ export type ApplicationFieldOptions =
   | 'radio'
   | 'checkbox';
 
-export const applicationFieldOptions: string[] = [
+export const applicationFieldOptions: ApplicationFieldOptions[] = [
   'text',
   'textarea',
   'radio',

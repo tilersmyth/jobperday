@@ -49,7 +49,7 @@ export class JobPostingEntity extends BaseEntity {
   @Column('uuid')
   public companyId: string;
 
-  @ManyToOne(() => ApplicationEntity, { nullable: true })
+  @ManyToOne(() => ApplicationEntity)
   public application: ApplicationEntity;
 
   @ManyToOne(() => JobEntity, job => job.postings)

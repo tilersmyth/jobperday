@@ -8,6 +8,7 @@ import { SlugGeneratorUtil } from '../../src/app/_helpers';
 import { JobEntity } from '../../src/app/job/entity';
 import { JOB_TOKEN } from '../../src/app/job/job.constants';
 import { randomNum } from '../utils/randomNum.util';
+import { ApplicationSeedService } from './application.service';
 
 @Injectable()
 export class JobSeedService {
@@ -16,6 +17,7 @@ export class JobSeedService {
   constructor(
     @Inject(JOB_TOKEN)
     protected readonly repository: Repository<JobEntity>,
+    protected appService: ApplicationSeedService,
   ) {}
 
   private async generateSlug(
@@ -43,6 +45,8 @@ export class JobSeedService {
     for (const company of companies) {
       const jobCount: number = randomNum(1, 5);
 
+      const application = await this.appService.create(company);
+
       for (let i = 1; i <= jobCount; i++) {
         const job = new JobEntity();
         job.companyName = company.name;
@@ -52,6 +56,7 @@ export class JobSeedService {
         job.description = faker.lorem.paragraph();
         job.type = faker.name.jobType();
         job.tags = this.tagGenerator();
+        job.default_application = application;
         job.company = company;
         const savedJob = await this.repository.save(job);
 
