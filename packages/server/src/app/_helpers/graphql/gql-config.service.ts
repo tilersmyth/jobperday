@@ -7,6 +7,10 @@ import { config } from '../../../config';
 export class GqlConfigService implements GqlOptionsFactory {
   createGqlOptions(): GqlModuleOptions {
     return {
+      uploads: {
+        maxFileSize: 10000000, // 10 MB
+        maxFiles: 5,
+      },
       cors: config.cors,
       introspection: true,
       playground: true,

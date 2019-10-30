@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
 import { ApplicationService } from './services';
 import { UseGuards } from '@nestjs/common';
@@ -29,5 +29,15 @@ export class ApplicationResolver {
     const app = await this.appService.create(company.id, input);
     this.logger.debug(`[createApplication] created app: ${app.title}`);
     return app;
+  }
+
+  @Query(() => [ApplicationDto])
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findAllApplications(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.appService.findAll({ where: { companyId: company.id } });
   }
 }

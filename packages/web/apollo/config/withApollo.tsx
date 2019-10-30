@@ -1,12 +1,13 @@
 import React from 'react';
 import cookie from 'cookie';
 import PropTypes from 'prop-types';
+import { ApolloClient } from 'apollo-client';
+import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { getDataFromTree } from 'react-apollo';
 import Head from 'next/head';
 
 import { initApollo } from './initApollo';
 import { isBrowser } from '../utils/isBrowser';
-import { ApolloClient, NormalizedCacheObject } from 'apollo-boost';
 
 const parseCookies = (req?: any, options = {}) => {
   return cookie.parse(

@@ -4,6 +4,8 @@ import { config } from '../../config';
 export * from './graphql';
 export * from './database';
 export * from './decorators';
+export * from './scalars';
+export * from './services';
 export * from './session';
 export * from './mail';
 export * from './slug-generator.util';

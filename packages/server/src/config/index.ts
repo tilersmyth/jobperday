@@ -24,6 +24,12 @@ interface Config {
     credentials: boolean;
     origin: string;
   };
+  s3: {
+    accessKeyId: string;
+    secretAccessKey: string;
+    bucket: string;
+    region: string;
+  };
   ses: {
     accessKeyId: string;
     secretAccessKey: string;
@@ -63,6 +69,12 @@ export const config: Config = {
   cors: {
     credentials: true,
     origin: process.env.FRONTEND_HOST,
+  },
+  s3: {
+    accessKeyId: process.env.AWS_S3_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_S3_SECRET_ACCESS_KEY,
+    bucket: process.env.AWS_S3_BUCKET,
+    region: process.env.AWS_SES_REGION,
   },
   ses: {
     accessKeyId: process.env.AWS_SES_ACCESS_KEY_ID,

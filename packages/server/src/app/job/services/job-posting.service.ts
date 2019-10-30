@@ -64,15 +64,11 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
     };
     posting.job = job;
     posting.companyId = company.id;
+    posting.applicationId = input.applicationId;
     return this.repository.save(posting);
   }
 
   public async findCurrent(companyId: string, input: PaginationInput) {
-    // return this.repository.find({
-    //   where: { companyId, apply_deadline: MoreThan(new Date()) },
-    //   relations: ['job'],
-    // });
-
     const query = this.repository
       .createQueryBuilder('posting')
       .where('posting.companyId = :companyId', { companyId })

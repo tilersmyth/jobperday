@@ -9,6 +9,7 @@ export interface PostingInitialValues extends AddJobPostingInput {
 
 export const initialPostingValues: PostingInitialValues = {
   jobId: '',
+  applicationId: '',
   address: {
     addressId: '',
   },

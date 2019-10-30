@@ -43,7 +43,13 @@ export class JobEntity extends BaseEntity {
   @Column({ type: 'text', array: true })
   public tags: string[];
 
-  @ManyToOne(() => ApplicationEntity, { nullable: true })
+  @Column({ type: 'boolean', default: false })
+  public setup_complete: boolean;
+
+  @Column({ type: 'int', default: 1 })
+  public setup_stage: number;
+
+  @ManyToOne(() => ApplicationEntity)
   public default_application: ApplicationEntity;
 
   @OneToMany(() => JobPostingEntity, posting => posting.job)

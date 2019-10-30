@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import { Table } from 'antd';
 import { PaginationConfig } from 'antd/lib/table';
-import { ApolloQueryResult } from 'apollo-boost';
+import { ApolloQueryResult } from 'apollo-client';
 import Link from 'next/link';
 import { postingPaginationConfig } from '@jobperday/common';
 

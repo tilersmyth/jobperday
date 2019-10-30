@@ -1,14 +1,14 @@
 import React from 'react';
 import { useQuery, QueryResult } from 'react-apollo';
 import { postingPaginationConfig } from '@jobperday/common';
+import { PaginationConfig } from 'antd/lib/table';
+import { ApolloQueryResult } from 'apollo-client';
 
 import {
   FindCurrentPostingsDocument,
   FindCurrentPostingsQuery,
   CurrentCompanyDocument,
 } from '../../../../../apollo/generated-components';
-import { PaginationConfig } from 'antd/lib/table';
-import { ApolloQueryResult } from 'apollo-boost';
 
 interface CompanyDataProps extends QueryResult<FindCurrentPostingsQuery> {
   loadMore: (

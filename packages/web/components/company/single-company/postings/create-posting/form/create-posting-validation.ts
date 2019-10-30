@@ -2,6 +2,7 @@ import { string, number, object, date, ref } from 'yup';
 
 export const createPostingSchema = object().shape({
   jobId: string().required('Required'),
+  applicationId: string().required('Required'),
   posting: object().shape({
     start_date: date()
       .required()

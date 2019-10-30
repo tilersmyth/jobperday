@@ -10,6 +10,7 @@ import {
   OpeningsInput,
   DatepickerInput,
   ActiveSwitch,
+  SelectApplicationInput,
 } from './inputs';
 import './style.less';
 
@@ -89,6 +90,17 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
             label="Deadline to apply"
             placeholder="Deadline to apply"
             component={DatepickerInput}
+          />
+        </Col>
+      </Row>
+      <Row gutter={16}>
+        <Col lg={{ span: 12 }}>
+          <Field
+            name="applicationId"
+            size="large"
+            placeholder="Select application"
+            companySlug={companySlug}
+            component={SelectApplicationInput}
           />
         </Col>
       </Row>

@@ -1,17 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { getManager } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
+import { getManager, Repository } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
 import { ApplicationEntity } from '../entity';
 import { ApplicationInput } from '../inputs';
 import { ApplicationFieldService } from './application-field.service';
+import { APPLICATION_TOKEN } from '../application.constants';
 
 @Injectable()
 export class ApplicationService extends CrudService<ApplicationEntity> {
   private logger = new AppLogger(ApplicationService.name);
 
-  constructor(protected fieldService: ApplicationFieldService) {
+  constructor(
+    @Inject(APPLICATION_TOKEN)
+    protected readonly repository: Repository<ApplicationEntity>,
+    protected fieldService: ApplicationFieldService,
+  ) {
     super();
   }
 

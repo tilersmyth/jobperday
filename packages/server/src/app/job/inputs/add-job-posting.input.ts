@@ -9,6 +9,8 @@ export class AddJobPostingInput {
   readonly jobId: string;
   @Field(() => AddJobPostingAddressInput)
   readonly address: AddJobPostingAddressInput;
+  @Field(() => ID)
+  readonly applicationId: string;
   @Field(() => JobPostingInput)
   readonly posting: JobPostingInput;
 }

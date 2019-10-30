@@ -49,8 +49,8 @@ export class JobPostingEntity extends BaseEntity {
   @Column('uuid')
   public companyId: string;
 
-  @ManyToOne(() => ApplicationEntity)
-  public application: ApplicationEntity;
+  @Column('uuid')
+  public applicationId: string;
 
   @ManyToOne(() => JobEntity, job => job.postings)
   public job: JobEntity;

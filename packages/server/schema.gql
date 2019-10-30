@@ -11,6 +11,7 @@ input AddJobPostingAddressInput {
 input AddJobPostingInput {
   jobId: ID!
   address: AddJobPostingAddressInput!
+  applicationId: ID!
   posting: JobPostingInput!
 }
 
@@ -75,6 +76,14 @@ type CompanyDto {
   slug: String!
   setup_complete: Boolean!
   setup_stage: Int!
+}
+
+type CompanyImageDto {
+  id: ID!
+  filename: String!
+  path: String!
+  thumb: String
+  awsKey: String!
 }
 
 type CompanyMemberDto {
@@ -255,6 +264,7 @@ type Mutation {
   createJob(input: JobInput!, companySlug: String!): JobDto!
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
+  uploadImage(input: UploadImageInput!, companySlug: String!): CompanyImageDto!
 }
 
 input PaginationInput {
@@ -280,6 +290,8 @@ type Query {
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
   findPosting(postingId: String!, companySlug: String!): JobPostingDto!
   search(input: SearchInput!): SearchDto!
+  findAllApplications(companySlug: String!): [ApplicationDto!]!
+  findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
 }
 
 input RegisterInput {
@@ -358,6 +370,13 @@ input UpdateProfileInput {
   cover_image: String
   about: String
   business_type: String
+}
+
+"""Upload custom scalar type"""
+scalar Upload
+
+input UploadImageInput {
+  image: Upload!
 }
 
 type UserDto {
