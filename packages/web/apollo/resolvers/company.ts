@@ -1,8 +1,8 @@
 import { ApolloCache } from 'apollo-cache';
 
 import {
-  FindEmployerCompanyQuery,
   CurrentCompanyDocument,
+  FindCompanyQuery,
 } from '../generated-components';
 
 type GetCacheKey = (obj: { __typename: string; id: string | number }) => any;
@@ -15,15 +15,20 @@ interface ApolloContext {
 export const companyResolvers = {
   Query: {
     setCompany: (
-      root: FindEmployerCompanyQuery,
+      { findCompany }: FindCompanyQuery,
       __: {},
       { cache }: ApolloContext,
     ) => {
-      const { findEmployerCompany } = root;
+      // need to accomodate company setup as well
+      // Finding current company should be combined at some point
+      // it comes down to varying role requirements (setup requires owner)
+      // const currentCompany = root.findEmployerCompany
+      //   ? root.findEmployerCompany
+      //   : root.findSetupCompany;
 
       cache.writeQuery({
         query: CurrentCompanyDocument,
-        data: { currentCompany: findEmployerCompany },
+        data: { currentCompany: findCompany },
       });
 
       return true;

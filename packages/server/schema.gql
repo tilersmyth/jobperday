@@ -5,7 +5,7 @@
 
 input AddJobPostingAddressInput {
   addressId: ID
-  newAddress: AddressInput
+  newAddress: AddressInput2
 }
 
 input AddJobPostingInput {
@@ -15,7 +15,30 @@ input AddJobPostingInput {
   posting: JobPostingInput!
 }
 
+type AddressDto {
+  id: ID!
+  street: String!
+  street2: String
+  city: String!
+  state: String!
+  postal_code: String!
+  country: String!
+  coord_lat: Float!
+  coord_lng: Float!
+}
+
 input AddressInput {
+  street: String!
+  street2: String
+  city: String!
+  state: String!
+  postal_code: String!
+  country: String!
+  coord_lat: Float!
+  coord_lng: Float!
+}
+
+input AddressInput2 {
   street: String
   street2: String
   city: String!
@@ -59,15 +82,15 @@ input ApplicationInput {
   fields: [ApplicationFieldInput!]!
 }
 
-type CompanyAddressDto {
-  street: String!
-  street2: String
-  city: String!
-  state: String!
-  postal_code: String!
-  country: String!
-  coord_lat: Float!
-  coord_lng: Float!
+type CompanyContactDto {
+  id: ID!
+  phone: String!
+  address: AddressDto!
+}
+
+input CompanyContactInput {
+  phone: String!
+  address: AddressInput!
 }
 
 type CompanyDto {
@@ -86,6 +109,11 @@ type CompanyImageDto {
   awsKey: String!
 }
 
+input CompanyInput {
+  name: String!
+  slug: String!
+}
+
 type CompanyMemberDto {
   id: ID!
   role: RoleEnum!
@@ -93,16 +121,22 @@ type CompanyMemberDto {
 }
 
 input CompanyMemberInput {
-  userId: ID
-  email: String!
-  role: String!
+  userId: ID!
+  role: MemberRolesEnum!
+  confirmed: Boolean
+}
+
+type CompanyProfileDto {
+  id: ID!
+  about: String!
+  cover_image: String!
+  profile_image: String!
 }
 
 input CompanyProfileInput {
   profile_image: String
   cover_image: String
   about: String!
-  business_type: String!
 }
 
 input CoordsInput {
@@ -110,54 +144,28 @@ input CoordsInput {
   lat: Float!
 }
 
-input CreateCompanyAddressInput {
-  street: String!
-  street2: String
-  city: String!
-  state: String!
-  postal_code: String!
-  country: String!
-  coord_lat: Float!
-  coord_lng: Float!
-}
-
 type CreateCompanyDto {
   id: ID!
   name: String!
   slug: String!
-  phone: String!
   setup_complete: Boolean!
   setup_stage: Int!
-  address: CompanyAddressDto!
+  contact: CompanyContactDto!
 }
 
-input CreateCompanyInput {
+type CurrentCompanyDto {
+  id: ID!
   name: String!
   slug: String!
-  phone: String!
-  address: CreateCompanyAddressInput!
-}
-
-type CreateCompanyProfileDto {
-  id: ID!
-  business_type: String!
-  about: String!
-  profile_image: String!
+  setup_complete: Boolean!
+  setup_stage: Int!
+  members: [CompanyMemberDto!]!
 }
 
 """
 The javascript `Date` as string. Type represents date and time as the ISO Date string.
 """
 scalar DateTime
-
-type EmployerCompanyDto {
-  id: ID!
-  name: String!
-  slug: String!
-  setup_complete: Boolean!
-  setup_stage: Int!
-  member: CompanyMemberDto!
-}
 
 input ForgotPasswordInput {
   email: String!
@@ -239,6 +247,13 @@ type MemberCompanyDto {
   company: CompanyDto!
 }
 
+enum MemberRolesEnum {
+  owner
+  admin
+  manager
+  associate
+}
+
 type MeSessionDto {
   id: ID!
   first_name: String!
@@ -256,11 +271,13 @@ type Mutation {
   login(input: LoginInput!): UserDto!
   logout: Boolean!
   forgotPassword(input: ForgotPasswordInput!): Boolean!
-  createCompany(input: CreateCompanyInput!): CreateCompanyDto!
-  updateCreateCompany(input: UpdateCompanyInput!, companySlug: String!): CreateCompanyDto!
-  createCompanyProfile(input: CompanyProfileInput!, companySlug: String!): CreateCompanyProfileDto!
-  updateCreateCompanyProfile(input: UpdateProfileInput!, companySlug: String!): CreateCompanyProfileDto!
-  createCompanyAddMembers(input: [CompanyMemberInput!], companySlug: String!): Boolean!
+  createCompanyContact(companySlug: String!, input: CompanyContactInput!): CompanyContactDto!
+  updateCompanyContact(companySlug: String!, input: UpdateCompanyContactInput!): CompanyContactDto!
+  createCompanyProfile(companySlug: String!, input: CompanyProfileInput!): CompanyProfileDto!
+  updateCompanyProfile(companySlug: String!, input: UpdateCompanyProfileInput!): CompanyProfileDto!
+  createCompanyMembers(companySlug: String!, input: [CompanyMemberInput!]!): [CompanyMemberDto!]!
+  createCompany(input: CompanyInput!): CreateCompanyDto!
+  updateCompany(companySlug: String!, input: UpdateCompanyInput!): CreateCompanyDto!
   createJob(input: JobInput!, companySlug: String!): JobDto!
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
@@ -276,14 +293,13 @@ type Query {
   me: MeSessionDto
   allUsers: [UserDto!]!
   userLocation: SearchLocationDto
-  findCompany(companySlug: String!): CompanyDto!
+  findCompanyContact(companySlug: String!): CompanyContactDto
+  findCompanyProfile(companySlug: String!): CompanyProfileDto
+  findCompanies: [MemberCompanyDto!]!
+  findCompanyMembers(companySlug: String!): [CompanyMemberDto!]!
+  findCompany(companySlug: String!): CurrentCompanyDto!
   generateCompanySlug(name: String!): String!
-  companySlugAvailable(name: String!): String
-  findCreateCompany(companySlug: String!): CreateCompanyDto!
-  findCreateCompanyProfile(companySlug: String!): CreateCompanyProfileDto
-  findCreateCompanyMembers(companySlug: String!): [CompanyMemberDto!]!
-  findEmployerCompanies: [MemberCompanyDto!]!
-  findEmployerCompany(companySlug: String!): EmployerCompanyDto!
+  findCompanySlug(name: String!): String
   findAllJobs(companySlug: String!): [JobDto!]!
   findJob(jobSlug: String!, companySlug: String!): JobDto!
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
@@ -345,8 +361,8 @@ type SearchResultsDto {
   rank: Float!
 }
 
-input UpdateCompanyAddressInput {
-  phone: String
+input UpdateAddressInput {
+  id: ID!
   street: String
   street2: String
   city: String
@@ -357,19 +373,23 @@ input UpdateCompanyAddressInput {
   coord_lng: Float
 }
 
+input UpdateCompanyContactInput {
+  id: ID!
+  phone: String
+  address: UpdateAddressInput!
+}
+
 input UpdateCompanyInput {
   name: String
   slug: String
-  phone: String
-  address: UpdateCompanyAddressInput
+  type: String
 }
 
-input UpdateProfileInput {
+input UpdateCompanyProfileInput {
   id: ID!
   profile_image: String
   cover_image: String
   about: String
-  business_type: String
 }
 
 """Upload custom scalar type"""

@@ -5,12 +5,11 @@ import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
 import { JOB_POSTING_TOKEN } from '../job.constants';
 import { JobPostingEntity, JobEntity } from '../entity';
-import { AddJobPostingAddressInput } from '../inputs/add-job-posting-address.input';
 import { AddJobPostingInput } from '../inputs/add-job-posting.input';
-import { CompanyEntity, CompanyAddressEntity } from '../../company/entity';
-import { CompanyService } from '../../company/services';
-import { inspect } from 'util';
+import { CompanyEntity } from '../../company/entity';
+import { CompanyService } from '../../company/company.service';
 import { PaginationInput } from '../../_helpers/inputs/pagination.input';
+import { AddressEntity } from '../../address';
 
 @Injectable()
 export class JobPostingService extends CrudService<JobPostingEntity> {
@@ -24,36 +23,38 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
     super();
   }
 
-  private async handleAddress(
-    input: AddJobPostingAddressInput,
-    company: CompanyEntity,
-  ): Promise<CompanyAddressEntity> {
-    try {
-      if (input.addressId) {
-        return this.companyService.findOneCompanyAddress(input.addressId);
-      }
+  // private async handleAddress(
+  //   input: AddJobPostingAddressInput,
+  //   company: CompanyEntity,
+  // ): Promise<CompanyAddressEntity> {
+  //   try {
+  //     if (input.addressId) {
+  //       return this.companyService.findOneCompanyAddress(input.addressId);
+  //     }
 
-      if (!input.newAddress) {
-        throw new Error(
-          'Posting must have either existing address ID or new address',
-        );
-      }
+  //     if (!input.newAddress) {
+  //       throw new Error(
+  //         'Posting must have either existing address ID or new address',
+  //       );
+  //     }
 
-      return this.companyService.createCompanyAddress(
-        company,
-        input.newAddress,
-      );
-    } catch (error) {
-      throw error;
-    }
-  }
+  //     return this.companyService.createCompanyAddress(
+  //       company,
+  //       input.newAddress,
+  //     );
+  //   } catch (error) {
+  //     throw error;
+  //   }
+  // }
 
   public async add(
     input: AddJobPostingInput,
     job: JobEntity,
     company: CompanyEntity,
   ): Promise<JobPostingEntity> {
-    const address = await this.handleAddress(input.address, company);
+    // const address = await this.handleAddress(input.address, company);
+
+    const address = new AddressEntity();
 
     const posting = new JobPostingEntity();
     Object.assign(posting, input.posting);

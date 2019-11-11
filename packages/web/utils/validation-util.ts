@@ -21,11 +21,11 @@ export const serverValidationError = (
     return null;
   }
 
-  // Register errors (display at input level)
-  if (message === 'register_error') {
-    return extensions.exception.errors;
+  // Field level errors
+  if (message === 'input_error') {
+    return extensions.exception;
   }
 
-  // Login error (display at form level)
+  // Form level errors
   return { message };
 };

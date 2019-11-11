@@ -2,8 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createCompanySteps = [
     {
-        step: 1,
+        step: 0,
         title: 'Setup',
+    },
+    {
+        step: 1,
+        title: 'Contact',
     },
     {
         step: 2,

@@ -9,7 +9,7 @@ import {
 } from 'typeorm';
 
 import { JobEntity } from './job.entity';
-import { CompanyAddressEntity } from '../../company/entity';
+import { AddressEntity } from '../../address';
 import { ApplicationEntity } from '../../application/entity/application.entity';
 
 @Entity('job_postings')
@@ -55,8 +55,8 @@ export class JobPostingEntity extends BaseEntity {
   @ManyToOne(() => JobEntity, job => job.postings)
   public job: JobEntity;
 
-  @ManyToOne(() => CompanyAddressEntity)
-  public address: CompanyAddressEntity;
+  @ManyToOne(() => AddressEntity)
+  public address: AddressEntity;
 
   @CreateDateColumn() created_at: Date;
 

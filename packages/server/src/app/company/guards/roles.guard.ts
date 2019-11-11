@@ -4,8 +4,7 @@ import { GqlExecutionContext } from '@nestjs/graphql';
 import { isMemberAuth, MemberRoles } from '@jobperday/common';
 
 import { AppLogger } from '../../app.logger';
-import { CompanyService } from '../services';
-import { CompanyMemberEntity } from '../entity';
+import { CompanyService } from '../company.service';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
@@ -17,7 +16,7 @@ export class RolesGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const role = this.reflector.get<MemberRoles>('role', context.getHandler());
+    let role = this.reflector.get<MemberRoles>('role', context.getHandler());
 
     if (!role) {
       return true;
@@ -38,24 +37,43 @@ export class RolesGuard implements CanActivate {
     });
 
     if (!company || !company.members) {
+      this.logger.debug(`[access denied] error finding company`);
       return false;
     }
 
-    const member = company.members.find(
-      (m: CompanyMemberEntity) => m.userId === req.session.user.id,
+    // Filter members who are not current user
+    const members = company.members.filter(
+      m => m.userId === req.session.user.id,
     );
 
-    if (!member) {
+    // Check that current user has role
+    if (members.length === 0) {
+      this.logger.debug(
+        `[access denied] user is not listed as member of company`,
+      );
       return false;
     }
 
     // Append company to req for service use
-    req.company = company;
+    req.company = Object.assign(company, { members });
+
+    // If company setup is not complete 'owner' role is required
+    if (!company.setup_complete) {
+      role = 'owner';
+    }
+
+    const isAuth = isMemberAuth(role, members[0].role);
+
+    if (!isAuth) {
+      this.logger.debug(
+        `[access denied] user is ${members[0].role}, route role is ${role}`,
+      );
+      return false;
+    }
 
     this.logger.debug(
-      `[access granted] user is ${member.role}, route role is ${role}`,
+      `[access granted] user is ${members[0].role}, route role is ${role}`,
     );
-
-    return isMemberAuth(role, member.role);
+    return true;
   }
 }

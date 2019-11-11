@@ -2,7 +2,6 @@ import React from 'react';
 import { Layout } from 'antd';
 
 import { RootLayout } from '../../../../shared/layout';
-import { CompanyContainer } from '../company-container';
 import { CompanyHeader } from '../header';
 import './style.less';
 
@@ -20,9 +19,7 @@ export const CompanyLayout: React.SFC<Props> = ({
   return (
     <RootLayout title={title}>
       <CompanyHeader />
-      <Content className="company_container">
-        <CompanyContainer>{children}</CompanyContainer>
-      </Content>
+      <Content className="company_container">{children}</Content>
     </RootLayout>
   );
 };

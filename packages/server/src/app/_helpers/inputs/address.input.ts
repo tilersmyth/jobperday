@@ -1,7 +1,7 @@
 import { InputType, Field, Float } from 'type-graphql';
 
 @InputType()
-export class AddressInput {
+export class AddressInput2 {
   @Field({ nullable: true })
   readonly street: string;
   @Field({ nullable: true })

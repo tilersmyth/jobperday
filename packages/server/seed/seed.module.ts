@@ -7,7 +7,7 @@ import { userProviders } from '../src/app/user/user.providers';
 import { companyProviders } from '../src/app/company/company.providers';
 import { SeedDBService } from './providers/db.service';
 import { CompanySeedService } from './providers/company.service';
-import { CompanyMemberService } from '../src/app/company/services';
+import { CompanyMemberService } from '../src/app/company-member';
 import { jobProviders } from '../src/app/job/job.providers';
 import { JobSeedService } from './providers/job.service';
 import { JobPostingSeedService } from './providers/job-posting.service';

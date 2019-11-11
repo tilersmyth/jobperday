@@ -41,31 +41,6 @@ export const SearchSchema = object().shape({
   }),
 });
 
-export const CreateCompanySchema = object().shape({
-  name: string()
-    .min(3, '3 character minimum')
-    .required('Required'),
-  phone: string().required('Required'),
-  address: object().shape({
-    street: string().required('Required'),
-    city: string().required('Required'),
-    state: string().required('Required'),
-    postal_code: string().required('Required'),
-    country: string().required('Required'),
-    coord_lat: number().required(),
-    coord_lng: number().required(),
-  }),
-  formatted_address: string().when('address.street', {
-    is: '',
-    then: string().required('Required'),
-  }),
-});
-
-export const CreateCompanyProfileSchema = object().shape({
-  business_type: string().required('Required'),
-  about: string().required('Required'),
-});
-
 export const CreateJobSchema = object().shape({
   name: string().required('Required'),
   summary: string().required('Required'),
@@ -75,12 +50,12 @@ export const CreateJobSchema = object().shape({
 });
 
 export const addressSchema = object().shape({
-  street: string().required(),
+  street: string().required('Required'),
   street2: string(),
-  city: string().required(),
-  state: string().required(),
-  postal_code: string().required(),
-  country: string().required(),
-  coord_lat: number().required(),
-  coord_lng: number().required(),
+  city: string().required('Required'),
+  state: string().required('Required'),
+  postal_code: string().required('Required'),
+  country: string().required('Required'),
+  coord_lat: number().required('Required'),
+  coord_lng: number().required('Required'),
 });

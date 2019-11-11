@@ -4,12 +4,12 @@ import { ApplicationService } from './services';
 import { UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { AppLogger } from '../app.logger';
-import { Role } from '../company/roles.decorator';
 import { Company } from '../_helpers';
 import { CompanyEntity } from '../company/entity';
 import { ApplicationInput } from './inputs';
 import { RolesGuard } from '../company/guards/roles.guard';
 import { ApplicationDto } from './dto';
+import { Role } from '../company/roles.decorator';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Application')

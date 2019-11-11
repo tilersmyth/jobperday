@@ -6,7 +6,7 @@ import {
   FindManyOptions,
 } from 'typeorm';
 import { validate, ValidatorOptions, ValidationError } from 'class-validator';
-import { UserInputError } from 'apollo-server-core';
+import { ApolloError } from 'apollo-server-core';
 
 import { config } from '../config';
 
@@ -60,9 +60,8 @@ export class CrudService<T extends BaseEntity> {
         this.errorReducer,
         {},
       );
-      throw new UserInputError('register_error', {
-        errors,
-      });
+
+      throw new ApolloError('input_error', '', errors);
     }
   }
 }

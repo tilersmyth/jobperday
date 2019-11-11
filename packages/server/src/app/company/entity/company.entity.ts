@@ -6,16 +6,14 @@ import {
   BaseEntity,
   OneToMany,
   OneToOne,
-  JoinColumn,
-  RelationId,
-  ManyToOne,
 } from 'typeorm';
-import { Length } from 'class-validator';
+import { Length, ValidateIf, Validate } from 'class-validator';
 
-import { CompanyMemberEntity } from './company-member.entity';
-import { CompanyAddressEntity } from './company-address.entity';
-import { CompanyProfileEntity } from './company-profile.entity';
+import { CompanyContactEntity } from '../../company-contact';
+import { CompanyProfileEntity } from '../../company-profile';
+import { CompanyMemberEntity } from '../../company-member';
 import { JobEntity } from '../../job/entity';
+import { CompanySlugValidator } from './validators';
 
 @Entity('companies')
 export class CompanyEntity extends BaseEntity {
@@ -26,12 +24,11 @@ export class CompanyEntity extends BaseEntity {
   @Length(3, 100, { message: 'must be between 3 and 100 characters' })
   public name: string;
 
-  @Column({ type: 'text', unique: true })
-  @Length(3, 110, { message: 'must be between 3 and 110 characters' })
-  public slug: string;
-
   @Column('text')
-  public phone: string;
+  @Length(3, 110, { message: 'must be between 3 and 110 characters' })
+  @ValidateIf(o => !o.id)
+  @Validate(CompanySlugValidator)
+  public slug: string;
 
   @Column({ type: 'boolean', default: false })
   public setup_complete: boolean;
@@ -47,11 +44,8 @@ export class CompanyEntity extends BaseEntity {
   @OneToOne(() => CompanyProfileEntity)
   public profile: CompanyProfileEntity;
 
-  @ManyToOne(() => CompanyAddressEntity)
-  public address: CompanyAddressEntity;
-
-  @RelationId((company: CompanyEntity) => company.address)
-  public addressId: string;
+  @OneToOne(() => CompanyContactEntity, contact => contact.company)
+  public contact: CompanyContactEntity;
 
   @OneToMany(() => CompanyMemberEntity, member => member.company)
   public members: CompanyMemberEntity[];

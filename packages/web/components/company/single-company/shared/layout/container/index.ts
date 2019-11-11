@@ -1,0 +1,1 @@
+export { SingleCompanyContainer } from './container';

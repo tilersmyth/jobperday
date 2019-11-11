@@ -10,6 +10,7 @@ import { JobModule } from './job/job.module';
 import { SearchModule } from './search/search.module';
 import { ApplicationModule } from './application/application.module';
 import { CompanyImageModule } from './company/image/image.module';
+import { CompanyContactModule } from './company-contact';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { CompanyImageModule } from './company/image/image.module';
     AuthModule,
     UserModule,
     CompanyModule,
+    CompanyContactModule,
     JobModule,
     UploadScalar,
     GraphQLModule.forRootAsync({

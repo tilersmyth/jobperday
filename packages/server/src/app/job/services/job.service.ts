@@ -11,8 +11,7 @@ import { JobPostingService } from './job-posting.service';
 import { SlugGeneratorUtil } from '../../_helpers';
 import { JobInput } from '../inputs/job.input';
 import { JobAddress } from '../interfaces/job-address.interface';
-import { CompanyService } from '../../company/services';
-import { inspect } from 'util';
+import { CompanyService } from '../../company/company.service';
 import { JobPostingResultsDto } from '../dto/job-posting-results.dto';
 import { PaginationInput } from '../../_helpers/inputs/pagination.input';
 
@@ -82,10 +81,10 @@ export class JobService extends CrudService<JobEntity> {
   }
 
   public async findJobAddresses(company: CompanyEntity): Promise<JobAddress[]> {
-    const test = await this.companyService.findAllCompanyAddresses(company);
+    // const test = await this.companyService.findAllCompanyAddresses(company);
 
-    this.logger.debug(inspect(test));
-    return test;
+    // this.logger.debug(inspect(test));
+    return [];
   }
 
   public async findPosting(id: string): Promise<JobPostingEntity> {

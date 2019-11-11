@@ -44,6 +44,7 @@ export const RegisterView: React.FunctionComponent = () => {
                   Router.push(`/${user.data.register.realm}`);
                 } catch (err) {
                   const errors = serverValidationError(err);
+                  console.log(errors);
                   return errors && setErrors(errors);
                 }
               }}

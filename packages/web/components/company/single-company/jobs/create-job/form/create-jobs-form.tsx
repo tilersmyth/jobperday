@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import dynamic from 'next/dynamic';
 import { Button, Form } from 'antd';
 import { Field, FormikProps } from 'formik';
@@ -7,7 +7,7 @@ import { InputField } from '../../../../../shared/input/input-field';
 import { SelectJobTypeField } from './select-type-field';
 import { TextAreaField } from '../../../../../shared/input/textarea-field';
 import { SelectTagsField } from './select-tags-field';
-import { ImageUploadModal } from '../../../../../shared';
+// import { ImageUploadModal } from '../../../../../shared';
 
 const TextEditorInput = dynamic(
   async () => {
@@ -33,11 +33,11 @@ const formItemLayout = {
 export const CompanyCreateJobsForm: React.FunctionComponent<
   FormikProps<{}>
 > = ({ handleSubmit }) => {
-  const [imageModal, setImageModal] = useState(false);
+  // const [imageModal, setImageModal] = useState(false);
 
   return (
     <Form {...formItemLayout} layout="horizontal" onSubmit={handleSubmit}>
-      <Button onClick={() => setImageModal(true)}>Add Image</Button>
+      {/* <Button onClick={() => setImageModal(true)}>Add Image</Button> */}
 
       <Field
         label="Title"
@@ -65,7 +65,7 @@ export const CompanyCreateJobsForm: React.FunctionComponent<
         Submit
       </Button>
 
-      <ImageUploadModal
+      {/* <ImageUploadModal
         multiple={false}
         visible={imageModal}
         onOk={() => setImageModal(false)}
@@ -74,7 +74,7 @@ export const CompanyCreateJobsForm: React.FunctionComponent<
           console.log('SELECTED', files);
           setImageModal(false);
         }}
-      />
+      /> */}
     </Form>
   );
 };

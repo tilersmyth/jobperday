@@ -3,24 +3,23 @@ import { useQuery } from 'react-apollo';
 import { Spin } from 'antd';
 
 import {
-  CurrentCompanyDocument,
   FindAllCompanyImagesDocument,
   FindAllCompanyImagesQuery,
 } from '../../../../apollo/generated-components';
 
 interface Props {
   setTab: (value: string) => void;
+  companySlug: string;
 }
 
-export const ImageLibrary: React.FunctionComponent<Props> = ({ setTab }) => {
-  const {
-    data: { currentCompany },
-  } = useQuery<any>(CurrentCompanyDocument);
-
+export const ImageLibrary: React.FunctionComponent<Props> = ({
+  setTab,
+  companySlug,
+}) => {
   const { loading, error, data } = useQuery<FindAllCompanyImagesQuery>(
     FindAllCompanyImagesDocument,
     {
-      variables: { companySlug: currentCompany.slug },
+      variables: { companySlug },
     },
   );
 
@@ -35,7 +34,7 @@ export const ImageLibrary: React.FunctionComponent<Props> = ({ setTab }) => {
   if (data.findAllCompanyImages.length === 0) {
     return (
       <div>
-        No images yet. <a onClick={() => setTab('2')}>Upload Image!</a>{' '}
+        No images yet. <a onClick={() => setTab('1')}>Upload Image!</a>{' '}
       </div>
     );
   }

@@ -7,7 +7,7 @@ import { UserEntity } from '../../src/app/user/entity';
 import { COMPANY_TOKEN } from '../../src/app/company/company.constants';
 import { CompanyEntity } from '../../src/app/company/entity';
 import { SlugGeneratorUtil } from '../../src/app/_helpers';
-import { CompanyMemberService } from '../../src/app/company/services';
+import { CompanyMemberService } from '../../src/app/company-member';
 
 @Injectable()
 export class CompanySeedService {
@@ -35,15 +35,16 @@ export class CompanySeedService {
       company.slug = await this.generateSlug(companyName);
       company.setup_complete = true;
       company.active = true;
-      company.phone = '555-555-5555';
       const savedCompany = await this.repository.save(company);
 
-      await this.memberService.add({
-        user,
-        company: savedCompany,
-        role: 'owner',
-        confirmed: true,
-      });
+      await this.memberService.add(
+        {
+          userId: user.id,
+          role: 'owner',
+          confirmed: true,
+        },
+        savedCompany,
+      );
 
       companies.push(savedCompany);
     }

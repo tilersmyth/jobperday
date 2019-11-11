@@ -4,7 +4,7 @@ import { NextPageContextApollo } from '../../../types';
 import { fetchMe } from '../../../utils';
 import { MeQuery } from '../../../apollo/generated-components';
 import { redirect } from '../../../apollo/redirect';
-import { CreateCompanyView } from '../../../components/company/create-company/stepper/create-company-view';
+import { CreateCompanySetupView } from '../../../components/company/create-company';
 
 interface Props {
   me: MeQuery['me'] | null;
@@ -15,7 +15,7 @@ const CreateCompany: NextPage<Props> = ({ me }) => {
     return null;
   }
 
-  return <CreateCompanyView step={0} />;
+  return <CreateCompanySetupView step={0} />;
 };
 
 CreateCompany.getInitialProps = async (ctx: NextPageContextApollo) => {

@@ -6,8 +6,8 @@ import { useQuery } from 'react-apollo';
 import { ImageLibrary } from './image-library';
 import { ImageUpload } from './image-upload/image-upload';
 import {
-  CurrentCompanyDocument,
   UploadImageMutation,
+  CurrentCompanyDocument,
 } from '../../../apollo/generated-components';
 import './style.less';
 
@@ -76,7 +76,10 @@ export const ImageUploadModal: React.FunctionComponent<Props> = ({
           }
           key="2"
         >
-          <ImageLibrary setTab={setCurrentTab} />
+          <ImageLibrary
+            setTab={setCurrentTab}
+            companySlug={currentCompany.slug}
+          />
         </TabPane>
       </Tabs>
     </Modal>

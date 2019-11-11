@@ -1,7 +1,13 @@
 import merge from 'lodash.merge';
 
-import { testTypeDef } from './test';
 import { companyTypeDef } from './company';
 import { postingTypeDef } from './posting';
+import { companyContactTypeDef } from './company-contact';
+import { companyProfileTypeDef } from './company-profile';
 
-export const typeDefs = merge(testTypeDef, companyTypeDef, postingTypeDef);
+export const typeDefs = merge(
+  companyTypeDef,
+  postingTypeDef,
+  companyContactTypeDef,
+  companyProfileTypeDef,
+);

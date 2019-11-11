@@ -2,7 +2,7 @@ import React from 'react';
 import Router from 'next/router';
 import { Row, Col, Card, Avatar } from 'antd';
 
-import { FindEmployerCompaniesComponent } from '../../../apollo/generated-components';
+import { FindCompaniesComponent } from '../../../apollo/generated-components';
 import { CompanyLayout } from '../shared/layout/company-layout/company-layout';
 
 const { Meta } = Card;
@@ -14,7 +14,7 @@ const onCardSelect = (slug: string) => {
 export const EmployerAllCompaniesView: React.FunctionComponent = () => {
   return (
     <CompanyLayout title="Employer Dashboard">
-      <FindEmployerCompaniesComponent>
+      <FindCompaniesComponent>
         {({ data, loading, error }) => {
           if (loading) {
             return <div>loading...</div>;
@@ -24,11 +24,11 @@ export const EmployerAllCompaniesView: React.FunctionComponent = () => {
             return <div>Error loading data</div>;
           }
 
-          const { findEmployerCompanies } = data;
+          const { findCompanies } = data;
 
           return (
             <Row gutter={16} style={{ marginTop: 20 }}>
-              {findEmployerCompanies.map(member => (
+              {findCompanies.map(member => (
                 <Col
                   xs={{ span: 24 }}
                   md={{ span: 12 }}
@@ -55,7 +55,7 @@ export const EmployerAllCompaniesView: React.FunctionComponent = () => {
             </Row>
           );
         }}
-      </FindEmployerCompaniesComponent>
+      </FindCompaniesComponent>
     </CompanyLayout>
   );
 };

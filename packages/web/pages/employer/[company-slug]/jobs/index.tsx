@@ -5,7 +5,7 @@ import { fetchMe } from '../../../../utils';
 import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
 import { CompanyJobsView } from '../../../../components/company/single-company/jobs/all-jobs/company-jobs-view';
-import { SingleCompanyLayout } from '../../../../components/company/single-company/shared/layout/new-layout/single-company-layout';
+import { SingleCompanyLayout } from '../../../../components/company/single-company/shared';
 
 interface Props {
   me?: MeQuery['me'];

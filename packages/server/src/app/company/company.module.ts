@@ -1,33 +1,33 @@
 import { Module } from '@nestjs/common';
+
 import { DatabaseModule } from '../database/database.module';
-import { CompanyService } from './services/company.service';
-import { CompanyMemberService } from './services/company-member.service';
 import { companyProviders } from './company.providers';
 import { CompanyResolver } from './company.resolver';
 import { RolesGuard } from './guards/roles.guard';
-import { CompanyAddressService, CompanyProfileService } from './services';
 import { UserModule } from '../user/user.module';
-import { CompanySetupResolver, CompanySetupService } from './company-setup';
-import { FindCompanyResolver } from './find/find-company.resolver';
-import { FindCompanyService } from './find/find-company.service';
+import { CompanyService } from './company.service';
+import { CompanyContactModule } from '../company-contact';
+import { CompanyMemberModule } from '../company-member';
+import { CompanySlugValidator } from './entity';
+import { CompanyProfileModule } from '../company-profile';
 
 const PROVIDERS = [
   ...companyProviders,
-  RolesGuard,
   CompanyService,
-  CompanyMemberService,
-  CompanyProfileService,
-  CompanyAddressService,
+  RolesGuard,
+  CompanySlugValidator,
   CompanyResolver,
-  CompanySetupService,
-  CompanySetupResolver,
-  FindCompanyResolver,
-  FindCompanyService,
 ];
 
 @Module({
   providers: [...PROVIDERS],
-  imports: [UserModule, DatabaseModule],
-  exports: [CompanyService],
+  imports: [
+    UserModule,
+    DatabaseModule,
+    CompanyProfileModule,
+    CompanyContactModule,
+    CompanyMemberModule,
+  ],
+  exports: [CompanyService, RolesGuard],
 })
 export class CompanyModule {}
