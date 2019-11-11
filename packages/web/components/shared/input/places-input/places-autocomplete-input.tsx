@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { FieldProps, getIn } from 'formik';
-import { AutoComplete, Form, Icon } from 'antd';
+import { FieldProps } from 'formik';
+import { AutoComplete, Icon } from 'antd';
 import PlacesAutocomplete, {
   PropTypes,
   Suggestion,
@@ -14,11 +14,8 @@ import './style.less';
 const { Option } = AutoComplete;
 
 interface Props extends FieldProps {
-  handleChange: (value: string) => void;
   handleSelect: (value: string, option: object) => void;
   searchOptions: PropTypes['searchOptions'];
-  label?: string;
-  showError?: boolean;
   children?:
     | ValidInputElement
     | React.ReactElement<InputProps>
@@ -51,15 +48,12 @@ const results = (
 };
 
 export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
-  field,
-  form: { errors, touched },
-  handleChange,
   handleSelect,
   searchOptions,
-  label,
-  showError,
   children,
-  ...input
+  field,
+  form: { setFieldValue },
+  ...fieldProps
 }) => {
   const [resultsError, setResultsError] = useState('');
 
@@ -71,45 +65,34 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
 
   const inputChange = (value: string) => {
     setResultsError('');
-    handleChange(value);
+    setFieldValue(field.name, value);
   };
 
-  const errorMsg = getIn(errors, field.name);
-  const error = errorMsg && getIn(touched, field.name);
-
   return (
-    <Form.Item
-      className="google_places_autocomplete"
-      label={label}
-      validateStatus={error ? 'error' : undefined}
-      help={showError && errorMsg}
+    <PlacesAutocomplete
+      searchOptions={searchOptions}
+      value={field.value}
+      onChange={inputChange}
+      shouldFetchSuggestions={field.value.length > 1}
+      onError={onError}
     >
-      <PlacesAutocomplete
-        searchOptions={searchOptions}
-        value={field.value}
-        onChange={inputChange}
-        shouldFetchSuggestions={field.value.length > 1}
-        onError={onError}
-        googleCallbackName="initPlacesApi"
-      >
-        {({ getInputProps, suggestions, loading }) => {
-          const { onChange } = getInputProps();
-          const onSearch = (value: string) => onChange({ target: { value } });
-          const onSelect = (value: any, object: any) =>
-            handleSelect(value as string, object as object);
-
-          return (
-            <AutoComplete
-              defaultValue={field.value}
-              onSelect={onSelect}
-              onSearch={onSearch}
-              dataSource={results(loading, resultsError, suggestions)}
-              {...input}
-              children={children}
-            />
-          );
-        }}
-      </PlacesAutocomplete>
-    </Form.Item>
+      {({ getInputProps, suggestions, loading }) => {
+        const { onChange } = getInputProps();
+        const onSearch = (value: string) => onChange({ target: { value } });
+        const onSelect = (value: any, object: any) =>
+          handleSelect(value as string, object as object);
+        return (
+          <AutoComplete
+            className="places-autocomplete"
+            defaultValue={field.value}
+            onSelect={onSelect}
+            onSearch={onSearch}
+            dataSource={results(loading, resultsError, suggestions)}
+            children={children}
+            {...fieldProps}
+          />
+        );
+      }}
+    </PlacesAutocomplete>
   );
 };

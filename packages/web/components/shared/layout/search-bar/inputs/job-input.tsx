@@ -5,7 +5,7 @@ interface FieldPropsExt extends FieldProps {
   onFocus: () => void;
 }
 
-export const JobInput = ({
+export const SearchJobInput = ({
   field,
   form: { errors, touched },
   ...props

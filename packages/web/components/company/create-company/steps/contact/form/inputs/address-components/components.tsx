@@ -1,6 +1,6 @@
 import React from 'react';
 import { Field } from 'formik';
-import { Row, Col, Button } from 'antd';
+import { Row, Col, Form } from 'antd';
 
 import { InputField } from '../../../../../../../shared/input/input-field';
 import './style.less';
@@ -13,10 +13,18 @@ export const AddressComponents: React.FunctionComponent<Props> = ({
   change,
 }) => {
   return (
-    <div className="address_components">
-      <Button type="link" onClick={change}>
-        change address
-      </Button>
+    <Form.Item
+      className="address_components"
+      label={
+        <React.Fragment>
+          Address (
+          <a href="#" onClick={change}>
+            Edit
+          </a>
+          )
+        </React.Fragment>
+      }
+    >
       <Field
         name="address.street"
         size="large"
@@ -65,6 +73,6 @@ export const AddressComponents: React.FunctionComponent<Props> = ({
           />
         </Col>
       </Row>
-    </div>
+    </Form.Item>
   );
 };

@@ -1,34 +1,23 @@
 import React, { useState } from 'react';
-import { Form, Button, Row, Col, Input, Icon } from 'antd';
+import { Form, Button, Row, Col } from 'antd';
 import Router from 'next/router';
 import { setCookie } from 'nookies';
 import base64 from 'base-64';
-import { Formik, Field, FieldProps } from 'formik';
+import { Formik, Field } from 'formik';
 import ReactResizeDetector from 'react-resize-detector';
-import {
-  PropTypes,
-  geocodeByAddress,
-  getLatLng,
-} from 'react-places-autocomplete';
 
 import { ResponsiveWrapper } from '../responsive-wrapper';
-import { JobInput } from './job-input';
+import { SearchJobInput, SearchLocationInput } from './inputs';
 import { SearchInput } from '../../../../apollo/generated-components';
 import { SearchDrawer } from './search-drawer';
 import { searchToQuery } from '../../../../utils/search/search-query-map';
-import { PlacesAutocompleteInput } from '../../input/places-input';
+import { SearchSchema } from './validation-schema';
 import './style.less';
-import { SearchSchema } from '../../../../utils/yup-validation';
 
 interface Props {
   searchArgs: SearchInput;
   updateArgs: (args: SearchInput) => void | Promise<void>;
 }
-
-const PlacesInputOptions: PropTypes['searchOptions'] = {
-  types: ['geocode'],
-  componentRestrictions: { country: 'us' },
-};
 
 export const SearchBar: React.FunctionComponent<Props> = ({
   searchArgs,
@@ -73,7 +62,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
           <Formik
             enableReinitialize={true}
             validateOnBlur={false}
-            validateOnChange={false}
+            validateOnChange={true}
             validationSchema={SearchSchema}
             onSubmit={async variables => {
               const encoded = base64.encode(JSON.stringify(variables.location));
@@ -93,26 +82,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
               ...searchArgs,
             }}
           >
-            {({ handleSubmit, setFieldValue }) => {
-              const HandlePlacesInputChange = (value: string) => {
-                setFieldValue('location.locality', value);
-              };
-
-              const HandlePlacesInputSelect = async (value: string) => {
-                try {
-                  const geo = await geocodeByAddress(value);
-                  const coords = await getLatLng(geo[0]);
-
-                  setFieldValue('location', {
-                    locality: value,
-                    coords,
-                  });
-                  console.log('Success', coords);
-                } catch (error) {
-                  console.error('Error', error);
-                }
-              };
-
+            {({ handleSubmit }) => {
               return (
                 <Form layout="inline" onSubmit={handleSubmit}>
                   <Row gutter={16}>
@@ -120,7 +90,7 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                       <Field
                         name="search"
                         onFocus={openSecondary}
-                        component={JobInput}
+                        component={SearchJobInput}
                       />
                     </Col>
 
@@ -140,36 +110,12 @@ export const SearchBar: React.FunctionComponent<Props> = ({
                       xs={{ span: 24 }}
                       className={`sb-mid-col sb-secondary ${secondary}`}
                     >
-                      <Form.Item>
-                        <Field
-                          name="location.locality"
-                          render={(formikProps: FieldProps) => {
-                            const inputProps = {
-                              size: 'large',
-                              placeholder: 'City, state or zip',
-                            };
-
-                            return (
-                              <PlacesAutocompleteInput
-                                {...formikProps}
-                                {...inputProps}
-                                searchOptions={PlacesInputOptions}
-                                handleChange={HandlePlacesInputChange}
-                                handleSelect={HandlePlacesInputSelect}
-                              >
-                                <Input
-                                  prefix={
-                                    <Icon
-                                      type="environment"
-                                      style={{ color: 'rgba(0,0,0,.25)' }}
-                                    />
-                                  }
-                                />
-                              </PlacesAutocompleteInput>
-                            );
-                          }}
-                        />
-                      </Form.Item>
+                      <Field
+                        name="location.locality"
+                        size="large"
+                        placeholder="City, state or zip"
+                        component={SearchLocationInput}
+                      />
                     </Col>
                     <Col
                       lg={{ span: 5 }}

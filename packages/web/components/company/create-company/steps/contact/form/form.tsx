@@ -26,11 +26,11 @@ export const CompanyContactForm: React.FunctionComponent<Props> = ({
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form onSubmit={handleSubmit} colon={false}>
       <Field
         name="phone"
         size="large"
-        label="Company Phone"
+        label="Phone Number"
         placeholder="Phone"
         component={CompanyPhoneInput}
       />

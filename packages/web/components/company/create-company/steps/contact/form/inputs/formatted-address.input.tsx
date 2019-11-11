@@ -1,6 +1,6 @@
 import React from 'react';
-import { Input } from 'antd';
-import { FieldProps } from 'formik';
+import { Input, Form } from 'antd';
+import { FieldProps, getIn } from 'formik';
 import {
   PropTypes,
   geocodeByAddress,
@@ -19,10 +19,19 @@ const PlacesInputOptions: PropTypes['searchOptions'] = {
   componentRestrictions: { country: 'us' },
 };
 
-export const FormattedAddressInput: React.FunctionComponent<FieldProps> = ({
-  field,
-  form,
+interface FieldPropsExt extends FieldProps {
+  label: string;
+}
+
+export const FormattedAddressInput: React.FunctionComponent<FieldPropsExt> = ({
+  label,
+  ...formikProps
 }) => {
+  const { field, form } = formikProps;
+
+  const errorMsg = getIn(form.errors, field.name);
+  const error = errorMsg && getIn(form.touched, field.name);
+
   const handleSelect = async (value: string) => {
     form.setFieldValue(field.name, value);
 
@@ -44,22 +53,19 @@ export const FormattedAddressInput: React.FunctionComponent<FieldProps> = ({
     }
   };
 
-  const inputProps = {
-    size: 'large',
-    placeholder: 'Address',
-  };
-
   return (
-    <PlacesAutocompleteInput
-      field={field}
-      form={form}
-      {...inputProps}
-      searchOptions={PlacesInputOptions}
-      handleChange={value => form.setFieldValue(field.name, value)}
-      handleSelect={handleSelect}
-      showError={true}
+    <Form.Item
+      label={label}
+      validateStatus={error ? 'error' : undefined}
+      help={errorMsg}
     >
-      <Input />
-    </PlacesAutocompleteInput>
+      <PlacesAutocompleteInput
+        searchOptions={PlacesInputOptions}
+        handleSelect={handleSelect}
+        {...formikProps}
+      >
+        <Input />
+      </PlacesAutocompleteInput>
+    </Form.Item>
   );
 };

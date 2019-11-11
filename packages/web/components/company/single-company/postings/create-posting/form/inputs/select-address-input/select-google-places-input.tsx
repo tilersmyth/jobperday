@@ -4,7 +4,7 @@ import {
   geocodeByAddress,
   getLatLng,
 } from 'react-places-autocomplete';
-import { FieldProps } from 'formik';
+import { FieldProps, getIn } from 'formik';
 
 import {
   PlacesAutocompleteInput,
@@ -12,6 +12,7 @@ import {
 } from '../../../../../../../shared/input/places-input';
 import { initialPostingAddressValues } from '../../initial-posting-values';
 import { addressSchema } from '../../../../../../../../utils/yup-validation';
+import { Form } from 'antd';
 
 const PlacesInputOptions: PropTypes['searchOptions'] = {
   types: ['address'],
@@ -24,6 +25,9 @@ export const SelectGooglePlacesInput: React.FunctionComponent<FieldProps> = ({
   ...inputProps
 }) => {
   const { setFieldValue } = form;
+
+  const errorMsg = getIn(form.errors, field.name);
+  const error = errorMsg && getIn(form.touched, field.name);
 
   const HandlePlacesInputSelect = async (value: string) => {
     const geo = await geocodeByAddress(value);
@@ -42,14 +46,14 @@ export const SelectGooglePlacesInput: React.FunctionComponent<FieldProps> = ({
   const { children, ...rest } = inputProps;
 
   return (
-    <PlacesAutocompleteInput
-      field={field}
-      form={form}
-      searchOptions={PlacesInputOptions}
-      handleChange={(value: string) => setFieldValue(field.name, value)}
-      handleSelect={HandlePlacesInputSelect}
-      showError={true}
-      {...rest}
-    />
+    <Form.Item validateStatus={error ? 'error' : undefined} help={errorMsg}>
+      <PlacesAutocompleteInput
+        field={field}
+        form={form}
+        searchOptions={PlacesInputOptions}
+        handleSelect={HandlePlacesInputSelect}
+        {...rest}
+      />
+    </Form.Item>
   );
 };

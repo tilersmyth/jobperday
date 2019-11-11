@@ -35,12 +35,6 @@ export const ForgotPasswordSchema = object().shape({
     .required('Required'),
 });
 
-export const SearchSchema = object().shape({
-  location: object().shape({
-    locality: string().required(),
-  }),
-});
-
 export const CreateJobSchema = object().shape({
   name: string().required('Required'),
   summary: string().required('Required'),
