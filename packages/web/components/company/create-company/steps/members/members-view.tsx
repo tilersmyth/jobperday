@@ -13,7 +13,7 @@ export const CreateCompanyMembersView: React.FunctionComponent<Props> = ({
 }) => {
   return (
     <CreateCompanyLayout
-      loading={false}
+      formLoading={false}
       step={step}
       form={<CompanyMembersFormView step={step} />}
       helper={<div>this is helper</div>}

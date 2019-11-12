@@ -6,15 +6,20 @@ import {
   FindAllCompanyImagesDocument,
   FindAllCompanyImagesQuery,
 } from '../../../../apollo/generated-components';
+import { UploadImageSelect } from './select/image-select';
 
 interface Props {
   setTab: (value: string) => void;
   companySlug: string;
+  onSelect: (path: string) => void;
+  selected: string[];
 }
 
 export const ImageLibrary: React.FunctionComponent<Props> = ({
   setTab,
   companySlug,
+  onSelect,
+  selected,
 }) => {
   const { loading, error, data } = useQuery<FindAllCompanyImagesQuery>(
     FindAllCompanyImagesDocument,
@@ -39,5 +44,11 @@ export const ImageLibrary: React.FunctionComponent<Props> = ({
     );
   }
 
-  return <div>image upload</div>;
+  return (
+    <UploadImageSelect
+      images={data.findAllCompanyImages}
+      onSelect={onSelect}
+      selected={selected}
+    />
+  );
 };

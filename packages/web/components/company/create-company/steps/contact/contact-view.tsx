@@ -30,7 +30,7 @@ export const CreateCompanyContactView: React.FunctionComponent<Props> = ({
 
   return (
     <CreateCompanyLayout
-      loading={loading}
+      formLoading={loading}
       step={step}
       form={
         <CompanyContactFormView

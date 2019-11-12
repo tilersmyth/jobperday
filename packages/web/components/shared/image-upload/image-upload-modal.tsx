@@ -1,55 +1,69 @@
 import React, { useState } from 'react';
 import { Modal, Button, Tabs, Icon } from 'antd';
-import { ModalProps } from 'antd/lib/modal';
 import { useQuery } from 'react-apollo';
 
 import { ImageLibrary } from './image-library';
 import { ImageUpload } from './image-upload/image-upload';
-import {
-  UploadImageMutation,
-  CurrentCompanyDocument,
-} from '../../../apollo/generated-components';
+import { CurrentCompanyDocument } from '../../../apollo/generated-components';
 import './style.less';
 
 const { TabPane } = Tabs;
 
-interface Props extends ModalProps {
+interface Props {
+  visible: boolean;
+  setVisible: (value: boolean) => void;
   multiple: boolean;
-  onSelect: (images: Array<UploadImageMutation['uploadImage']>) => void;
+  onSelect: (images: string[]) => void;
 }
 
 export const ImageUploadModal: React.FunctionComponent<Props> = ({
+  visible,
+  setVisible,
   multiple,
   onSelect,
-  ...modalProps
 }) => {
   const {
     data: { currentCompany },
   } = useQuery<any>(CurrentCompanyDocument);
 
   const [currentTab, setCurrentTab] = useState('1');
+  const [selection, setSelection] = useState<string[]>([]);
+
+  const onImageSelect = (path: string) => {
+    const index = selection.indexOf(path);
+    if (index > -1) {
+      selection.splice(index, 1);
+      setSelection([...selection]);
+      return;
+    }
+
+    setSelection(multiple ? [...selection, path] : [path]);
+  };
 
   return (
     <Modal
+      visible={visible}
       width={800}
       maskClosable={false}
       closable={false}
       destroyOnClose={true}
       footer={[
-        <Button key="back" onClick={modalProps.onOk}>
+        <Button key="cancel" onClick={() => setVisible(false)}>
           Cancel
         </Button>,
         <Button
-          key="submit"
+          key="continue"
           type="primary"
-          onClick={modalProps.onOk}
-          disabled={true}
+          onClick={() => {
+            onSelect(selection);
+            setVisible(false);
+          }}
+          disabled={selection.length < 1}
         >
           Continue
         </Button>,
       ]}
       className="image-upload-modal"
-      {...modalProps}
     >
       <Tabs activeKey={currentTab} onChange={key => setCurrentTab(key)}>
         <TabPane
@@ -65,6 +79,7 @@ export const ImageUploadModal: React.FunctionComponent<Props> = ({
             multiple={multiple}
             companySlug={currentCompany.slug}
             selected={onSelect}
+            setVisible={setVisible}
           />
         </TabPane>
         <TabPane
@@ -79,6 +94,8 @@ export const ImageUploadModal: React.FunctionComponent<Props> = ({
           <ImageLibrary
             setTab={setCurrentTab}
             companySlug={currentCompany.slug}
+            onSelect={onImageSelect}
+            selected={selection}
           />
         </TabPane>
       </Tabs>

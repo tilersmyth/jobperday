@@ -145,6 +145,7 @@ export type CompanyMemberDto = {
 export type CompanyMemberInput = {
   userId: Scalars['ID'];
   role: MemberRolesEnum;
+  confirmed?: Maybe<Scalars['Boolean']>;
 };
 
 export type CompanyProfileDto = {
@@ -310,6 +311,7 @@ export type Mutation = {
   uploadImage: CompanyImageDto;
   updateCompanyContactClient: Scalars['Boolean'];
   updateCompanyProfileClient: Scalars['Boolean'];
+  companyUploadImageClient: Scalars['Boolean'];
   createPostingClient: Scalars['Boolean'];
 };
 
@@ -385,6 +387,10 @@ export type MutationUpdateCompanyContactClientArgs = {
 
 export type MutationUpdateCompanyProfileClientArgs = {
   input: UpdateCompanyProfileInput;
+};
+
+export type MutationCompanyUploadImageClientArgs = {
+  input: UploadImageInput;
 };
 
 export type MutationCreatePostingClientArgs = {
@@ -648,47 +654,33 @@ export type FindCompanySlugQuery = { __typename?: 'Query' } & Pick<
   'findCompanySlug'
 >;
 
-export type CreateCompanyProfileMutationVariables = {
+export type UploadImageMutationVariables = {
   companySlug: Scalars['String'];
-  input: CompanyProfileInput;
+  input: UploadImageInput;
 };
 
-export type CreateCompanyProfileMutation = { __typename?: 'Mutation' } & {
-  createCompanyProfile: {
-    __typename?: 'CompanyProfileDto';
-  } & CompanyProfilePartsFragment;
+export type UploadImageMutation = { __typename?: 'Mutation' } & {
+  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
+    CompanyImageDto,
+    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
+  >;
 };
 
-export type UpdateCompanyProfileMutationVariables = {
-  companySlug: Scalars['String'];
-  input: UpdateCompanyProfileInput;
+export type CompanyUploadImageClientMutationVariables = {
+  input: UploadImageInput;
 };
 
-export type UpdateCompanyProfileMutation = { __typename?: 'Mutation' } & {
-  updateCompanyProfile: {
-    __typename?: 'CompanyProfileDto';
-  } & CompanyProfilePartsFragment;
-};
-
-export type UpdateCompanyProfileClientMutationVariables = {
-  input: UpdateCompanyProfileInput;
-};
-
-export type UpdateCompanyProfileClientMutation = {
+export type CompanyUploadImageClientMutation = {
   __typename?: 'Mutation';
-} & Pick<Mutation, 'updateCompanyProfileClient'>;
+} & Pick<Mutation, 'companyUploadImageClient'>;
 
-export type CompanyProfilePartsFragment = {
-  __typename?: 'CompanyProfileDto';
-} & Pick<CompanyProfileDto, 'id' | 'about' | 'cover_image' | 'profile_image'>;
-
-export type FindCompanyProfileQueryVariables = {
+export type FindAllCompanyImagesQueryVariables = {
   companySlug: Scalars['String'];
 };
 
-export type FindCompanyProfileQuery = { __typename?: 'Query' } & {
-  findCompanyProfile: Maybe<
-    { __typename?: 'CompanyProfileDto' } & CompanyProfilePartsFragment
+export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
+  findAllCompanyImages: Array<
+    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
   >;
 };
 
@@ -792,6 +784,50 @@ export type FindCompanyMembersQueryVariables = {
 export type FindCompanyMembersQuery = { __typename?: 'Query' } & {
   findCompanyMembers: Array<
     { __typename?: 'CompanyMemberDto' } & CompanyMemberPartsFragment
+  >;
+};
+
+export type CreateCompanyProfileMutationVariables = {
+  companySlug: Scalars['String'];
+  input: CompanyProfileInput;
+};
+
+export type CreateCompanyProfileMutation = { __typename?: 'Mutation' } & {
+  createCompanyProfile: {
+    __typename?: 'CompanyProfileDto';
+  } & CompanyProfilePartsFragment;
+};
+
+export type UpdateCompanyProfileMutationVariables = {
+  companySlug: Scalars['String'];
+  input: UpdateCompanyProfileInput;
+};
+
+export type UpdateCompanyProfileMutation = { __typename?: 'Mutation' } & {
+  updateCompanyProfile: {
+    __typename?: 'CompanyProfileDto';
+  } & CompanyProfilePartsFragment;
+};
+
+export type UpdateCompanyProfileClientMutationVariables = {
+  input: UpdateCompanyProfileInput;
+};
+
+export type UpdateCompanyProfileClientMutation = {
+  __typename?: 'Mutation';
+} & Pick<Mutation, 'updateCompanyProfileClient'>;
+
+export type CompanyProfilePartsFragment = {
+  __typename?: 'CompanyProfileDto';
+} & Pick<CompanyProfileDto, 'id' | 'about' | 'cover_image' | 'profile_image'>;
+
+export type FindCompanyProfileQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindCompanyProfileQuery = { __typename?: 'Query' } & {
+  findCompanyProfile: Maybe<
+    { __typename?: 'CompanyProfileDto' } & CompanyProfilePartsFragment
   >;
 };
 
@@ -1009,18 +1045,6 @@ export type RegisterMutation = { __typename?: 'Mutation' } & {
   >;
 };
 
-export type UploadImageMutationVariables = {
-  companySlug: Scalars['String'];
-  input: UploadImageInput;
-};
-
-export type UploadImageMutation = { __typename?: 'Mutation' } & {
-  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
-    CompanyImageDto,
-    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
-  >;
-};
-
 export type UserLocationQueryVariables = {};
 
 export type UserLocationQuery = { __typename?: 'Query' } & {
@@ -1065,16 +1089,6 @@ export type MeQuery = { __typename?: 'Query' } & {
       }
   >;
 };
-
-export type FindAllCompanyImagesQueryVariables = {
-  companySlug: Scalars['String'];
-};
-
-export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
-  findAllCompanyImages: Array<
-    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
-  >;
-};
 export const CompanyPartsFragmentDoc = gql`
   fragment CompanyParts on CurrentCompanyDto {
     id
@@ -1085,14 +1099,6 @@ export const CompanyPartsFragmentDoc = gql`
     members {
       role
     }
-  }
-`;
-export const CompanyProfilePartsFragmentDoc = gql`
-  fragment CompanyProfileParts on CompanyProfileDto {
-    id
-    about
-    cover_image
-    profile_image
   }
 `;
 export const CompanyContactPartsFragmentDoc = gql`
@@ -1121,6 +1127,14 @@ export const CompanyMemberPartsFragmentDoc = gql`
       first_name
       last_name
     }
+  }
+`;
+export const CompanyProfilePartsFragmentDoc = gql`
+  fragment CompanyProfileParts on CompanyProfileDto {
+    id
+    about
+    cover_image
+    profile_image
   }
 `;
 export const ApplicationPartsFragmentDoc = gql`
@@ -1495,260 +1509,189 @@ export type FindCompanySlugQueryResult = ApolloReactCommon.QueryResult<
   FindCompanySlugQuery,
   FindCompanySlugQueryVariables
 >;
-export const CreateCompanyProfileDocument = gql`
-  mutation CreateCompanyProfile(
-    $companySlug: String!
-    $input: CompanyProfileInput!
-  ) {
-    createCompanyProfile(companySlug: $companySlug, input: $input) {
-      ...CompanyProfileParts
+export const UploadImageDocument = gql`
+  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
+    uploadImage(companySlug: $companySlug, input: $input) {
+      id
+      filename
+      path
+      thumb
+      awsKey
     }
   }
-  ${CompanyProfilePartsFragmentDoc}
 `;
-export type CreateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
-  CreateCompanyProfileMutation,
-  CreateCompanyProfileMutationVariables
+export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
+  UploadImageMutation,
+  UploadImageMutationVariables
 >;
-export type CreateCompanyProfileComponentProps = Omit<
+export type UploadImageComponentProps = Omit<
   ApolloReactComponents.MutationComponentOptions<
-    CreateCompanyProfileMutation,
-    CreateCompanyProfileMutationVariables
+    UploadImageMutation,
+    UploadImageMutationVariables
   >,
   'mutation'
 >;
 
-export const CreateCompanyProfileComponent = (
-  props: CreateCompanyProfileComponentProps,
-) => (
+export const UploadImageComponent = (props: UploadImageComponentProps) => (
   <ApolloReactComponents.Mutation<
-    CreateCompanyProfileMutation,
-    CreateCompanyProfileMutationVariables
+    UploadImageMutation,
+    UploadImageMutationVariables
   >
-    mutation={CreateCompanyProfileDocument}
+    mutation={UploadImageDocument}
     {...props}
   />
 );
 
-export type CreateCompanyProfileProps<
-  TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-  CreateCompanyProfileMutation,
-  CreateCompanyProfileMutationVariables
+export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  UploadImageMutation,
+  UploadImageMutationVariables
 > &
   TChildProps;
-export function withCreateCompanyProfile<TProps, TChildProps = {}>(
+export function withUploadImage<TProps, TChildProps = {}>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    CreateCompanyProfileMutation,
-    CreateCompanyProfileMutationVariables,
-    CreateCompanyProfileProps<TChildProps>
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
-    CreateCompanyProfileMutation,
-    CreateCompanyProfileMutationVariables,
-    CreateCompanyProfileProps<TChildProps>
-  >(CreateCompanyProfileDocument, {
-    alias: 'withCreateCompanyProfile',
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
+  >(UploadImageDocument, {
+    alias: 'withUploadImage',
     ...operationOptions,
   });
 }
-export type CreateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
-  CreateCompanyProfileMutation
+export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
+  UploadImageMutation
 >;
-export type CreateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateCompanyProfileMutation,
-  CreateCompanyProfileMutationVariables
+export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UploadImageMutation,
+  UploadImageMutationVariables
 >;
-export const UpdateCompanyProfileDocument = gql`
-  mutation UpdateCompanyProfile(
-    $companySlug: String!
-    $input: UpdateCompanyProfileInput!
-  ) {
-    updateCompanyProfile(companySlug: $companySlug, input: $input) {
-      ...CompanyProfileParts
-    }
+export const CompanyUploadImageClientDocument = gql`
+  mutation CompanyUploadImageClient($input: UploadImageInput!) {
+    companyUploadImageClient(input: $input) @client
   }
-  ${CompanyProfilePartsFragmentDoc}
 `;
-export type UpdateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateCompanyProfileMutation,
-  UpdateCompanyProfileMutationVariables
+export type CompanyUploadImageClientMutationFn = ApolloReactCommon.MutationFunction<
+  CompanyUploadImageClientMutation,
+  CompanyUploadImageClientMutationVariables
 >;
-export type UpdateCompanyProfileComponentProps = Omit<
+export type CompanyUploadImageClientComponentProps = Omit<
   ApolloReactComponents.MutationComponentOptions<
-    UpdateCompanyProfileMutation,
-    UpdateCompanyProfileMutationVariables
+    CompanyUploadImageClientMutation,
+    CompanyUploadImageClientMutationVariables
   >,
   'mutation'
 >;
 
-export const UpdateCompanyProfileComponent = (
-  props: UpdateCompanyProfileComponentProps,
+export const CompanyUploadImageClientComponent = (
+  props: CompanyUploadImageClientComponentProps,
 ) => (
   <ApolloReactComponents.Mutation<
-    UpdateCompanyProfileMutation,
-    UpdateCompanyProfileMutationVariables
+    CompanyUploadImageClientMutation,
+    CompanyUploadImageClientMutationVariables
   >
-    mutation={UpdateCompanyProfileDocument}
+    mutation={CompanyUploadImageClientDocument}
     {...props}
   />
 );
 
-export type UpdateCompanyProfileProps<
+export type CompanyUploadImageClientProps<
   TChildProps = {}
 > = ApolloReactHoc.MutateProps<
-  UpdateCompanyProfileMutation,
-  UpdateCompanyProfileMutationVariables
+  CompanyUploadImageClientMutation,
+  CompanyUploadImageClientMutationVariables
 > &
   TChildProps;
-export function withUpdateCompanyProfile<TProps, TChildProps = {}>(
+export function withCompanyUploadImageClient<TProps, TChildProps = {}>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    UpdateCompanyProfileMutation,
-    UpdateCompanyProfileMutationVariables,
-    UpdateCompanyProfileProps<TChildProps>
+    CompanyUploadImageClientMutation,
+    CompanyUploadImageClientMutationVariables,
+    CompanyUploadImageClientProps<TChildProps>
   >,
 ) {
   return ApolloReactHoc.withMutation<
     TProps,
-    UpdateCompanyProfileMutation,
-    UpdateCompanyProfileMutationVariables,
-    UpdateCompanyProfileProps<TChildProps>
-  >(UpdateCompanyProfileDocument, {
-    alias: 'withUpdateCompanyProfile',
+    CompanyUploadImageClientMutation,
+    CompanyUploadImageClientMutationVariables,
+    CompanyUploadImageClientProps<TChildProps>
+  >(CompanyUploadImageClientDocument, {
+    alias: 'withCompanyUploadImageClient',
     ...operationOptions,
   });
 }
-export type UpdateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
-  UpdateCompanyProfileMutation
+export type CompanyUploadImageClientMutationResult = ApolloReactCommon.MutationResult<
+  CompanyUploadImageClientMutation
 >;
-export type UpdateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateCompanyProfileMutation,
-  UpdateCompanyProfileMutationVariables
+export type CompanyUploadImageClientMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CompanyUploadImageClientMutation,
+  CompanyUploadImageClientMutationVariables
 >;
-export const UpdateCompanyProfileClientDocument = gql`
-  mutation UpdateCompanyProfileClient($input: UpdateCompanyProfileInput!) {
-    updateCompanyProfileClient(input: $input) @client
-  }
-`;
-export type UpdateCompanyProfileClientMutationFn = ApolloReactCommon.MutationFunction<
-  UpdateCompanyProfileClientMutation,
-  UpdateCompanyProfileClientMutationVariables
->;
-export type UpdateCompanyProfileClientComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UpdateCompanyProfileClientMutation,
-    UpdateCompanyProfileClientMutationVariables
-  >,
-  'mutation'
->;
-
-export const UpdateCompanyProfileClientComponent = (
-  props: UpdateCompanyProfileClientComponentProps,
-) => (
-  <ApolloReactComponents.Mutation<
-    UpdateCompanyProfileClientMutation,
-    UpdateCompanyProfileClientMutationVariables
-  >
-    mutation={UpdateCompanyProfileClientDocument}
-    {...props}
-  />
-);
-
-export type UpdateCompanyProfileClientProps<
-  TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-  UpdateCompanyProfileClientMutation,
-  UpdateCompanyProfileClientMutationVariables
-> &
-  TChildProps;
-export function withUpdateCompanyProfileClient<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UpdateCompanyProfileClientMutation,
-    UpdateCompanyProfileClientMutationVariables,
-    UpdateCompanyProfileClientProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    UpdateCompanyProfileClientMutation,
-    UpdateCompanyProfileClientMutationVariables,
-    UpdateCompanyProfileClientProps<TChildProps>
-  >(UpdateCompanyProfileClientDocument, {
-    alias: 'withUpdateCompanyProfileClient',
-    ...operationOptions,
-  });
-}
-export type UpdateCompanyProfileClientMutationResult = ApolloReactCommon.MutationResult<
-  UpdateCompanyProfileClientMutation
->;
-export type UpdateCompanyProfileClientMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UpdateCompanyProfileClientMutation,
-  UpdateCompanyProfileClientMutationVariables
->;
-export const FindCompanyProfileDocument = gql`
-  query FindCompanyProfile($companySlug: String!) {
-    findCompanyProfile(companySlug: $companySlug) {
-      ...CompanyProfileParts
+export const FindAllCompanyImagesDocument = gql`
+  query FindAllCompanyImages($companySlug: String!) {
+    findAllCompanyImages(companySlug: $companySlug) {
+      id
+      path
     }
   }
-  ${CompanyProfilePartsFragmentDoc}
 `;
-export type FindCompanyProfileComponentProps = Omit<
+export type FindAllCompanyImagesComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
-    FindCompanyProfileQuery,
-    FindCompanyProfileQueryVariables
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
   >,
   'query'
 > &
   (
-    | { variables: FindCompanyProfileQueryVariables; skip?: boolean }
+    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
     | { skip: boolean });
 
-export const FindCompanyProfileComponent = (
-  props: FindCompanyProfileComponentProps,
+export const FindAllCompanyImagesComponent = (
+  props: FindAllCompanyImagesComponentProps,
 ) => (
   <ApolloReactComponents.Query<
-    FindCompanyProfileQuery,
-    FindCompanyProfileQueryVariables
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
   >
-    query={FindCompanyProfileDocument}
+    query={FindAllCompanyImagesDocument}
     {...props}
   />
 );
 
-export type FindCompanyProfileProps<
+export type FindAllCompanyImagesProps<
   TChildProps = {}
 > = ApolloReactHoc.DataProps<
-  FindCompanyProfileQuery,
-  FindCompanyProfileQueryVariables
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
 > &
   TChildProps;
-export function withFindCompanyProfile<TProps, TChildProps = {}>(
+export function withFindAllCompanyImages<TProps, TChildProps = {}>(
   operationOptions?: ApolloReactHoc.OperationOption<
     TProps,
-    FindCompanyProfileQuery,
-    FindCompanyProfileQueryVariables,
-    FindCompanyProfileProps<TChildProps>
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
   >,
 ) {
   return ApolloReactHoc.withQuery<
     TProps,
-    FindCompanyProfileQuery,
-    FindCompanyProfileQueryVariables,
-    FindCompanyProfileProps<TChildProps>
-  >(FindCompanyProfileDocument, {
-    alias: 'withFindCompanyProfile',
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
+  >(FindAllCompanyImagesDocument, {
+    alias: 'withFindAllCompanyImages',
     ...operationOptions,
   });
 }
-export type FindCompanyProfileQueryResult = ApolloReactCommon.QueryResult<
-  FindCompanyProfileQuery,
-  FindCompanyProfileQueryVariables
+export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
 >;
 export const CreateCompanyContactDocument = gql`
   mutation CreateCompanyContact(
@@ -2186,6 +2129,261 @@ export function withFindCompanyMembers<TProps, TChildProps = {}>(
 export type FindCompanyMembersQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyMembersQuery,
   FindCompanyMembersQueryVariables
+>;
+export const CreateCompanyProfileDocument = gql`
+  mutation CreateCompanyProfile(
+    $companySlug: String!
+    $input: CompanyProfileInput!
+  ) {
+    createCompanyProfile(companySlug: $companySlug, input: $input) {
+      ...CompanyProfileParts
+    }
+  }
+  ${CompanyProfilePartsFragmentDoc}
+`;
+export type CreateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+>;
+export type CreateCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables
+  >,
+  'mutation'
+>;
+
+export const CreateCompanyProfileComponent = (
+  props: CreateCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables
+  >
+    mutation={CreateCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type CreateCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+> &
+  TChildProps;
+export function withCreateCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables,
+    CreateCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    CreateCompanyProfileMutation,
+    CreateCompanyProfileMutationVariables,
+    CreateCompanyProfileProps<TChildProps>
+  >(CreateCompanyProfileDocument, {
+    alias: 'withCreateCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type CreateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
+  CreateCompanyProfileMutation
+>;
+export type CreateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateCompanyProfileMutation,
+  CreateCompanyProfileMutationVariables
+>;
+export const UpdateCompanyProfileDocument = gql`
+  mutation UpdateCompanyProfile(
+    $companySlug: String!
+    $input: UpdateCompanyProfileInput!
+  ) {
+    updateCompanyProfile(companySlug: $companySlug, input: $input) {
+      ...CompanyProfileParts
+    }
+  }
+  ${CompanyProfilePartsFragmentDoc}
+`;
+export type UpdateCompanyProfileMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCompanyProfileMutation,
+  UpdateCompanyProfileMutationVariables
+>;
+export type UpdateCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateCompanyProfileMutation,
+    UpdateCompanyProfileMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UpdateCompanyProfileComponent = (
+  props: UpdateCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    UpdateCompanyProfileMutation,
+    UpdateCompanyProfileMutationVariables
+  >
+    mutation={UpdateCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type UpdateCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  UpdateCompanyProfileMutation,
+  UpdateCompanyProfileMutationVariables
+> &
+  TChildProps;
+export function withUpdateCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UpdateCompanyProfileMutation,
+    UpdateCompanyProfileMutationVariables,
+    UpdateCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UpdateCompanyProfileMutation,
+    UpdateCompanyProfileMutationVariables,
+    UpdateCompanyProfileProps<TChildProps>
+  >(UpdateCompanyProfileDocument, {
+    alias: 'withUpdateCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type UpdateCompanyProfileMutationResult = ApolloReactCommon.MutationResult<
+  UpdateCompanyProfileMutation
+>;
+export type UpdateCompanyProfileMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCompanyProfileMutation,
+  UpdateCompanyProfileMutationVariables
+>;
+export const UpdateCompanyProfileClientDocument = gql`
+  mutation UpdateCompanyProfileClient($input: UpdateCompanyProfileInput!) {
+    updateCompanyProfileClient(input: $input) @client
+  }
+`;
+export type UpdateCompanyProfileClientMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateCompanyProfileClientMutation,
+  UpdateCompanyProfileClientMutationVariables
+>;
+export type UpdateCompanyProfileClientComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateCompanyProfileClientMutation,
+    UpdateCompanyProfileClientMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UpdateCompanyProfileClientComponent = (
+  props: UpdateCompanyProfileClientComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    UpdateCompanyProfileClientMutation,
+    UpdateCompanyProfileClientMutationVariables
+  >
+    mutation={UpdateCompanyProfileClientDocument}
+    {...props}
+  />
+);
+
+export type UpdateCompanyProfileClientProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  UpdateCompanyProfileClientMutation,
+  UpdateCompanyProfileClientMutationVariables
+> &
+  TChildProps;
+export function withUpdateCompanyProfileClient<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UpdateCompanyProfileClientMutation,
+    UpdateCompanyProfileClientMutationVariables,
+    UpdateCompanyProfileClientProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UpdateCompanyProfileClientMutation,
+    UpdateCompanyProfileClientMutationVariables,
+    UpdateCompanyProfileClientProps<TChildProps>
+  >(UpdateCompanyProfileClientDocument, {
+    alias: 'withUpdateCompanyProfileClient',
+    ...operationOptions,
+  });
+}
+export type UpdateCompanyProfileClientMutationResult = ApolloReactCommon.MutationResult<
+  UpdateCompanyProfileClientMutation
+>;
+export type UpdateCompanyProfileClientMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateCompanyProfileClientMutation,
+  UpdateCompanyProfileClientMutationVariables
+>;
+export const FindCompanyProfileDocument = gql`
+  query FindCompanyProfile($companySlug: String!) {
+    findCompanyProfile(companySlug: $companySlug) {
+      ...CompanyProfileParts
+    }
+  }
+  ${CompanyProfilePartsFragmentDoc}
+`;
+export type FindCompanyProfileComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindCompanyProfileQuery,
+    FindCompanyProfileQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindCompanyProfileQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindCompanyProfileComponent = (
+  props: FindCompanyProfileComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindCompanyProfileQuery,
+    FindCompanyProfileQueryVariables
+  >
+    query={FindCompanyProfileDocument}
+    {...props}
+  />
+);
+
+export type FindCompanyProfileProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindCompanyProfileQuery,
+  FindCompanyProfileQueryVariables
+> &
+  TChildProps;
+export function withFindCompanyProfile<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindCompanyProfileQuery,
+    FindCompanyProfileQueryVariables,
+    FindCompanyProfileProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindCompanyProfileQuery,
+    FindCompanyProfileQueryVariables,
+    FindCompanyProfileProps<TChildProps>
+  >(FindCompanyProfileDocument, {
+    alias: 'withFindCompanyProfile',
+    ...operationOptions,
+  });
+}
+export type FindCompanyProfileQueryResult = ApolloReactCommon.QueryResult<
+  FindCompanyProfileQuery,
+  FindCompanyProfileQueryVariables
 >;
 export const CreateApplicationDocument = gql`
   mutation CreateApplication($companySlug: String!, $input: ApplicationInput!) {
@@ -3088,69 +3286,6 @@ export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
   RegisterMutation,
   RegisterMutationVariables
 >;
-export const UploadImageDocument = gql`
-  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
-    uploadImage(companySlug: $companySlug, input: $input) {
-      id
-      filename
-      path
-      thumb
-      awsKey
-    }
-  }
-`;
-export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
-export type UploadImageComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >,
-  'mutation'
->;
-
-export const UploadImageComponent = (props: UploadImageComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >
-    mutation={UploadImageDocument}
-    {...props}
-  />
-);
-
-export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  UploadImageMutation,
-  UploadImageMutationVariables
-> &
-  TChildProps;
-export function withUploadImage<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >(UploadImageDocument, {
-    alias: 'withUploadImage',
-    ...operationOptions,
-  });
-}
-export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
-  UploadImageMutation
->;
-export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
 export const UserLocationDocument = gql`
   query UserLocation {
     userLocation {
@@ -3262,64 +3397,4 @@ export function withMe<TProps, TChildProps = {}>(
 export type MeQueryResult = ApolloReactCommon.QueryResult<
   MeQuery,
   MeQueryVariables
->;
-export const FindAllCompanyImagesDocument = gql`
-  query FindAllCompanyImages($companySlug: String!) {
-    findAllCompanyImages(companySlug: $companySlug) {
-      id
-      path
-    }
-  }
-`;
-export type FindAllCompanyImagesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >,
-  'query'
-> &
-  (
-    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const FindAllCompanyImagesComponent = (
-  props: FindAllCompanyImagesComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >
-    query={FindAllCompanyImagesDocument}
-    {...props}
-  />
-);
-
-export type FindAllCompanyImagesProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
-> &
-  TChildProps;
-export function withFindAllCompanyImages<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >(FindAllCompanyImagesDocument, {
-    alias: 'withFindAllCompanyImages',
-    ...operationOptions,
-  });
-}
-export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
 >;

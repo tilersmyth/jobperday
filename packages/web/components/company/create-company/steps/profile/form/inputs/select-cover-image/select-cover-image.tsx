@@ -27,13 +27,11 @@ export const SelectCoverImage: React.FunctionComponent<FieldProps> = ({
       </Form.Item>
 
       <ImageUploadModal
-        multiple={false}
+        setVisible={setImageModal}
         visible={imageModal}
-        onOk={() => setImageModal(false)}
-        onCancel={() => setImageModal(false)}
+        multiple={false}
         onSelect={files => {
-          form.setFieldValue(field.name, files[0].path);
-          setImageModal(false);
+          form.setFieldValue(field.name, files[0]);
         }}
       />
     </React.Fragment>

@@ -19,7 +19,7 @@ export const CreateCompanySetupView: React.FunctionComponent<Props> = ({
   if (!companySlug) {
     return (
       <CreateCompanyLayout
-        loading={false}
+        formLoading={false}
         step={step}
         form={<CompanySetupFormView data={SETUP_INITIAL_VALUES} step={step} />}
         helper={<div>this is helper</div>}
@@ -41,7 +41,7 @@ export const CreateCompanySetupView: React.FunctionComponent<Props> = ({
 
   return (
     <CreateCompanyLayout
-      loading={loading}
+      formLoading={loading}
       step={step}
       form={<CompanySetupFormView data={data.findCompany} step={step} />}
       helper={<div>this is helper</div>}

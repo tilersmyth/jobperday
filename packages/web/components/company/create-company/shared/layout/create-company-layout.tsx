@@ -1,25 +1,31 @@
 import React, { ReactNode } from 'react';
+import { useQuery } from 'react-apollo';
 import { Row, Col, Card, PageHeader, Steps, Spin } from 'antd';
 import { createCompanySteps } from '@jobperday/common';
 
 import { CompanyLayout } from '../../../shared/layout/company-layout/company-layout';
 import './style.less';
+import { CurrentCompanyDocument } from '../../../../../apollo';
 
 const { Step } = Steps;
 
 interface Props {
   step: number;
-  loading: boolean;
+  formLoading: boolean;
   form: ReactNode;
   helper: ReactNode;
 }
 
 export const CreateCompanyLayout: React.SFC<Props> = ({
   step,
-  loading,
+  formLoading,
   form,
   helper,
 }): JSX.Element => {
+  const {
+    data: { currentCompany },
+  } = useQuery<any>(CurrentCompanyDocument);
+
   return (
     <CompanyLayout title="Company Setup">
       <Row>
@@ -32,7 +38,7 @@ export const CreateCompanyLayout: React.SFC<Props> = ({
           <PageHeader
             className="steps-header"
             onBack={() => null}
-            title="Create company"
+            title={currentCompany ? currentCompany.name : 'Create Company'}
           />
           <Card bordered={false} style={{ marginTop: 20 }}>
             <Steps size="small" current={step}>
@@ -53,7 +59,7 @@ export const CreateCompanyLayout: React.SFC<Props> = ({
                 xl={{ span: 15, pull: 9 }}
                 className="steps-content-container"
               >
-                {loading && <Spin />}
+                {formLoading && <Spin />}
                 {form}
               </Col>
             </Row>
