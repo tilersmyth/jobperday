@@ -82,7 +82,7 @@ export const SingleCompanyLayout: React.FunctionComponent<Props> = ({
               return (
                 <React.Fragment>
                   <CompanyNavbar openDrawer={setDrawerOpen} />
-                  <CompanySidebar>
+                  <CompanySidebar company={company}>
                     <CompanySidebarMenu companySlug={companySlug} />
                   </CompanySidebar>
                   <Layout className="company_single_content">

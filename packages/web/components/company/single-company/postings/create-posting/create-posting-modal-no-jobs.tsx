@@ -13,7 +13,10 @@ export const CreatePostingsModalNoJobs: React.FunctionComponent<Props> = ({
     image={Empty.PRESENTED_IMAGE_SIMPLE}
     description="Oops, looks like no jobs exist. Create your first job to post!"
   >
-    <Link href={`/employer/${companySlug}/jobs/create`}>
+    <Link
+      href={`/employer/[company-slug]/jobs/create`}
+      as={`/employer/${companySlug}/jobs/create`}
+    >
       <a>
         <Button size="large" type="primary" style={{ marginTop: 40 }}>
           Create job

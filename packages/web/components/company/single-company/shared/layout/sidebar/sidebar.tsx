@@ -1,22 +1,49 @@
 import React from 'react';
+import { useQuery } from 'react-apollo';
+import { Card, Avatar, Spin } from 'antd';
 
+import {
+  FindCompanyQuery,
+  FindCompanyProfileDocument,
+  FindCompanyProfileQuery,
+} from '../../../../../../apollo';
 import './style.less';
-import { Card, Avatar } from 'antd';
 
 interface Props {
+  company: FindCompanyQuery['findCompany'];
   children: any;
 }
 
 export const CompanySidebar: React.FunctionComponent<Props> = ({
+  company,
   children,
-}) => (
-  <Card className="company_sidebar" bordered={false}>
-    <Card.Meta
-      avatar={
-        <Avatar src="https://pbs.twimg.com/profile_images/517308223716487168/FBTn9ivB_400x400.png" />
-      }
-      title="Wonder Bread"
-    />
-    {children}
-  </Card>
-);
+}) => {
+  const { loading, data, error } = useQuery<FindCompanyProfileQuery>(
+    FindCompanyProfileDocument,
+    {
+      variables: { companySlug: company.slug },
+    },
+  );
+
+  if (error || !data) {
+    return <div>Error loading company profile</div>;
+  }
+
+  const profile = data.findCompanyProfile;
+
+  return (
+    <Card className="company_sidebar" bordered={false}>
+      <Card.Meta
+        avatar={
+          loading ? (
+            <Spin />
+          ) : (
+            <Avatar src={profile ? profile.profile_image : ''} />
+          )
+        }
+        title={company.name}
+      />
+      {children}
+    </Card>
+  );
+};

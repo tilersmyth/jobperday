@@ -4,7 +4,8 @@ import { Field, FormikProps } from 'formik';
 
 import { CreateCompanyStepsActions } from '../../../shared';
 import { TextAreaField } from '../../../../../shared/input/textarea-field';
-import { SelectCoverImage } from './inputs/select-cover-image';
+import { SelectCoverImage, SelectProfileImage } from './inputs';
+import './style.less';
 
 interface Props extends FormikProps<{}> {
   step: number;
@@ -15,15 +16,23 @@ export const CompanyProfileForm: React.FunctionComponent<Props> = ({
   step,
 }) => {
   return (
-    <Form onSubmit={handleSubmit} className="company_profile_form_setup">
-      <Field name="cover_image" component={SelectCoverImage} />
+    <Form onSubmit={handleSubmit} colon={false}>
+      <div className="ant-form-item-label">
+        <label className="ant-form-item-no-colon">
+          Profile and Cover Image (click to update)
+        </label>
+      </div>
+      <div className="company-images-container">
+        <Field name="cover_image" component={SelectCoverImage} />
+        <Field name="profile_image" component={SelectProfileImage} />
+      </div>
 
       <Field
+        label="Company Overview"
         name="about"
         placeholder="Brief description"
         autoSize={{ minRows: 4, maxRows: 8 }}
         component={TextAreaField}
-        className="about_field"
       />
 
       <CreateCompanyStepsActions step={step} />

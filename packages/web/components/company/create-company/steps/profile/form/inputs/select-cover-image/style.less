@@ -1,13 +1,14 @@
-.company_profile_form_setup .cover-image-container {
+.company-images-container .cover-image-container {
   position: relative;
   overflow: hidden;
   max-height: 200px;
   display: flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid @border-color-base;
 }
 
-.company_profile_form_setup .cover-image-container .cover-image-mask {
+.company-images-container .cover-image-container .cover-image-mask {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -18,12 +19,12 @@
   transition: 0.5s;
 }
 
-.company_profile_form_setup .cover-image-container .cover-image-mask:hover {
+.company-images-container .cover-image-container .cover-image-mask:hover {
   cursor: pointer;
   opacity: 0.5;
 }
 
-.company_profile_form_setup .cover-image-container img {
+.company-images-container .cover-image-container img {
   height: auto;
   max-width: 100%;
 }

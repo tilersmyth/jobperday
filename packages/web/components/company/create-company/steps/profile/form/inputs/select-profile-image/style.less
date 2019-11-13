@@ -1,0 +1,48 @@
+.company-images-container .profile-field-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: @white;
+  border: 1px solid @border-color-base;
+  padding: 5px;
+}
+
+.company-images-container .profile-field-container .profile-image-container {
+  position: relative;
+  height: 200px;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.company-images-container
+  .profile-field-container
+  .profile-image-container
+  .profile-image-mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: @body-background;
+  opacity: 0.2;
+  transition: 0.5s;
+}
+
+.company-images-container
+  .profile-field-container
+  .profile-image-container
+  .profile-image-mask:hover {
+  cursor: pointer;
+  opacity: 0.5;
+}
+
+.company-images-container
+  .profile-field-container
+  .profile-image-container
+  img {
+  height: 200px;
+  width: auto;
+}

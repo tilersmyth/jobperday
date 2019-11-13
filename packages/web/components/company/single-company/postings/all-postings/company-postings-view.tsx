@@ -43,30 +43,6 @@ export const CompanyPostingsView: React.FunctionComponent = () => {
                   }
                   onLoadMore={loadMore}
                 />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
-                <br />
               </React.Fragment>
             );
           }}

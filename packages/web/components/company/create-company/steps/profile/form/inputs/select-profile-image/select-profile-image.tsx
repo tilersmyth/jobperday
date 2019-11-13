@@ -6,7 +6,7 @@ import { PROFILE_DEFAULT_IMAGES } from '../../initial-values';
 import { ImageUploadModal } from '../../../../../../../shared';
 import './style.less';
 
-export const SelectCoverImage: React.FunctionComponent<FieldProps> = ({
+export const SelectProfileImage: React.FunctionComponent<FieldProps> = ({
   field,
   form,
 }) => {
@@ -14,14 +14,16 @@ export const SelectCoverImage: React.FunctionComponent<FieldProps> = ({
 
   return (
     <React.Fragment>
-      <Form.Item>
-        <div className="cover-image-container">
+      <Form.Item className="profile-field-container">
+        <div className="profile-image-container">
           <div
-            className="cover-image-mask"
+            className="profile-image-mask"
             onClick={() => setImageModal(true)}
           />
           <img
-            src={field.value ? field.value : PROFILE_DEFAULT_IMAGES.cover_image}
+            src={
+              field.value ? field.value : PROFILE_DEFAULT_IMAGES.profile_image
+            }
           />
         </div>
       </Form.Item>
