@@ -4,7 +4,7 @@ import { NextPageContextApollo } from '../../types';
 import { fetchMe } from '../../utils';
 import { MeQuery } from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
-import { EmployerAllCompaniesView } from '../../components/company/all-companies/employer-dashboard-view';
+import { CompanyListView } from '../../components/company';
 
 interface Props {
   me?: MeQuery['me'];
@@ -15,7 +15,7 @@ const Employer: NextPage<Props> = ({ me }) => {
     return null;
   }
 
-  return <EmployerAllCompaniesView />;
+  return <CompanyListView />;
 };
 
 Employer.getInitialProps = async (ctx: NextPageContextApollo) => {

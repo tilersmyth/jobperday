@@ -18,7 +18,9 @@ export const findCompanyQuery = gql`
     }
     setCompany @client
   }
+`;
 
+export const currentCompanyQuery = gql`
   query CurrentCompany {
     currentCompany @client {
       ...CompanyParts

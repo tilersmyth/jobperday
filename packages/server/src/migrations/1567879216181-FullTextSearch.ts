@@ -5,7 +5,7 @@ export class FullTextSearch1567879216181 implements MigrationInterface {
     await queryRunner.query(`
     UPDATE jobs
     SET document_with_weights = setweight(to_tsvector(type), 'A') ||
-      setweight(to_tsvector(name), 'B') ||
+      setweight(to_tsvector(title), 'B') ||
         setweight(to_tsvector(coalesce(description, '')), 'C');
     CREATE INDEX document_weights_idx
       ON jobs
@@ -14,7 +14,7 @@ export class FullTextSearch1567879216181 implements MigrationInterface {
     BEGIN
       new.document_with_weights :=
       setweight(to_tsvector('english', coalesce(new.type, '')), 'A')
-      || setweight(to_tsvector('english', coalesce(new.name, '')), 'B')
+      || setweight(to_tsvector('english', coalesce(new.title, '')), 'B')
       || setweight(to_tsvector('english', coalesce(new.description, '')), 'C');
       return new;
     END

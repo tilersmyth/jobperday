@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Typography } from 'antd';
 
-import { RootLayout } from '../shared/layout/root-layout';
+import { RootLayout } from '../shared/layout/root/root-layout';
 
 interface Props {
   children: any;

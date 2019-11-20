@@ -30,11 +30,11 @@ export const LoginView: React.FunctionComponent = () => {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async variables => {
+              onSubmit={async input => {
                 try {
                   setError('');
                   const user = await login({
-                    variables,
+                    variables: { input },
                     update(cache, { data }) {
                       if (data) {
                         cache.writeQuery({

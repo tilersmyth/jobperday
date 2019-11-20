@@ -6,6 +6,7 @@ import {
   BaseEntity,
   OneToMany,
   ManyToOne,
+  RelationId,
 } from 'typeorm';
 import { Length, MaxLength } from 'class-validator';
 
@@ -19,15 +20,8 @@ export class JobEntity extends BaseEntity {
   public id: string;
 
   @Column('text')
-  public companyName: string;
-
-  @Column('text')
   @Length(3, 150, { message: 'must be between 3 and 150 characters' })
-  public name: string;
-
-  @Column({ type: 'text' })
-  @Length(3, 170, { message: 'must be between 3 and 170 characters' })
-  public slug: string;
+  public title: string;
 
   @Column('text')
   @MaxLength(200, { message: 'must not exceed 200 characters' })
@@ -41,13 +35,13 @@ export class JobEntity extends BaseEntity {
   public type: string;
 
   @Column({ type: 'text', array: true })
-  public tags: string[];
+  public tags: string[] = [];
 
-  @Column({ type: 'boolean', default: false })
-  public setup_complete: boolean;
+  @Column('text')
+  public default_image: string;
 
-  @Column({ type: 'int', default: 1 })
-  public setup_stage: number;
+  @RelationId((job: JobEntity) => job.default_application)
+  defaultApplicationId: number;
 
   @ManyToOne(() => ApplicationEntity)
   public default_application: ApplicationEntity;

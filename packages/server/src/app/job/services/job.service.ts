@@ -1,5 +1,5 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 
 import { CrudService } from '../../../base';
 import { AppLogger } from '../../app.logger';
@@ -8,12 +8,12 @@ import { JobEntity, JobPostingEntity } from '../entity';
 import { CompanyEntity } from '../../company/entity';
 import { AddJobPostingInput } from '../inputs/add-job-posting.input';
 import { JobPostingService } from './job-posting.service';
-import { SlugGeneratorUtil } from '../../_helpers';
 import { JobInput } from '../inputs/job.input';
 import { JobAddress } from '../interfaces/job-address.interface';
-import { CompanyService } from '../../company/company.service';
 import { JobPostingResultsDto } from '../dto/job-posting-results.dto';
 import { PaginationInput } from '../../_helpers/inputs/pagination.input';
+import { UpdateJobInput } from '../inputs/update-job.input';
+import { ApplicationService } from '../../application/services';
 
 @Injectable()
 export class JobService extends CrudService<JobEntity> {
@@ -23,17 +23,13 @@ export class JobService extends CrudService<JobEntity> {
     @Inject(JOB_TOKEN)
     protected readonly repository: Repository<JobEntity>,
     protected postingService: JobPostingService,
-    protected companyService: CompanyService,
+    protected appService: ApplicationService,
   ) {
     super();
   }
 
-  public async generateSlug(
-    name: string,
-    company: CompanyEntity,
-  ): Promise<string> {
-    const slug = new SlugGeneratorUtil(this.repository);
-    return slug.generate(name, { company });
+  public async findAllJobs(company: CompanyEntity): Promise<JobEntity[]> {
+    return this.findAll({ where: { company } });
   }
 
   public async create(
@@ -41,28 +37,38 @@ export class JobService extends CrudService<JobEntity> {
     input: JobInput,
   ): Promise<JobEntity> {
     const job = new JobEntity();
-    job.companyName = company.name;
-    job.name = input.name;
-    job.slug = await this.generateSlug(input.name, company);
-    job.type = input.type;
-    job.summary = input.summary;
-    job.description = input.description;
-    job.tags = input.tags ? input.tags : [];
-
+    Object.assign(job, input);
     job.company = company;
+
+    if (input.defaultApplicationId) {
+      const application = await this.appService.findOne({
+        where: { id: input.defaultApplicationId },
+      });
+
+      job.default_application = application;
+    }
 
     return this.repository.save(job);
   }
 
-  public async findAllJobs(company: CompanyEntity): Promise<JobEntity[]> {
-    return this.findAll({ where: { company } });
-  }
-
-  public async findSingle(
+  public async update(
     company: CompanyEntity,
-    jobSlug: string,
+    input: UpdateJobInput,
   ): Promise<JobEntity> {
-    return this.findOne({ where: { company, slug: jobSlug } });
+    const job = await this.repository.findOne({
+      where: { id: input.id, company },
+    });
+    Object.assign(job, input);
+
+    if (input.defaultApplicationId) {
+      const application = await this.appService.findOne({
+        where: { id: input.defaultApplicationId },
+      });
+
+      job.default_application = application;
+    }
+
+    return job.save();
   }
 
   public async findCurrentPostings(

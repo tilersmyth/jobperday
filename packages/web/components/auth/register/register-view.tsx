@@ -22,10 +22,10 @@ export const RegisterView: React.FunctionComponent = () => {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async (variables, { setErrors }) => {
+              onSubmit={async (input, { setErrors }) => {
                 try {
                   const user = await register({
-                    variables,
+                    variables: { input },
                     update(cache, { data }) {
                       if (data) {
                         cache.writeQuery({

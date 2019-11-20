@@ -5,21 +5,21 @@ export const findCompanyContactQuery = gql`
     id
     phone
     address {
-      id
-      street
-      street2
-      city
-      state
-      postal_code
-      country
-      coord_lat
-      coord_lng
+      ...AddressParts
     }
   }
 
   query FindCompanyContact($companySlug: String!) {
     findCompanyContact(companySlug: $companySlug) {
       ...CompanyContactParts
+    }
+  }
+`;
+
+export const findCompanyAddressesQuery = gql`
+  query FindCompanyAddresses($companySlug: String!) {
+    findCompanyAddresses(companySlug: $companySlug) {
+      ...AddressParts
     }
   }
 `;

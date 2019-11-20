@@ -4,8 +4,8 @@ import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { SingleCompanyLayout } from '../../../../components/company/single-company/shared';
-import { ListApplicationsView } from '../../../../components/company/single-company/applications/list';
+import { CompanyAdminLayout } from '../../../../components/shared';
+import { ApplicationsListView } from '../../../../components/application';
 
 interface Props {
   me?: MeQuery['me'];
@@ -18,13 +18,13 @@ const CompanyApplicationsPage: NextPage<Props> = ({ me, slug }) => {
   }
 
   return (
-    <SingleCompanyLayout
+    <CompanyAdminLayout
       pageTitle="Applications"
       pageRole="manager"
       companySlug={slug}
     >
-      <ListApplicationsView />
-    </SingleCompanyLayout>
+      <ApplicationsListView />
+    </CompanyAdminLayout>
   );
 };
 

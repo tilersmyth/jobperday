@@ -22,9 +22,9 @@ export const ResultCard: React.SFC<Props> = ({ result: { job } }) => {
   return (
     <Card bordered={false} style={{ marginBottom: 20 }}>
       <div>
-        <Descriptions title={job.name}>
+        <Descriptions title={job.title}>
           <Descriptions.Item label="Company">
-            {job.companyName}
+            Need Company Name
           </Descriptions.Item>
           <Descriptions.Item label="Job type">{job.type}</Descriptions.Item>
           <Descriptions.Item label="Apply deadline">

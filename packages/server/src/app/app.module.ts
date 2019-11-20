@@ -11,6 +11,7 @@ import { SearchModule } from './search/search.module';
 import { ApplicationModule } from './application/application.module';
 import { CompanyImageModule } from './company/image/image.module';
 import { CompanyContactModule } from './company-contact';
+import { AddressModule } from './address';
 
 @Module({
   imports: [

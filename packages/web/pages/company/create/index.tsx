@@ -4,7 +4,7 @@ import { NextPageContextApollo } from '../../../types';
 import { fetchMe } from '../../../utils';
 import { MeQuery } from '../../../apollo/generated-components';
 import { redirect } from '../../../apollo/redirect';
-import { CreateCompanySetupView } from '../../../components/company/create-company';
+import { CreateCompanySetupView } from '../../../components/company';
 
 interface Props {
   me: MeQuery['me'] | null;

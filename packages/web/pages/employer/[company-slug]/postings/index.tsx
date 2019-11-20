@@ -2,29 +2,27 @@ import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
-import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { CompanyPostingsView } from '../../../../components/company/single-company/postings/all-postings/company-postings-view';
-import { SingleCompanyLayout } from '../../../../components/company/single-company/shared';
+import { CompanyAdminLayout } from '../../../../components/shared';
+import { JobPostingsListView } from '../../../../components/job-posting';
 
 interface Props {
-  me?: MeQuery['me'];
   slug?: string;
 }
 
-const EmployerCompanyPostings: NextPage<Props> = ({ me, slug }) => {
-  if (!me || !slug) {
+const EmployerCompanyPostings: NextPage<Props> = ({ slug }) => {
+  if (!slug) {
     return null;
   }
 
   return (
-    <SingleCompanyLayout
-      pageTitle="Postings"
-      pageRole="manager"
+    <CompanyAdminLayout
+      pageTitle="Job Postings"
+      pageRole="associate"
       companySlug={slug}
     >
-      <CompanyPostingsView />
-    </SingleCompanyLayout>
+      <JobPostingsListView />
+    </CompanyAdminLayout>
   );
 };
 
@@ -45,7 +43,7 @@ EmployerCompanyPostings.getInitialProps = async (
 
   const slug = ctx.query['company-slug'] as string;
 
-  return { me, slug };
+  return { slug };
 };
 
 export default EmployerCompanyPostings;

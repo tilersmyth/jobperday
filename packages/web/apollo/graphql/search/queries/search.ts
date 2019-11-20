@@ -8,8 +8,7 @@ export const searchQuery = gql`
         rank
         job {
           id
-          name
-          companyName
+          title
           type
           postings {
             id

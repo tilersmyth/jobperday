@@ -11,4 +11,6 @@ export class ApplicationDto {
   readonly title: string;
   @Field(() => [ApplicationFieldDto])
   readonly fields: ApplicationFieldEntity[];
+  @Field()
+  readonly created_at: Date;
 }

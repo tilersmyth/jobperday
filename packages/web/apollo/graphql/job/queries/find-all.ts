@@ -3,9 +3,13 @@ import gql from 'graphql-tag';
 export const findAllJobsQuery = gql`
   fragment JobParts on JobDto {
     id
-    name
-    slug
+    title
+    description
+    summary
     type
+    tags
+    default_image
+    defaultApplicationId
     created_at
   }
 

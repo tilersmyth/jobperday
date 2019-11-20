@@ -4,7 +4,10 @@ import { useQuery } from 'react-apollo';
 
 import { ImageLibrary } from './image-library';
 import { ImageUpload } from './image-upload/image-upload';
-import { CurrentCompanyDocument } from '../../../apollo/generated-components';
+import {
+  CurrentCompanyDocument,
+  CurrentCompanyQuery,
+} from '../../../apollo/generated-components';
 import './style.less';
 
 const { TabPane } = Tabs;
@@ -22,9 +25,15 @@ export const ImageUploadModal: React.FunctionComponent<Props> = ({
   multiple,
   onSelect,
 }) => {
-  const {
-    data: { currentCompany },
-  } = useQuery<any>(CurrentCompanyDocument);
+  const { loading, data, error } = useQuery<CurrentCompanyQuery>(
+    CurrentCompanyDocument,
+  );
+
+  if (error || !data || loading) {
+    return null;
+  }
+
+  const { currentCompany } = data;
 
   const [currentTab, setCurrentTab] = useState('1');
   const [selection, setSelection] = useState<string[]>([]);

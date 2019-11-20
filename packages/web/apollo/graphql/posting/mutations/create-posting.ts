@@ -10,7 +10,7 @@ export const createPostingMutation = gql`
     remaining_openings
     apply_deadline
     job {
-      name
+      title
     }
   }
 

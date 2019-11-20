@@ -70,6 +70,7 @@ export type ApplicationDto = {
   id: Scalars['ID'];
   title: Scalars['String'];
   fields: Array<ApplicationFieldDto>;
+  created_at: Scalars['DateTime'];
 };
 
 export type ApplicationFieldDto = {
@@ -207,23 +208,25 @@ export type JobAddressDto = {
 export type JobDto = {
   __typename?: 'JobDto';
   id: Scalars['ID'];
-  companyName: Scalars['String'];
-  name: Scalars['String'];
-  slug: Scalars['String'];
+  title: Scalars['String'];
   summary: Scalars['String'];
   description: Scalars['String'];
   created_at: Scalars['DateTime'];
   type: Scalars['String'];
   tags: Array<Scalars['String']>;
+  default_image: Scalars['String'];
+  defaultApplicationId?: Maybe<Scalars['String']>;
   postings: Array<JobPostingDto>;
 };
 
 export type JobInput = {
-  name: Scalars['String'];
+  title: Scalars['String'];
   summary: Scalars['String'];
   description: Scalars['String'];
   type: Scalars['String'];
   tags?: Maybe<Array<Scalars['String']>>;
+  default_image: Scalars['String'];
+  defaultApplicationId?: Maybe<Scalars['String']>;
 };
 
 export type JobPostingDto = {
@@ -306,13 +309,14 @@ export type Mutation = {
   createCompany: CreateCompanyDto;
   updateCompany: CreateCompanyDto;
   createJob: JobDto;
+  updateJob: JobDto;
   createPosting: JobPostingDto;
   createApplication: ApplicationDto;
   uploadImage: CompanyImageDto;
   updateCompanyContactClient: Scalars['Boolean'];
   updateCompanyProfileClient: Scalars['Boolean'];
-  companyUploadImageClient: Scalars['Boolean'];
   createPostingClient: Scalars['Boolean'];
+  viewportType: Scalars['Boolean'];
 };
 
 export type MutationRegisterArgs = {
@@ -366,6 +370,11 @@ export type MutationCreateJobArgs = {
   companySlug: Scalars['String'];
 };
 
+export type MutationUpdateJobArgs = {
+  input: UpdateJobInput;
+  companySlug: Scalars['String'];
+};
+
 export type MutationCreatePostingArgs = {
   input: AddJobPostingInput;
   companySlug: Scalars['String'];
@@ -389,13 +398,13 @@ export type MutationUpdateCompanyProfileClientArgs = {
   input: UpdateCompanyProfileInput;
 };
 
-export type MutationCompanyUploadImageClientArgs = {
-  input: UploadImageInput;
-};
-
 export type MutationCreatePostingClientArgs = {
   postingId: Scalars['ID'];
   companySlug: Scalars['String'];
+};
+
+export type MutationViewportTypeArgs = {
+  type: Scalars['String'];
 };
 
 export type PaginationInput = {
@@ -409,6 +418,7 @@ export type Query = {
   allUsers: Array<UserDto>;
   userLocation?: Maybe<SearchLocationDto>;
   findCompanyContact?: Maybe<CompanyContactDto>;
+  findCompanyAddresses: Array<AddressDto>;
   findCompanyProfile?: Maybe<CompanyProfileDto>;
   findCompanies: Array<MemberCompanyDto>;
   findCompanyMembers: Array<CompanyMemberDto>;
@@ -420,14 +430,20 @@ export type Query = {
   findCurrentPostings: JobPostingResultsDto;
   findJobAddresses: Array<JobAddressDto>;
   findPosting: JobPostingDto;
-  search: SearchDto;
   findAllApplications: Array<ApplicationDto>;
+  search: SearchDto;
   findAllCompanyImages: Array<CompanyImageDto>;
   setCompany: Scalars['Boolean'];
   currentCompany: CurrentCompanyDto;
+  viewportType: Scalars['String'];
+  currentUser: UserDto;
 };
 
 export type QueryFindCompanyContactArgs = {
+  companySlug: Scalars['String'];
+};
+
+export type QueryFindCompanyAddressesArgs = {
   companySlug: Scalars['String'];
 };
 
@@ -456,7 +472,7 @@ export type QueryFindAllJobsArgs = {
 };
 
 export type QueryFindJobArgs = {
-  jobSlug: Scalars['String'];
+  id: Scalars['ID'];
   companySlug: Scalars['String'];
 };
 
@@ -474,12 +490,12 @@ export type QueryFindPostingArgs = {
   companySlug: Scalars['String'];
 };
 
-export type QuerySearchArgs = {
-  input: SearchInput;
-};
-
 export type QueryFindAllApplicationsArgs = {
   companySlug: Scalars['String'];
+};
+
+export type QuerySearchArgs = {
+  input: SearchInput;
 };
 
 export type QueryFindAllCompanyImagesArgs = {
@@ -572,6 +588,17 @@ export type UpdateCompanyProfileInput = {
   about?: Maybe<Scalars['String']>;
 };
 
+export type UpdateJobInput = {
+  id: Scalars['ID'];
+  title?: Maybe<Scalars['String']>;
+  summary?: Maybe<Scalars['String']>;
+  description?: Maybe<Scalars['String']>;
+  type?: Maybe<Scalars['String']>;
+  tags?: Maybe<Array<Scalars['String']>>;
+  default_image?: Maybe<Scalars['String']>;
+  defaultApplicationId?: Maybe<Scalars['String']>;
+};
+
 export type UploadImageInput = {
   image: Scalars['Upload'];
 };
@@ -587,6 +614,46 @@ export type UserDto = {
   setup: Array<Scalars['String']>;
   created_at: Scalars['DateTime'];
 };
+export type AddressPartsFragment = { __typename?: 'AddressDto' } & Pick<
+  AddressDto,
+  | 'id'
+  | 'street'
+  | 'street2'
+  | 'city'
+  | 'state'
+  | 'postal_code'
+  | 'country'
+  | 'coord_lat'
+  | 'coord_lng'
+>;
+
+export type CreateApplicationMutationVariables = {
+  companySlug: Scalars['String'];
+  input: ApplicationInput;
+};
+
+export type CreateApplicationMutation = { __typename?: 'Mutation' } & {
+  createApplication: { __typename?: 'ApplicationDto' } & Pick<
+    ApplicationDto,
+    'id'
+  >;
+};
+
+export type ApplicationPartsFragment = { __typename?: 'ApplicationDto' } & Pick<
+  ApplicationDto,
+  'id' | 'title' | 'created_at'
+>;
+
+export type FindAllApplicationsQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindAllApplicationsQuery = { __typename?: 'Query' } & {
+  findAllApplications: Array<
+    { __typename?: 'ApplicationDto' } & ApplicationPartsFragment
+  >;
+};
+
 export type CreateCompanyMutationVariables = {
   input: CompanyInput;
 };
@@ -654,36 +721,6 @@ export type FindCompanySlugQuery = { __typename?: 'Query' } & Pick<
   'findCompanySlug'
 >;
 
-export type UploadImageMutationVariables = {
-  companySlug: Scalars['String'];
-  input: UploadImageInput;
-};
-
-export type UploadImageMutation = { __typename?: 'Mutation' } & {
-  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
-    CompanyImageDto,
-    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
-  >;
-};
-
-export type CompanyUploadImageClientMutationVariables = {
-  input: UploadImageInput;
-};
-
-export type CompanyUploadImageClientMutation = {
-  __typename?: 'Mutation';
-} & Pick<Mutation, 'companyUploadImageClient'>;
-
-export type FindAllCompanyImagesQueryVariables = {
-  companySlug: Scalars['String'];
-};
-
-export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
-  findAllCompanyImages: Array<
-    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
-  >;
-};
-
 export type CreateCompanyContactMutationVariables = {
   companySlug: Scalars['String'];
   input: CompanyContactInput;
@@ -717,18 +754,7 @@ export type UpdateCompanyContactClientMutation = {
 export type CompanyContactPartsFragment = {
   __typename?: 'CompanyContactDto';
 } & Pick<CompanyContactDto, 'id' | 'phone'> & {
-    address: { __typename?: 'AddressDto' } & Pick<
-      AddressDto,
-      | 'id'
-      | 'street'
-      | 'street2'
-      | 'city'
-      | 'state'
-      | 'postal_code'
-      | 'country'
-      | 'coord_lat'
-      | 'coord_lng'
-    >;
+    address: { __typename?: 'AddressDto' } & AddressPartsFragment;
   };
 
 export type FindCompanyContactQueryVariables = {
@@ -738,6 +764,16 @@ export type FindCompanyContactQueryVariables = {
 export type FindCompanyContactQuery = { __typename?: 'Query' } & {
   findCompanyContact: Maybe<
     { __typename?: 'CompanyContactDto' } & CompanyContactPartsFragment
+  >;
+};
+
+export type FindCompanyAddressesQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindCompanyAddressesQuery = { __typename?: 'Query' } & {
+  findCompanyAddresses: Array<
+    { __typename?: 'AddressDto' } & AddressPartsFragment
   >;
 };
 
@@ -787,6 +823,28 @@ export type FindCompanyMembersQuery = { __typename?: 'Query' } & {
   >;
 };
 
+export type UploadImageMutationVariables = {
+  companySlug: Scalars['String'];
+  input: UploadImageInput;
+};
+
+export type UploadImageMutation = { __typename?: 'Mutation' } & {
+  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
+    CompanyImageDto,
+    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
+  >;
+};
+
+export type FindAllCompanyImagesQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
+  findAllCompanyImages: Array<
+    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
+  >;
+};
+
 export type CreateCompanyProfileMutationVariables = {
   companySlug: Scalars['String'];
   input: CompanyProfileInput;
@@ -831,33 +889,6 @@ export type FindCompanyProfileQuery = { __typename?: 'Query' } & {
   >;
 };
 
-export type CreateApplicationMutationVariables = {
-  companySlug: Scalars['String'];
-  input: ApplicationInput;
-};
-
-export type CreateApplicationMutation = { __typename?: 'Mutation' } & {
-  createApplication: { __typename?: 'ApplicationDto' } & Pick<
-    ApplicationDto,
-    'id'
-  >;
-};
-
-export type ApplicationPartsFragment = { __typename?: 'ApplicationDto' } & Pick<
-  ApplicationDto,
-  'id' | 'title'
->;
-
-export type FindAllApplicationsQueryVariables = {
-  companySlug: Scalars['String'];
-};
-
-export type FindAllApplicationsQuery = { __typename?: 'Query' } & {
-  findAllApplications: Array<
-    { __typename?: 'ApplicationDto' } & ApplicationPartsFragment
-  >;
-};
-
 export type CreateJobMutationVariables = {
   companySlug: Scalars['String'];
   input: JobInput;
@@ -867,9 +898,145 @@ export type CreateJobMutation = { __typename?: 'Mutation' } & {
   createJob: { __typename?: 'JobDto' } & Pick<JobDto, 'id'>;
 };
 
+export type UpdateJobMutationVariables = {
+  companySlug: Scalars['String'];
+  input: UpdateJobInput;
+};
+
+export type UpdateJobMutation = { __typename?: 'Mutation' } & {
+  updateJob: { __typename?: 'JobDto' } & JobPartsFragment;
+};
+
+export type ViewportTypeMutationMutationVariables = {
+  type: Scalars['String'];
+};
+
+export type ViewportTypeMutationMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'viewportType'
+>;
+
+export type ViewportTypeQueryQueryVariables = {};
+
+export type ViewportTypeQueryQuery = { __typename?: 'Query' } & Pick<
+  Query,
+  'viewportType'
+>;
+
+export type UserPartsFragment = { __typename?: 'UserDto' } & Pick<
+  UserDto,
+  | 'id'
+  | 'first_name'
+  | 'last_name'
+  | 'email'
+  | 'realm'
+  | 'is_verified'
+  | 'setup'
+>;
+
+export type LoginMutationVariables = {
+  input: LoginInput;
+};
+
+export type LoginMutation = { __typename?: 'Mutation' } & {
+  login: { __typename?: 'UserDto' } & UserPartsFragment;
+};
+
+export type RegisterMutationVariables = {
+  input: RegisterInput;
+};
+
+export type RegisterMutation = { __typename?: 'Mutation' } & {
+  register: { __typename?: 'UserDto' } & UserPartsFragment;
+};
+
+export type LogoutMutationVariables = {};
+
+export type LogoutMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'logout'
+>;
+
+export type ForgotPasswordMutationVariables = {
+  input: ForgotPasswordInput;
+};
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation' } & Pick<
+  Mutation,
+  'forgotPassword'
+>;
+
+export type MeQueryVariables = {};
+
+export type MeQuery = { __typename?: 'Query' } & {
+  me: Maybe<
+    { __typename?: 'MeSessionDto' } & Pick<
+      MeSessionDto,
+      | 'id'
+      | 'first_name'
+      | 'last_name'
+      | 'email'
+      | 'realm'
+      | 'is_verified'
+      | 'setup'
+    > & {
+        search: Maybe<
+          { __typename?: 'SearchLocationDto' } & Pick<
+            SearchLocationDto,
+            'locality'
+          > & {
+              coords: { __typename?: 'SearchCoordsDto' } & Pick<
+                SearchCoordsDto,
+                'lng' | 'lat'
+              >;
+            }
+        >;
+      }
+  >;
+};
+
+export type UserLocationQueryVariables = {};
+
+export type UserLocationQuery = { __typename?: 'Query' } & {
+  userLocation: Maybe<
+    { __typename?: 'SearchLocationDto' } & Pick<
+      SearchLocationDto,
+      'locality'
+    > & {
+        coords: { __typename?: 'SearchCoordsDto' } & Pick<
+          SearchCoordsDto,
+          'lat' | 'lng'
+        >;
+      }
+  >;
+};
+
+export type CurrentUserQueryVariables = {};
+
+export type CurrentUserQuery = { __typename?: 'Query' } & {
+  currentUser: { __typename?: 'UserDto' } & Pick<
+    UserDto,
+    | 'id'
+    | 'first_name'
+    | 'last_name'
+    | 'email'
+    | 'realm'
+    | 'is_verified'
+    | 'setup'
+  >;
+};
+
 export type JobPartsFragment = { __typename?: 'JobDto' } & Pick<
   JobDto,
-  'id' | 'name' | 'slug' | 'type' | 'created_at'
+  | 'id'
+  | 'title'
+  | 'description'
+  | 'summary'
+  | 'type'
+  | 'tags'
+  | 'default_image'
+  | 'defaultApplicationId'
+  | 'created_at'
 >;
 
 export type FindAllJobsQueryVariables = {
@@ -882,7 +1049,7 @@ export type FindAllJobsQuery = { __typename?: 'Query' } & {
 
 export type FindJobQueryVariables = {
   companySlug: Scalars['String'];
-  jobSlug: Scalars['String'];
+  id: Scalars['ID'];
 };
 
 export type FindJobQuery = { __typename?: 'Query' } & {
@@ -898,7 +1065,7 @@ export type PostingPartsFragment = { __typename?: 'JobPostingDto' } & Pick<
   | 'total_openings'
   | 'remaining_openings'
   | 'apply_deadline'
-> & { job: { __typename?: 'JobDto' } & Pick<JobDto, 'name'> };
+> & { job: { __typename?: 'JobDto' } & Pick<JobDto, 'title'> };
 
 export type CreatePostingMutationVariables = {
   companySlug: Scalars['String'];
@@ -918,6 +1085,34 @@ export type CreatePostingClientMutation = { __typename?: 'Mutation' } & Pick<
   Mutation,
   'createPostingClient'
 >;
+
+export type SearchQueryVariables = {
+  input: SearchInput;
+};
+
+export type SearchQuery = { __typename?: 'Query' } & {
+  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
+      results: Array<
+        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
+            job: { __typename?: 'JobDto' } & Pick<
+              JobDto,
+              'id' | 'title' | 'type'
+            > & {
+                postings: Array<
+                  { __typename?: 'JobPostingDto' } & Pick<
+                    JobPostingDto,
+                    | 'id'
+                    | 'start_date'
+                    | 'apply_deadline'
+                    | 'pay_rate'
+                    | 'total_openings'
+                  >
+                >;
+              };
+          }
+      >;
+    };
+};
 
 export type FindJobAddressesQueryVariables = {
   companySlug: Scalars['String'];
@@ -962,133 +1157,13 @@ export type FindPostingQueryVariables = {
 export type FindPostingQuery = { __typename?: 'Query' } & {
   findPosting: { __typename?: 'JobPostingDto' } & PostingPartsFragment;
 };
-
-export type SearchQueryVariables = {
-  input: SearchInput;
-};
-
-export type SearchQuery = { __typename?: 'Query' } & {
-  search: { __typename?: 'SearchDto' } & Pick<SearchDto, 'count'> & {
-      results: Array<
-        { __typename?: 'SearchResultsDto' } & Pick<SearchResultsDto, 'rank'> & {
-            job: { __typename?: 'JobDto' } & Pick<
-              JobDto,
-              'id' | 'name' | 'companyName' | 'type'
-            > & {
-                postings: Array<
-                  { __typename?: 'JobPostingDto' } & Pick<
-                    JobPostingDto,
-                    | 'id'
-                    | 'start_date'
-                    | 'apply_deadline'
-                    | 'pay_rate'
-                    | 'total_openings'
-                  >
-                >;
-              };
-          }
-      >;
-    };
-};
-
-export type ForgotPasswordMutationVariables = {
-  email: Scalars['String'];
-};
-
-export type ForgotPasswordMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'forgotPassword'
->;
-
-export type LoginMutationVariables = {
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type LoginMutation = { __typename?: 'Mutation' } & {
-  login: { __typename?: 'UserDto' } & Pick<
-    UserDto,
-    | 'id'
-    | 'first_name'
-    | 'last_name'
-    | 'email'
-    | 'realm'
-    | 'is_verified'
-    | 'setup'
-  >;
-};
-
-export type LogoutMutationVariables = {};
-
-export type LogoutMutation = { __typename?: 'Mutation' } & Pick<
-  Mutation,
-  'logout'
->;
-
-export type RegisterMutationVariables = {
-  first_name: Scalars['String'];
-  last_name: Scalars['String'];
-  email: Scalars['String'];
-  password: Scalars['String'];
-};
-
-export type RegisterMutation = { __typename?: 'Mutation' } & {
-  register: { __typename?: 'UserDto' } & Pick<
-    UserDto,
-    | 'id'
-    | 'first_name'
-    | 'last_name'
-    | 'email'
-    | 'realm'
-    | 'is_verified'
-    | 'setup'
-  >;
-};
-
-export type UserLocationQueryVariables = {};
-
-export type UserLocationQuery = { __typename?: 'Query' } & {
-  userLocation: Maybe<
-    { __typename?: 'SearchLocationDto' } & Pick<
-      SearchLocationDto,
-      'locality'
-    > & {
-        coords: { __typename?: 'SearchCoordsDto' } & Pick<
-          SearchCoordsDto,
-          'lat' | 'lng'
-        >;
-      }
-  >;
-};
-
-export type MeQueryVariables = {};
-
-export type MeQuery = { __typename?: 'Query' } & {
-  me: Maybe<
-    { __typename?: 'MeSessionDto' } & Pick<
-      MeSessionDto,
-      | 'id'
-      | 'first_name'
-      | 'last_name'
-      | 'email'
-      | 'realm'
-      | 'is_verified'
-      | 'setup'
-    > & {
-        search: Maybe<
-          { __typename?: 'SearchLocationDto' } & Pick<
-            SearchLocationDto,
-            'locality'
-          > & {
-              coords: { __typename?: 'SearchCoordsDto' } & Pick<
-                SearchCoordsDto,
-                'lng' | 'lat'
-              >;
-            }
-        >;
-      }
-  >;
-};
+export const ApplicationPartsFragmentDoc = gql`
+  fragment ApplicationParts on ApplicationDto {
+    id
+    title
+    created_at
+  }
+`;
 export const CompanyPartsFragmentDoc = gql`
   fragment CompanyParts on CurrentCompanyDto {
     id
@@ -1101,22 +1176,28 @@ export const CompanyPartsFragmentDoc = gql`
     }
   }
 `;
+export const AddressPartsFragmentDoc = gql`
+  fragment AddressParts on AddressDto {
+    id
+    street
+    street2
+    city
+    state
+    postal_code
+    country
+    coord_lat
+    coord_lng
+  }
+`;
 export const CompanyContactPartsFragmentDoc = gql`
   fragment CompanyContactParts on CompanyContactDto {
     id
     phone
     address {
-      id
-      street
-      street2
-      city
-      state
-      postal_code
-      country
-      coord_lat
-      coord_lng
+      ...AddressParts
     }
   }
+  ${AddressPartsFragmentDoc}
 `;
 export const CompanyMemberPartsFragmentDoc = gql`
   fragment CompanyMemberParts on CompanyMemberDto {
@@ -1137,18 +1218,27 @@ export const CompanyProfilePartsFragmentDoc = gql`
     profile_image
   }
 `;
-export const ApplicationPartsFragmentDoc = gql`
-  fragment ApplicationParts on ApplicationDto {
+export const UserPartsFragmentDoc = gql`
+  fragment UserParts on UserDto {
     id
-    title
+    first_name
+    last_name
+    email
+    realm
+    is_verified
+    setup
   }
 `;
 export const JobPartsFragmentDoc = gql`
   fragment JobParts on JobDto {
     id
-    name
-    slug
+    title
+    description
+    summary
     type
+    tags
+    default_image
+    defaultApplicationId
     created_at
   }
 `;
@@ -1162,10 +1252,133 @@ export const PostingPartsFragmentDoc = gql`
     remaining_openings
     apply_deadline
     job {
-      name
+      title
     }
   }
 `;
+export const CreateApplicationDocument = gql`
+  mutation CreateApplication($companySlug: String!, $input: ApplicationInput!) {
+    createApplication(companySlug: $companySlug, input: $input) {
+      id
+    }
+  }
+`;
+export type CreateApplicationMutationFn = ApolloReactCommon.MutationFunction<
+  CreateApplicationMutation,
+  CreateApplicationMutationVariables
+>;
+export type CreateApplicationComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    CreateApplicationMutation,
+    CreateApplicationMutationVariables
+  >,
+  'mutation'
+>;
+
+export const CreateApplicationComponent = (
+  props: CreateApplicationComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    CreateApplicationMutation,
+    CreateApplicationMutationVariables
+  >
+    mutation={CreateApplicationDocument}
+    {...props}
+  />
+);
+
+export type CreateApplicationProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  CreateApplicationMutation,
+  CreateApplicationMutationVariables
+> &
+  TChildProps;
+export function withCreateApplication<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CreateApplicationMutation,
+    CreateApplicationMutationVariables,
+    CreateApplicationProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    CreateApplicationMutation,
+    CreateApplicationMutationVariables,
+    CreateApplicationProps<TChildProps>
+  >(CreateApplicationDocument, {
+    alias: 'withCreateApplication',
+    ...operationOptions,
+  });
+}
+export type CreateApplicationMutationResult = ApolloReactCommon.MutationResult<
+  CreateApplicationMutation
+>;
+export type CreateApplicationMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  CreateApplicationMutation,
+  CreateApplicationMutationVariables
+>;
+export const FindAllApplicationsDocument = gql`
+  query FindAllApplications($companySlug: String!) {
+    findAllApplications(companySlug: $companySlug) {
+      ...ApplicationParts
+    }
+  }
+  ${ApplicationPartsFragmentDoc}
+`;
+export type FindAllApplicationsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindAllApplicationsQuery,
+    FindAllApplicationsQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindAllApplicationsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindAllApplicationsComponent = (
+  props: FindAllApplicationsComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindAllApplicationsQuery,
+    FindAllApplicationsQueryVariables
+  >
+    query={FindAllApplicationsDocument}
+    {...props}
+  />
+);
+
+export type FindAllApplicationsProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindAllApplicationsQuery,
+  FindAllApplicationsQueryVariables
+> &
+  TChildProps;
+export function withFindAllApplications<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindAllApplicationsQuery,
+    FindAllApplicationsQueryVariables,
+    FindAllApplicationsProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindAllApplicationsQuery,
+    FindAllApplicationsQueryVariables,
+    FindAllApplicationsProps<TChildProps>
+  >(FindAllApplicationsDocument, {
+    alias: 'withFindAllApplications',
+    ...operationOptions,
+  });
+}
+export type FindAllApplicationsQueryResult = ApolloReactCommon.QueryResult<
+  FindAllApplicationsQuery,
+  FindAllApplicationsQueryVariables
+>;
 export const CreateCompanyDocument = gql`
   mutation CreateCompany($input: CompanyInput!) {
     createCompany(input: $input) {
@@ -1509,190 +1722,6 @@ export type FindCompanySlugQueryResult = ApolloReactCommon.QueryResult<
   FindCompanySlugQuery,
   FindCompanySlugQueryVariables
 >;
-export const UploadImageDocument = gql`
-  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
-    uploadImage(companySlug: $companySlug, input: $input) {
-      id
-      filename
-      path
-      thumb
-      awsKey
-    }
-  }
-`;
-export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
-export type UploadImageComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >,
-  'mutation'
->;
-
-export const UploadImageComponent = (props: UploadImageComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >
-    mutation={UploadImageDocument}
-    {...props}
-  />
-);
-
-export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  UploadImageMutation,
-  UploadImageMutationVariables
-> &
-  TChildProps;
-export function withUploadImage<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >(UploadImageDocument, {
-    alias: 'withUploadImage',
-    ...operationOptions,
-  });
-}
-export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
-  UploadImageMutation
->;
-export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
-export const CompanyUploadImageClientDocument = gql`
-  mutation CompanyUploadImageClient($input: UploadImageInput!) {
-    companyUploadImageClient(input: $input) @client
-  }
-`;
-export type CompanyUploadImageClientMutationFn = ApolloReactCommon.MutationFunction<
-  CompanyUploadImageClientMutation,
-  CompanyUploadImageClientMutationVariables
->;
-export type CompanyUploadImageClientComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    CompanyUploadImageClientMutation,
-    CompanyUploadImageClientMutationVariables
-  >,
-  'mutation'
->;
-
-export const CompanyUploadImageClientComponent = (
-  props: CompanyUploadImageClientComponentProps,
-) => (
-  <ApolloReactComponents.Mutation<
-    CompanyUploadImageClientMutation,
-    CompanyUploadImageClientMutationVariables
-  >
-    mutation={CompanyUploadImageClientDocument}
-    {...props}
-  />
-);
-
-export type CompanyUploadImageClientProps<
-  TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-  CompanyUploadImageClientMutation,
-  CompanyUploadImageClientMutationVariables
-> &
-  TChildProps;
-export function withCompanyUploadImageClient<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    CompanyUploadImageClientMutation,
-    CompanyUploadImageClientMutationVariables,
-    CompanyUploadImageClientProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    CompanyUploadImageClientMutation,
-    CompanyUploadImageClientMutationVariables,
-    CompanyUploadImageClientProps<TChildProps>
-  >(CompanyUploadImageClientDocument, {
-    alias: 'withCompanyUploadImageClient',
-    ...operationOptions,
-  });
-}
-export type CompanyUploadImageClientMutationResult = ApolloReactCommon.MutationResult<
-  CompanyUploadImageClientMutation
->;
-export type CompanyUploadImageClientMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CompanyUploadImageClientMutation,
-  CompanyUploadImageClientMutationVariables
->;
-export const FindAllCompanyImagesDocument = gql`
-  query FindAllCompanyImages($companySlug: String!) {
-    findAllCompanyImages(companySlug: $companySlug) {
-      id
-      path
-    }
-  }
-`;
-export type FindAllCompanyImagesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >,
-  'query'
-> &
-  (
-    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const FindAllCompanyImagesComponent = (
-  props: FindAllCompanyImagesComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >
-    query={FindAllCompanyImagesDocument}
-    {...props}
-  />
-);
-
-export type FindAllCompanyImagesProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
-> &
-  TChildProps;
-export function withFindAllCompanyImages<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >(FindAllCompanyImagesDocument, {
-    alias: 'withFindAllCompanyImages',
-    ...operationOptions,
-  });
-}
-export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
->;
 export const CreateCompanyContactDocument = gql`
   mutation CreateCompanyContact(
     $companySlug: String!
@@ -1948,6 +1977,66 @@ export type FindCompanyContactQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyContactQuery,
   FindCompanyContactQueryVariables
 >;
+export const FindCompanyAddressesDocument = gql`
+  query FindCompanyAddresses($companySlug: String!) {
+    findCompanyAddresses(companySlug: $companySlug) {
+      ...AddressParts
+    }
+  }
+  ${AddressPartsFragmentDoc}
+`;
+export type FindCompanyAddressesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindCompanyAddressesQuery,
+    FindCompanyAddressesQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindCompanyAddressesQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindCompanyAddressesComponent = (
+  props: FindCompanyAddressesComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindCompanyAddressesQuery,
+    FindCompanyAddressesQueryVariables
+  >
+    query={FindCompanyAddressesDocument}
+    {...props}
+  />
+);
+
+export type FindCompanyAddressesProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindCompanyAddressesQuery,
+  FindCompanyAddressesQueryVariables
+> &
+  TChildProps;
+export function withFindCompanyAddresses<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindCompanyAddressesQuery,
+    FindCompanyAddressesQueryVariables,
+    FindCompanyAddressesProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindCompanyAddressesQuery,
+    FindCompanyAddressesQueryVariables,
+    FindCompanyAddressesProps<TChildProps>
+  >(FindCompanyAddressesDocument, {
+    alias: 'withFindCompanyAddresses',
+    ...operationOptions,
+  });
+}
+export type FindCompanyAddressesQueryResult = ApolloReactCommon.QueryResult<
+  FindCompanyAddressesQuery,
+  FindCompanyAddressesQueryVariables
+>;
 export const CreateCompanyMembersDocument = gql`
   mutation CreateCompanyMembers(
     $companySlug: String!
@@ -2129,6 +2218,129 @@ export function withFindCompanyMembers<TProps, TChildProps = {}>(
 export type FindCompanyMembersQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyMembersQuery,
   FindCompanyMembersQueryVariables
+>;
+export const UploadImageDocument = gql`
+  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
+    uploadImage(companySlug: $companySlug, input: $input) {
+      id
+      filename
+      path
+      thumb
+      awsKey
+    }
+  }
+`;
+export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>;
+export type UploadImageComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UploadImageComponent = (props: UploadImageComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >
+    mutation={UploadImageDocument}
+    {...props}
+  />
+);
+
+export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  UploadImageMutation,
+  UploadImageMutationVariables
+> &
+  TChildProps;
+export function withUploadImage<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
+  >(UploadImageDocument, {
+    alias: 'withUploadImage',
+    ...operationOptions,
+  });
+}
+export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
+  UploadImageMutation
+>;
+export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>;
+export const FindAllCompanyImagesDocument = gql`
+  query FindAllCompanyImages($companySlug: String!) {
+    findAllCompanyImages(companySlug: $companySlug) {
+      id
+      path
+    }
+  }
+`;
+export type FindAllCompanyImagesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindAllCompanyImagesComponent = (
+  props: FindAllCompanyImagesComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
+  >
+    query={FindAllCompanyImagesDocument}
+    {...props}
+  />
+);
+
+export type FindAllCompanyImagesProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
+> &
+  TChildProps;
+export function withFindAllCompanyImages<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
+  >(FindAllCompanyImagesDocument, {
+    alias: 'withFindAllCompanyImages',
+    ...operationOptions,
+  });
+}
+export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
 >;
 export const CreateCompanyProfileDocument = gql`
   mutation CreateCompanyProfile(
@@ -2385,129 +2597,6 @@ export type FindCompanyProfileQueryResult = ApolloReactCommon.QueryResult<
   FindCompanyProfileQuery,
   FindCompanyProfileQueryVariables
 >;
-export const CreateApplicationDocument = gql`
-  mutation CreateApplication($companySlug: String!, $input: ApplicationInput!) {
-    createApplication(companySlug: $companySlug, input: $input) {
-      id
-    }
-  }
-`;
-export type CreateApplicationMutationFn = ApolloReactCommon.MutationFunction<
-  CreateApplicationMutation,
-  CreateApplicationMutationVariables
->;
-export type CreateApplicationComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    CreateApplicationMutation,
-    CreateApplicationMutationVariables
-  >,
-  'mutation'
->;
-
-export const CreateApplicationComponent = (
-  props: CreateApplicationComponentProps,
-) => (
-  <ApolloReactComponents.Mutation<
-    CreateApplicationMutation,
-    CreateApplicationMutationVariables
-  >
-    mutation={CreateApplicationDocument}
-    {...props}
-  />
-);
-
-export type CreateApplicationProps<
-  TChildProps = {}
-> = ApolloReactHoc.MutateProps<
-  CreateApplicationMutation,
-  CreateApplicationMutationVariables
-> &
-  TChildProps;
-export function withCreateApplication<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    CreateApplicationMutation,
-    CreateApplicationMutationVariables,
-    CreateApplicationProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    CreateApplicationMutation,
-    CreateApplicationMutationVariables,
-    CreateApplicationProps<TChildProps>
-  >(CreateApplicationDocument, {
-    alias: 'withCreateApplication',
-    ...operationOptions,
-  });
-}
-export type CreateApplicationMutationResult = ApolloReactCommon.MutationResult<
-  CreateApplicationMutation
->;
-export type CreateApplicationMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  CreateApplicationMutation,
-  CreateApplicationMutationVariables
->;
-export const FindAllApplicationsDocument = gql`
-  query FindAllApplications($companySlug: String!) {
-    findAllApplications(companySlug: $companySlug) {
-      ...ApplicationParts
-    }
-  }
-  ${ApplicationPartsFragmentDoc}
-`;
-export type FindAllApplicationsComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindAllApplicationsQuery,
-    FindAllApplicationsQueryVariables
-  >,
-  'query'
-> &
-  (
-    | { variables: FindAllApplicationsQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const FindAllApplicationsComponent = (
-  props: FindAllApplicationsComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindAllApplicationsQuery,
-    FindAllApplicationsQueryVariables
-  >
-    query={FindAllApplicationsDocument}
-    {...props}
-  />
-);
-
-export type FindAllApplicationsProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindAllApplicationsQuery,
-  FindAllApplicationsQueryVariables
-> &
-  TChildProps;
-export function withFindAllApplications<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindAllApplicationsQuery,
-    FindAllApplicationsQueryVariables,
-    FindAllApplicationsProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindAllApplicationsQuery,
-    FindAllApplicationsQueryVariables,
-    FindAllApplicationsProps<TChildProps>
-  >(FindAllApplicationsDocument, {
-    alias: 'withFindAllApplications',
-    ...operationOptions,
-  });
-}
-export type FindAllApplicationsQueryResult = ApolloReactCommon.QueryResult<
-  FindAllApplicationsQuery,
-  FindAllApplicationsQueryVariables
->;
 export const CreateJobDocument = gql`
   mutation CreateJob($companySlug: String!, $input: JobInput!) {
     createJob(companySlug: $companySlug, input: $input) {
@@ -2564,6 +2653,570 @@ export type CreateJobMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateJobMutation,
   CreateJobMutationVariables
 >;
+export const UpdateJobDocument = gql`
+  mutation UpdateJob($companySlug: String!, $input: UpdateJobInput!) {
+    updateJob(companySlug: $companySlug, input: $input) {
+      ...JobParts
+    }
+  }
+  ${JobPartsFragmentDoc}
+`;
+export type UpdateJobMutationFn = ApolloReactCommon.MutationFunction<
+  UpdateJobMutation,
+  UpdateJobMutationVariables
+>;
+export type UpdateJobComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UpdateJobMutation,
+    UpdateJobMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UpdateJobComponent = (props: UpdateJobComponentProps) => (
+  <ApolloReactComponents.Mutation<UpdateJobMutation, UpdateJobMutationVariables>
+    mutation={UpdateJobDocument}
+    {...props}
+  />
+);
+
+export type UpdateJobProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  UpdateJobMutation,
+  UpdateJobMutationVariables
+> &
+  TChildProps;
+export function withUpdateJob<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UpdateJobMutation,
+    UpdateJobMutationVariables,
+    UpdateJobProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UpdateJobMutation,
+    UpdateJobMutationVariables,
+    UpdateJobProps<TChildProps>
+  >(UpdateJobDocument, {
+    alias: 'withUpdateJob',
+    ...operationOptions,
+  });
+}
+export type UpdateJobMutationResult = ApolloReactCommon.MutationResult<
+  UpdateJobMutation
+>;
+export type UpdateJobMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UpdateJobMutation,
+  UpdateJobMutationVariables
+>;
+export const ViewportTypeMutationDocument = gql`
+  mutation ViewportTypeMutation($type: String!) {
+    viewportType(type: $type) @client
+  }
+`;
+export type ViewportTypeMutationMutationFn = ApolloReactCommon.MutationFunction<
+  ViewportTypeMutationMutation,
+  ViewportTypeMutationMutationVariables
+>;
+export type ViewportTypeMutationComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    ViewportTypeMutationMutation,
+    ViewportTypeMutationMutationVariables
+  >,
+  'mutation'
+>;
+
+export const ViewportTypeMutationComponent = (
+  props: ViewportTypeMutationComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    ViewportTypeMutationMutation,
+    ViewportTypeMutationMutationVariables
+  >
+    mutation={ViewportTypeMutationDocument}
+    {...props}
+  />
+);
+
+export type ViewportTypeMutationProps<
+  TChildProps = {}
+> = ApolloReactHoc.MutateProps<
+  ViewportTypeMutationMutation,
+  ViewportTypeMutationMutationVariables
+> &
+  TChildProps;
+export function withViewportTypeMutation<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    ViewportTypeMutationMutation,
+    ViewportTypeMutationMutationVariables,
+    ViewportTypeMutationProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    ViewportTypeMutationMutation,
+    ViewportTypeMutationMutationVariables,
+    ViewportTypeMutationProps<TChildProps>
+  >(ViewportTypeMutationDocument, {
+    alias: 'withViewportTypeMutation',
+    ...operationOptions,
+  });
+}
+export type ViewportTypeMutationMutationResult = ApolloReactCommon.MutationResult<
+  ViewportTypeMutationMutation
+>;
+export type ViewportTypeMutationMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  ViewportTypeMutationMutation,
+  ViewportTypeMutationMutationVariables
+>;
+export const ViewportTypeQueryDocument = gql`
+  query ViewportTypeQuery {
+    viewportType @client
+  }
+`;
+export type ViewportTypeQueryComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    ViewportTypeQueryQuery,
+    ViewportTypeQueryQueryVariables
+  >,
+  'query'
+>;
+
+export const ViewportTypeQueryComponent = (
+  props: ViewportTypeQueryComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    ViewportTypeQueryQuery,
+    ViewportTypeQueryQueryVariables
+  >
+    query={ViewportTypeQueryDocument}
+    {...props}
+  />
+);
+
+export type ViewportTypeQueryProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  ViewportTypeQueryQuery,
+  ViewportTypeQueryQueryVariables
+> &
+  TChildProps;
+export function withViewportTypeQuery<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    ViewportTypeQueryQuery,
+    ViewportTypeQueryQueryVariables,
+    ViewportTypeQueryProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    ViewportTypeQueryQuery,
+    ViewportTypeQueryQueryVariables,
+    ViewportTypeQueryProps<TChildProps>
+  >(ViewportTypeQueryDocument, {
+    alias: 'withViewportTypeQuery',
+    ...operationOptions,
+  });
+}
+export type ViewportTypeQueryQueryResult = ApolloReactCommon.QueryResult<
+  ViewportTypeQueryQuery,
+  ViewportTypeQueryQueryVariables
+>;
+export const LoginDocument = gql`
+  mutation Login($input: LoginInput!) {
+    login(input: $input) {
+      ...UserParts
+    }
+  }
+  ${UserPartsFragmentDoc}
+`;
+export type LoginMutationFn = ApolloReactCommon.MutationFunction<
+  LoginMutation,
+  LoginMutationVariables
+>;
+export type LoginComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    LoginMutation,
+    LoginMutationVariables
+  >,
+  'mutation'
+>;
+
+export const LoginComponent = (props: LoginComponentProps) => (
+  <ApolloReactComponents.Mutation<LoginMutation, LoginMutationVariables>
+    mutation={LoginDocument}
+    {...props}
+  />
+);
+
+export type LoginProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  LoginMutation,
+  LoginMutationVariables
+> &
+  TChildProps;
+export function withLogin<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    LoginMutation,
+    LoginMutationVariables,
+    LoginProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    LoginMutation,
+    LoginMutationVariables,
+    LoginProps<TChildProps>
+  >(LoginDocument, {
+    alias: 'withLogin',
+    ...operationOptions,
+  });
+}
+export type LoginMutationResult = ApolloReactCommon.MutationResult<
+  LoginMutation
+>;
+export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  LoginMutation,
+  LoginMutationVariables
+>;
+export const RegisterDocument = gql`
+  mutation Register($input: RegisterInput!) {
+    register(input: $input) {
+      ...UserParts
+    }
+  }
+  ${UserPartsFragmentDoc}
+`;
+export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
+export type RegisterComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    RegisterMutation,
+    RegisterMutationVariables
+  >,
+  'mutation'
+>;
+
+export const RegisterComponent = (props: RegisterComponentProps) => (
+  <ApolloReactComponents.Mutation<RegisterMutation, RegisterMutationVariables>
+    mutation={RegisterDocument}
+    {...props}
+  />
+);
+
+export type RegisterProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  RegisterMutation,
+  RegisterMutationVariables
+> &
+  TChildProps;
+export function withRegister<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    RegisterMutation,
+    RegisterMutationVariables,
+    RegisterProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    RegisterMutation,
+    RegisterMutationVariables,
+    RegisterProps<TChildProps>
+  >(RegisterDocument, {
+    alias: 'withRegister',
+    ...operationOptions,
+  });
+}
+export type RegisterMutationResult = ApolloReactCommon.MutationResult<
+  RegisterMutation
+>;
+export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  RegisterMutation,
+  RegisterMutationVariables
+>;
+export const LogoutDocument = gql`
+  mutation Logout {
+    logout
+  }
+`;
+export type LogoutMutationFn = ApolloReactCommon.MutationFunction<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
+export type LogoutComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    LogoutMutation,
+    LogoutMutationVariables
+  >,
+  'mutation'
+>;
+
+export const LogoutComponent = (props: LogoutComponentProps) => (
+  <ApolloReactComponents.Mutation<LogoutMutation, LogoutMutationVariables>
+    mutation={LogoutDocument}
+    {...props}
+  />
+);
+
+export type LogoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  LogoutMutation,
+  LogoutMutationVariables
+> &
+  TChildProps;
+export function withLogout<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    LogoutMutation,
+    LogoutMutationVariables,
+    LogoutProps<TChildProps>
+  >(LogoutDocument, {
+    alias: 'withLogout',
+    ...operationOptions,
+  });
+}
+export type LogoutMutationResult = ApolloReactCommon.MutationResult<
+  LogoutMutation
+>;
+export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  LogoutMutation,
+  LogoutMutationVariables
+>;
+export const ForgotPasswordDocument = gql`
+  mutation ForgotPassword($input: ForgotPasswordInput!) {
+    forgotPassword(input: $input)
+  }
+`;
+export type ForgotPasswordMutationFn = ApolloReactCommon.MutationFunction<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+>;
+export type ForgotPasswordComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
+  >,
+  'mutation'
+>;
+
+export const ForgotPasswordComponent = (
+  props: ForgotPasswordComponentProps,
+) => (
+  <ApolloReactComponents.Mutation<
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables
+  >
+    mutation={ForgotPasswordDocument}
+    {...props}
+  />
+);
+
+export type ForgotPasswordProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+> &
+  TChildProps;
+export function withForgotPassword<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables,
+    ForgotPasswordProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    ForgotPasswordMutation,
+    ForgotPasswordMutationVariables,
+    ForgotPasswordProps<TChildProps>
+  >(ForgotPasswordDocument, {
+    alias: 'withForgotPassword',
+    ...operationOptions,
+  });
+}
+export type ForgotPasswordMutationResult = ApolloReactCommon.MutationResult<
+  ForgotPasswordMutation
+>;
+export type ForgotPasswordMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  ForgotPasswordMutation,
+  ForgotPasswordMutationVariables
+>;
+export const MeDocument = gql`
+  query Me {
+    me {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+      search {
+        locality
+        coords {
+          lng
+          lat
+        }
+      }
+    }
+  }
+`;
+export type MeComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<MeQuery, MeQueryVariables>,
+  'query'
+>;
+
+export const MeComponent = (props: MeComponentProps) => (
+  <ApolloReactComponents.Query<MeQuery, MeQueryVariables>
+    query={MeDocument}
+    {...props}
+  />
+);
+
+export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  MeQuery,
+  MeQueryVariables
+> &
+  TChildProps;
+export function withMe<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    MeQuery,
+    MeQueryVariables,
+    MeProps<TChildProps>
+  >(MeDocument, {
+    alias: 'withMe',
+    ...operationOptions,
+  });
+}
+export type MeQueryResult = ApolloReactCommon.QueryResult<
+  MeQuery,
+  MeQueryVariables
+>;
+export const UserLocationDocument = gql`
+  query UserLocation {
+    userLocation {
+      locality
+      coords {
+        lat
+        lng
+      }
+    }
+  }
+`;
+export type UserLocationComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    UserLocationQuery,
+    UserLocationQueryVariables
+  >,
+  'query'
+>;
+
+export const UserLocationComponent = (props: UserLocationComponentProps) => (
+  <ApolloReactComponents.Query<UserLocationQuery, UserLocationQueryVariables>
+    query={UserLocationDocument}
+    {...props}
+  />
+);
+
+export type UserLocationProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  UserLocationQuery,
+  UserLocationQueryVariables
+> &
+  TChildProps;
+export function withUserLocation<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UserLocationQuery,
+    UserLocationQueryVariables,
+    UserLocationProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    UserLocationQuery,
+    UserLocationQueryVariables,
+    UserLocationProps<TChildProps>
+  >(UserLocationDocument, {
+    alias: 'withUserLocation',
+    ...operationOptions,
+  });
+}
+export type UserLocationQueryResult = ApolloReactCommon.QueryResult<
+  UserLocationQuery,
+  UserLocationQueryVariables
+>;
+export const CurrentUserDocument = gql`
+  query CurrentUser {
+    currentUser @client {
+      id
+      first_name
+      last_name
+      email
+      realm
+      is_verified
+      setup
+    }
+  }
+`;
+export type CurrentUserComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    CurrentUserQuery,
+    CurrentUserQueryVariables
+  >,
+  'query'
+>;
+
+export const CurrentUserComponent = (props: CurrentUserComponentProps) => (
+  <ApolloReactComponents.Query<CurrentUserQuery, CurrentUserQueryVariables>
+    query={CurrentUserDocument}
+    {...props}
+  />
+);
+
+export type CurrentUserProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  CurrentUserQuery,
+  CurrentUserQueryVariables
+> &
+  TChildProps;
+export function withCurrentUser<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    CurrentUserQuery,
+    CurrentUserQueryVariables,
+    CurrentUserProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    CurrentUserQuery,
+    CurrentUserQueryVariables,
+    CurrentUserProps<TChildProps>
+  >(CurrentUserDocument, {
+    alias: 'withCurrentUser',
+    ...operationOptions,
+  });
+}
+export type CurrentUserQueryResult = ApolloReactCommon.QueryResult<
+  CurrentUserQuery,
+  CurrentUserQueryVariables
+>;
 export const FindAllJobsDocument = gql`
   query FindAllJobs($companySlug: String!) {
     findAllJobs(companySlug: $companySlug) {
@@ -2618,8 +3271,8 @@ export type FindAllJobsQueryResult = ApolloReactCommon.QueryResult<
   FindAllJobsQueryVariables
 >;
 export const FindJobDocument = gql`
-  query FindJob($companySlug: String!, $jobSlug: String!) {
-    findJob(companySlug: $companySlug, jobSlug: $jobSlug) {
+  query FindJob($companySlug: String!, $id: ID!) {
+    findJob(companySlug: $companySlug, id: $id) {
       ...JobParts
     }
   }
@@ -2789,6 +3442,71 @@ export type CreatePostingClientMutationResult = ApolloReactCommon.MutationResult
 export type CreatePostingClientMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreatePostingClientMutation,
   CreatePostingClientMutationVariables
+>;
+export const SearchDocument = gql`
+  query Search($input: SearchInput!) {
+    search(input: $input) {
+      count
+      results {
+        rank
+        job {
+          id
+          title
+          type
+          postings {
+            id
+            start_date
+            apply_deadline
+            pay_rate
+            total_openings
+          }
+        }
+      }
+    }
+  }
+`;
+export type SearchComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    SearchQuery,
+    SearchQueryVariables
+  >,
+  'query'
+> &
+  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
+
+export const SearchComponent = (props: SearchComponentProps) => (
+  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
+    query={SearchDocument}
+    {...props}
+  />
+);
+
+export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  SearchQuery,
+  SearchQueryVariables
+> &
+  TChildProps;
+export function withSearch<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    SearchQuery,
+    SearchQueryVariables,
+    SearchProps<TChildProps>
+  >(SearchDocument, {
+    alias: 'withSearch',
+    ...operationOptions,
+  });
+}
+export type SearchQueryResult = ApolloReactCommon.QueryResult<
+  SearchQuery,
+  SearchQueryVariables
 >;
 export const FindJobAddressesDocument = gql`
   query FindJobAddresses($companySlug: String!) {
@@ -2970,431 +3688,4 @@ export function withFindPosting<TProps, TChildProps = {}>(
 export type FindPostingQueryResult = ApolloReactCommon.QueryResult<
   FindPostingQuery,
   FindPostingQueryVariables
->;
-export const SearchDocument = gql`
-  query Search($input: SearchInput!) {
-    search(input: $input) {
-      count
-      results {
-        rank
-        job {
-          id
-          name
-          companyName
-          type
-          postings {
-            id
-            start_date
-            apply_deadline
-            pay_rate
-            total_openings
-          }
-        }
-      }
-    }
-  }
-`;
-export type SearchComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    SearchQuery,
-    SearchQueryVariables
-  >,
-  'query'
-> &
-  ({ variables: SearchQueryVariables; skip?: boolean } | { skip: boolean });
-
-export const SearchComponent = (props: SearchComponentProps) => (
-  <ApolloReactComponents.Query<SearchQuery, SearchQueryVariables>
-    query={SearchDocument}
-    {...props}
-  />
-);
-
-export type SearchProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  SearchQuery,
-  SearchQueryVariables
-> &
-  TChildProps;
-export function withSearch<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    SearchQuery,
-    SearchQueryVariables,
-    SearchProps<TChildProps>
-  >(SearchDocument, {
-    alias: 'withSearch',
-    ...operationOptions,
-  });
-}
-export type SearchQueryResult = ApolloReactCommon.QueryResult<
-  SearchQuery,
-  SearchQueryVariables
->;
-export const ForgotPasswordDocument = gql`
-  mutation ForgotPassword($email: String!) {
-    forgotPassword(input: { email: $email })
-  }
-`;
-export type ForgotPasswordMutationFn = ApolloReactCommon.MutationFunction<
-  ForgotPasswordMutation,
-  ForgotPasswordMutationVariables
->;
-export type ForgotPasswordComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    ForgotPasswordMutation,
-    ForgotPasswordMutationVariables
-  >,
-  'mutation'
->;
-
-export const ForgotPasswordComponent = (
-  props: ForgotPasswordComponentProps,
-) => (
-  <ApolloReactComponents.Mutation<
-    ForgotPasswordMutation,
-    ForgotPasswordMutationVariables
-  >
-    mutation={ForgotPasswordDocument}
-    {...props}
-  />
-);
-
-export type ForgotPasswordProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  ForgotPasswordMutation,
-  ForgotPasswordMutationVariables
-> &
-  TChildProps;
-export function withForgotPassword<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    ForgotPasswordMutation,
-    ForgotPasswordMutationVariables,
-    ForgotPasswordProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    ForgotPasswordMutation,
-    ForgotPasswordMutationVariables,
-    ForgotPasswordProps<TChildProps>
-  >(ForgotPasswordDocument, {
-    alias: 'withForgotPassword',
-    ...operationOptions,
-  });
-}
-export type ForgotPasswordMutationResult = ApolloReactCommon.MutationResult<
-  ForgotPasswordMutation
->;
-export type ForgotPasswordMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  ForgotPasswordMutation,
-  ForgotPasswordMutationVariables
->;
-export const LoginDocument = gql`
-  mutation Login($email: String!, $password: String!) {
-    login(input: { email: $email, password: $password }) {
-      id
-      first_name
-      last_name
-      email
-      realm
-      is_verified
-      setup
-    }
-  }
-`;
-export type LoginMutationFn = ApolloReactCommon.MutationFunction<
-  LoginMutation,
-  LoginMutationVariables
->;
-export type LoginComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    LoginMutation,
-    LoginMutationVariables
-  >,
-  'mutation'
->;
-
-export const LoginComponent = (props: LoginComponentProps) => (
-  <ApolloReactComponents.Mutation<LoginMutation, LoginMutationVariables>
-    mutation={LoginDocument}
-    {...props}
-  />
-);
-
-export type LoginProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  LoginMutation,
-  LoginMutationVariables
-> &
-  TChildProps;
-export function withLogin<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    LoginMutation,
-    LoginMutationVariables,
-    LoginProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    LoginMutation,
-    LoginMutationVariables,
-    LoginProps<TChildProps>
-  >(LoginDocument, {
-    alias: 'withLogin',
-    ...operationOptions,
-  });
-}
-export type LoginMutationResult = ApolloReactCommon.MutationResult<
-  LoginMutation
->;
-export type LoginMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  LoginMutation,
-  LoginMutationVariables
->;
-export const LogoutDocument = gql`
-  mutation Logout {
-    logout
-  }
-`;
-export type LogoutMutationFn = ApolloReactCommon.MutationFunction<
-  LogoutMutation,
-  LogoutMutationVariables
->;
-export type LogoutComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    LogoutMutation,
-    LogoutMutationVariables
-  >,
-  'mutation'
->;
-
-export const LogoutComponent = (props: LogoutComponentProps) => (
-  <ApolloReactComponents.Mutation<LogoutMutation, LogoutMutationVariables>
-    mutation={LogoutDocument}
-    {...props}
-  />
-);
-
-export type LogoutProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  LogoutMutation,
-  LogoutMutationVariables
-> &
-  TChildProps;
-export function withLogout<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    LogoutMutation,
-    LogoutMutationVariables,
-    LogoutProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    LogoutMutation,
-    LogoutMutationVariables,
-    LogoutProps<TChildProps>
-  >(LogoutDocument, {
-    alias: 'withLogout',
-    ...operationOptions,
-  });
-}
-export type LogoutMutationResult = ApolloReactCommon.MutationResult<
-  LogoutMutation
->;
-export type LogoutMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  LogoutMutation,
-  LogoutMutationVariables
->;
-export const RegisterDocument = gql`
-  mutation Register(
-    $first_name: String!
-    $last_name: String!
-    $email: String!
-    $password: String!
-  ) {
-    register(
-      input: {
-        first_name: $first_name
-        last_name: $last_name
-        email: $email
-        password: $password
-      }
-    ) {
-      id
-      first_name
-      last_name
-      email
-      realm
-      is_verified
-      setup
-    }
-  }
-`;
-export type RegisterMutationFn = ApolloReactCommon.MutationFunction<
-  RegisterMutation,
-  RegisterMutationVariables
->;
-export type RegisterComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    RegisterMutation,
-    RegisterMutationVariables
-  >,
-  'mutation'
->;
-
-export const RegisterComponent = (props: RegisterComponentProps) => (
-  <ApolloReactComponents.Mutation<RegisterMutation, RegisterMutationVariables>
-    mutation={RegisterDocument}
-    {...props}
-  />
-);
-
-export type RegisterProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  RegisterMutation,
-  RegisterMutationVariables
-> &
-  TChildProps;
-export function withRegister<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    RegisterMutation,
-    RegisterMutationVariables,
-    RegisterProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    RegisterMutation,
-    RegisterMutationVariables,
-    RegisterProps<TChildProps>
-  >(RegisterDocument, {
-    alias: 'withRegister',
-    ...operationOptions,
-  });
-}
-export type RegisterMutationResult = ApolloReactCommon.MutationResult<
-  RegisterMutation
->;
-export type RegisterMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  RegisterMutation,
-  RegisterMutationVariables
->;
-export const UserLocationDocument = gql`
-  query UserLocation {
-    userLocation {
-      locality
-      coords {
-        lat
-        lng
-      }
-    }
-  }
-`;
-export type UserLocationComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    UserLocationQuery,
-    UserLocationQueryVariables
-  >,
-  'query'
->;
-
-export const UserLocationComponent = (props: UserLocationComponentProps) => (
-  <ApolloReactComponents.Query<UserLocationQuery, UserLocationQueryVariables>
-    query={UserLocationDocument}
-    {...props}
-  />
-);
-
-export type UserLocationProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  UserLocationQuery,
-  UserLocationQueryVariables
-> &
-  TChildProps;
-export function withUserLocation<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UserLocationQuery,
-    UserLocationQueryVariables,
-    UserLocationProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    UserLocationQuery,
-    UserLocationQueryVariables,
-    UserLocationProps<TChildProps>
-  >(UserLocationDocument, {
-    alias: 'withUserLocation',
-    ...operationOptions,
-  });
-}
-export type UserLocationQueryResult = ApolloReactCommon.QueryResult<
-  UserLocationQuery,
-  UserLocationQueryVariables
->;
-export const MeDocument = gql`
-  query Me {
-    me {
-      id
-      first_name
-      last_name
-      email
-      realm
-      is_verified
-      setup
-      search {
-        locality
-        coords {
-          lng
-          lat
-        }
-      }
-    }
-  }
-`;
-export type MeComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<MeQuery, MeQueryVariables>,
-  'query'
->;
-
-export const MeComponent = (props: MeComponentProps) => (
-  <ApolloReactComponents.Query<MeQuery, MeQueryVariables>
-    query={MeDocument}
-    {...props}
-  />
-);
-
-export type MeProps<TChildProps = {}> = ApolloReactHoc.DataProps<
-  MeQuery,
-  MeQueryVariables
-> &
-  TChildProps;
-export function withMe<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    MeQuery,
-    MeQueryVariables,
-    MeProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    MeQuery,
-    MeQueryVariables,
-    MeProps<TChildProps>
-  >(MeDocument, {
-    alias: 'withMe',
-    ...operationOptions,
-  });
-}
-export type MeQueryResult = ApolloReactCommon.QueryResult<
-  MeQuery,
-  MeQueryVariables
 >;

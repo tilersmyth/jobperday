@@ -5,7 +5,7 @@ import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { redirect } from '../../../../apollo/redirect';
 import { FindCompanyDocument, FindCompanyQuery } from '../../../../apollo';
-import { CreateCompanyCompleteView } from '../../../../components/company/create-company/steps/complete';
+import { CreateCompanyCompleteView } from '../../../../components/company/create';
 
 interface Props {
   company?: FindCompanyQuery['findCompany'];

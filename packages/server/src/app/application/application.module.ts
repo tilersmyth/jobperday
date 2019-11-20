@@ -16,5 +16,6 @@ const PROVIDERS = [
 @Module({
   providers: [...PROVIDERS],
   imports: [DatabaseModule, UserModule, CompanyModule],
+  exports: [ApplicationService],
 })
 export class ApplicationModule {}

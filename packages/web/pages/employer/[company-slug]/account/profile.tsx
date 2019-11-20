@@ -2,28 +2,26 @@ import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
-import { MeQuery } from '../../../../apollo/generated-components';
 import { redirect } from '../../../../apollo/redirect';
-import { SingleCompanyLayout } from '../../../../components/company/single-company/shared';
+import { CompanyAdminLayout } from '../../../../components/shared';
 
 interface Props {
-  me?: MeQuery['me'];
   slug?: string;
 }
 
-const EmployerCompanyAccountProfile: NextPage<Props> = ({ me, slug }) => {
-  if (!me || !slug) {
+const EmployerCompanyAccountProfile: NextPage<Props> = ({ slug }) => {
+  if (!slug) {
     return null;
   }
 
   return (
-    <SingleCompanyLayout
+    <CompanyAdminLayout
       pageTitle="Profile"
-      pageRole="manager"
+      pageRole="associate"
       companySlug={slug}
     >
       <div>Account Profile Page</div>
-    </SingleCompanyLayout>
+    </CompanyAdminLayout>
   );
 };
 
@@ -44,7 +42,7 @@ EmployerCompanyAccountProfile.getInitialProps = async (
 
   const slug = ctx.query['company-slug'] as string;
 
-  return { me, slug };
+  return { slug };
 };
 
 export default EmployerCompanyAccountProfile;

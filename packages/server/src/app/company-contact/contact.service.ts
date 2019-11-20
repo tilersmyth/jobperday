@@ -70,4 +70,10 @@ export class CompanyContactService extends CrudService<CompanyContactEntity> {
       return contact;
     });
   }
+
+  public async findAddresses(company: CompanyEntity): Promise<AddressEntity[]> {
+    return this.addressService.findAll({
+      where: { refId: company.id, refType: AddressRefTypeEnum.COMPANY },
+    });
+  }
 }

@@ -8,7 +8,7 @@ import {
   MeComponent,
   MeDocument,
 } from '../../../../apollo/generated-components';
-import { ResponsiveWrapper } from '../../layout/responsive-wrapper';
+import { ResponsiveWrapper } from '../responsive-wrapper';
 import './style.less';
 
 export const Header: React.SFC = (): JSX.Element => (

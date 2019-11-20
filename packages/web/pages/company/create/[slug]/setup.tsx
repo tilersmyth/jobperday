@@ -3,7 +3,7 @@ import { NextPage } from 'next';
 import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { redirect } from '../../../../apollo/redirect';
-import { CreateCompanySetupView } from '../../../../components/company/create-company';
+import { CreateCompanySetupView } from '../../../../components/company';
 
 interface Props {
   companySlug?: string;

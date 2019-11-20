@@ -5,7 +5,7 @@ import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { redirect } from '../../../../apollo/redirect';
 import { FindCompanyDocument, FindCompanyQuery } from '../../../../apollo';
-import { CreateCompanyProfileView } from '../../../../components/company/create-company/steps/profile';
+import { CreateCompanyProfileView } from '../../../../components/company';
 
 interface Props {
   companySlug?: string;

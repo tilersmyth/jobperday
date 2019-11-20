@@ -10,6 +10,7 @@ import { CompanyContactInput, UpdateCompanyContactInput } from './inputs';
 import { Role } from '../company/roles.decorator';
 import { RolesGuard } from '../company/guards/roles.guard';
 import { CompanyEntity } from '../company/entity';
+import { AddressDto } from '../address';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Company/Contact')
@@ -58,5 +59,15 @@ export class CompanyContactResolver {
     const contact = await this.contactService.update(input);
     this.logger.debug(`[updateCompanyContact]: ${company.id}`);
     return contact;
+  }
+
+  @Query(() => [AddressDto])
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findCompanyAddresses(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.contactService.findAddresses(company);
   }
 }

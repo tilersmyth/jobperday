@@ -17,9 +17,9 @@ export const ForgotPasswordView: React.FunctionComponent = () => {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async data => {
+              onSubmit={async ({ email }) => {
                 try {
-                  await forgotPassword({ variables: data });
+                  await forgotPassword({ variables: { input: { email } } });
                 } catch (err) {
                   console.log(err);
                 }

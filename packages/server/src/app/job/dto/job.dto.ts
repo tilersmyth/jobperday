@@ -7,11 +7,7 @@ export class JobDto {
   @Field(() => ID)
   readonly id: string;
   @Field()
-  readonly companyName: string;
-  @Field()
-  readonly name: string;
-  @Field()
-  readonly slug: string;
+  readonly title: string;
   @Field()
   readonly summary: string;
   @Field()
@@ -22,6 +18,10 @@ export class JobDto {
   readonly type: string;
   @Field(() => [String])
   readonly tags: string[];
+  @Field()
+  readonly default_image: string;
+  @Field({ nullable: true })
+  readonly defaultApplicationId: string;
   @Field(() => [JobPostingDto])
   readonly postings: JobPostingDto[];
 }

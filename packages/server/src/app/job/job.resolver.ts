@@ -1,5 +1,6 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
+import { ID } from 'type-graphql';
 
 import { AppLogger } from '../app.logger';
 import { JobDto } from './dto/job.dto';
@@ -15,6 +16,7 @@ import { JobPostingDto } from './dto/job-posting.dto';
 import { JobAddressDto } from './dto/job-address.dto';
 import { JobPostingResultsDto } from './dto/job-posting-results.dto';
 import { PaginationInput } from '../_helpers/inputs/pagination.input';
+import { UpdateJobInput } from './inputs/update-job.input';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job')
@@ -32,7 +34,20 @@ export class JobResolver {
     @Args('input') input: JobInput,
   ) {
     const job = await this.jobService.create(company, input);
-    this.logger.debug(`[createJob] created job: ${job.name}`);
+    this.logger.debug(`[createJob] created job: ${job.title}`);
+    return job;
+  }
+
+  @Mutation(() => JobDto)
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async updateJob(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+    @Args('input') input: UpdateJobInput,
+  ) {
+    const job = await this.jobService.update(company, input);
+    this.logger.debug(`[updateJob] updated job: ${job.title}`);
     return job;
   }
 
@@ -52,9 +67,11 @@ export class JobResolver {
   async findJob(
     @Company() company: CompanyEntity,
     @Args('companySlug') _: string,
-    @Args('jobSlug') jobSlug: string,
+    @Args({ name: 'id', type: () => ID }) id: string,
   ) {
-    return this.jobService.findSingle(company, jobSlug);
+    return this.jobService.findOne({
+      where: { company, id },
+    });
   }
 
   @Query(() => JobPostingResultsDto)

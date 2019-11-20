@@ -53,6 +53,7 @@ type ApplicationDto {
   id: ID!
   title: String!
   fields: [ApplicationFieldDto!]!
+  created_at: DateTime!
 }
 
 type ApplicationFieldDto {
@@ -185,23 +186,25 @@ type JobAddressDto {
 
 type JobDto {
   id: ID!
-  companyName: String!
-  name: String!
-  slug: String!
+  title: String!
   summary: String!
   description: String!
   created_at: DateTime!
   type: String!
   tags: [String!]!
+  default_image: String!
+  defaultApplicationId: String
   postings: [JobPostingDto!]!
 }
 
 input JobInput {
-  name: String!
+  title: String!
   summary: String!
   description: String!
   type: String!
   tags: [String!]
+  default_image: String!
+  defaultApplicationId: String
 }
 
 type JobPostingDto {
@@ -279,6 +282,7 @@ type Mutation {
   createCompany(input: CompanyInput!): CreateCompanyDto!
   updateCompany(companySlug: String!, input: UpdateCompanyInput!): CreateCompanyDto!
   createJob(input: JobInput!, companySlug: String!): JobDto!
+  updateJob(input: UpdateJobInput!, companySlug: String!): JobDto!
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
   uploadImage(input: UploadImageInput!, companySlug: String!): CompanyImageDto!
@@ -294,6 +298,7 @@ type Query {
   allUsers: [UserDto!]!
   userLocation: SearchLocationDto
   findCompanyContact(companySlug: String!): CompanyContactDto
+  findCompanyAddresses(companySlug: String!): [AddressDto!]!
   findCompanyProfile(companySlug: String!): CompanyProfileDto
   findCompanies: [MemberCompanyDto!]!
   findCompanyMembers(companySlug: String!): [CompanyMemberDto!]!
@@ -301,12 +306,12 @@ type Query {
   generateCompanySlug(name: String!): String!
   findCompanySlug(name: String!): String
   findAllJobs(companySlug: String!): [JobDto!]!
-  findJob(jobSlug: String!, companySlug: String!): JobDto!
+  findJob(id: ID!, companySlug: String!): JobDto!
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
   findPosting(postingId: String!, companySlug: String!): JobPostingDto!
-  search(input: SearchInput!): SearchDto!
   findAllApplications(companySlug: String!): [ApplicationDto!]!
+  search(input: SearchInput!): SearchDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
 }
 
@@ -390,6 +395,17 @@ input UpdateCompanyProfileInput {
   profile_image: String
   cover_image: String
   about: String
+}
+
+input UpdateJobInput {
+  id: ID!
+  title: String
+  summary: String
+  description: String
+  type: String
+  tags: [String!]
+  default_image: String
+  defaultApplicationId: String
 }
 
 """Upload custom scalar type"""
