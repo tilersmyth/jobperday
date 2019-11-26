@@ -25,8 +25,7 @@ export class CompanyProfileEntity extends BaseEntity {
   @Column('text')
   public about: string;
 
-  @OneToOne(() => CompanyEntity, company => company.profile)
-  @JoinColumn()
+  @OneToOne(() => CompanyEntity)
   public company: CompanyEntity;
 
   @UpdateDateColumn() updated_at: Date;

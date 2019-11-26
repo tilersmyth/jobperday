@@ -1,0 +1,59 @@
+.job-result-view-header {
+  width: 100%;
+  position: relative;
+  height: 150px;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+
+.job-result-view-header .header-mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  padding: 30px 20px 0 200px;
+}
+
+.job-result-view-header .job-title-container .ant-typography {
+  color: @white;
+  margin: 0;
+}
+
+.job-result-view-header .company-image-container {
+  position: absolute;
+  padding: 5px;
+  background-color: @white;
+  bottom: -50px;
+  left: 30px;
+  border: 1px solid @border-color-base;
+}
+
+.job-result-view-header .company-image-container .company-image-inner {
+  height: 130px;
+  width: 130px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.job-result-view-header .company-image-container .company-image-inner img {
+  height: 130px;
+  width: auto;
+}
+
+.job-result-view-header .job-type-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  background-color: @success-color;
+  padding: 5px;
+  color: @white;
+  letter-spacing: 0.1em;
+}

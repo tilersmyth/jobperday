@@ -1,0 +1,67 @@
+import React, { useState, useEffect } from 'react';
+import { useQuery, QueryResult } from 'react-apollo';
+import { Row, Col } from 'antd';
+
+import {
+  ViewportQueryQuery,
+  ViewportQueryDocument,
+  SearchQuery,
+} from '../../../apollo/generated-components';
+import { SearchResultList } from '../result-list';
+import { SearchResultView } from '../result';
+import { Breakpoints } from '../../../utils';
+import { SearchAffix } from '../affix';
+import './style.less';
+
+interface Props {
+  client: QueryResult<SearchQuery, Record<string, any>>;
+  setResults: (results: SearchQuery['search']['results']) => void;
+  results: SearchQuery['search']['results'];
+  setHasMore: (value: boolean) => void;
+  hasMore: boolean;
+}
+
+export const SearchContent: React.FunctionComponent<Props> = props => {
+  const [showJob, setShowJob] = useState(false);
+  const [currentJobId, setCurrentJobId] = useState('');
+  const { data } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
+
+  if (!data) {
+    return null;
+  }
+
+  useEffect(() => {
+    if (Breakpoints[data.viewport] > Breakpoints.XL) {
+      setShowJob(true);
+      return;
+    }
+    setShowJob(false);
+  }, [data.viewport]);
+
+  const selectJob = (id: string) => {
+    setCurrentJobId(id);
+
+    if (Breakpoints[data.viewport] > Breakpoints.XL) {
+      return;
+    }
+  };
+
+  return (
+    <div className="search-content">
+      <Row gutter={24}>
+        <Col xl={9} xs={24}>
+          <SearchResultList
+            {...props}
+            selectJob={selectJob}
+            selectedId={showJob ? currentJobId : undefined}
+          />
+        </Col>
+        <Col xl={15} xs={0}>
+          <SearchAffix>
+            <div>{showJob && <SearchResultView jobId={currentJobId} />}</div>
+          </SearchAffix>
+        </Col>
+      </Row>
+    </div>
+  );
+};

@@ -1,0 +1,1 @@
+export { SearchAffix } from './affix';

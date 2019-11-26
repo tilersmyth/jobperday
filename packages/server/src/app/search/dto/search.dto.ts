@@ -1,11 +1,11 @@
 import { ObjectType, Field, Int } from 'type-graphql';
 
-import { SearchResultsDto } from './search-results.dto';
+import { SearchResultListDto } from './result-list';
 
 @ObjectType()
 export class SearchDto {
   @Field(() => Int)
   readonly count: number;
-  @Field(() => [SearchResultsDto])
-  readonly results: SearchResultsDto[];
+  @Field(() => [SearchResultListDto])
+  readonly results: SearchResultListDto[];
 }

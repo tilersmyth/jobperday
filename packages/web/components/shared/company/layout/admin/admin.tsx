@@ -1,14 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import Router from 'next/router';
 import { isMemberAuth, MemberRoles } from '@jobperday/common';
-import ReactResizeDetector from 'react-resize-detector';
-import { useMutation } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 
 import {
   FindCompanyComponent,
-  ViewportTypeMutationDocument,
-  ViewportTypeMutationMutation,
+  ViewportQueryDocument,
+  ViewportQueryQuery,
 } from '../../../../../apollo/generated-components';
 import { RootLayout } from '../../../layout';
 import { CompanyHeader } from '../header';
@@ -16,6 +15,7 @@ import { CompanySidebarDrawer } from './drawer';
 import { CompanySidebarMenu } from './sidebar-menu';
 import { CompanySider } from './sider';
 import { CompanyContent } from '../content';
+import { Breakpoints } from '../../../../../utils';
 
 import './style.less';
 
@@ -42,42 +42,28 @@ export const CompanyAdminLayout: React.FunctionComponent<Props> = ({
   pageRole,
   children,
 }) => {
-  const [setViewport] = useMutation<ViewportTypeMutationMutation>(
-    ViewportTypeMutationDocument,
-  );
-  const [deviceType, setDeviceType] = useState('');
+  const { data: uiData } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
+
+  if (!uiData) {
+    return null;
+  }
+
   const [useDrawer, setUseDrawer] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [title, setTitle] = useState('Loading company');
 
-  const onWidthResize = (width: number) => {
-    const mobile = width < 1200;
-    const desktop = width >= 992;
+  useEffect(() => {
+    const smallScreen = Breakpoints[uiData.viewport] < Breakpoints.XL;
 
-    if (useDrawer && desktop) {
+    if (useDrawer && !smallScreen) {
       setDrawerOpen(false);
       setUseDrawer(false);
     }
 
-    if (!useDrawer && mobile) {
+    if (!useDrawer && smallScreen) {
       setUseDrawer(true);
     }
-
-    if (!deviceType) {
-      setDeviceType(mobile ? 'mobile' : 'desktop');
-      setViewport({ variables: { type: mobile ? 'mobile' : 'desktop' } });
-    }
-
-    if (deviceType === 'mobile' && desktop) {
-      setDeviceType('desktop');
-      setViewport({ variables: { type: 'desktop' } });
-    }
-
-    if (deviceType === 'desktop' && mobile) {
-      setDeviceType('mobile');
-      setViewport({ variables: { type: 'mobile' } });
-    }
-  };
+  }, [uiData.viewport]);
 
   return (
     <RootLayout title={title}>
@@ -121,7 +107,6 @@ export const CompanyAdminLayout: React.FunctionComponent<Props> = ({
           );
         }}
       </FindCompanyComponent>
-      <ReactResizeDetector handleWidth={true} onResize={onWidthResize} />
     </RootLayout>
   );
 };

@@ -8,6 +8,8 @@ import { COMPANY_TOKEN } from '../../src/app/company/company.constants';
 import { CompanyEntity } from '../../src/app/company/entity';
 import { SlugGeneratorUtil } from '../../src/app/_helpers';
 import { CompanyMemberService } from '../../src/app/company-member';
+import { CompanyProfileService } from '../../src/app/company-profile';
+import { randomNum } from '../utils/randomNum.util';
 
 @Injectable()
 export class CompanySeedService {
@@ -17,6 +19,7 @@ export class CompanySeedService {
     @Inject(COMPANY_TOKEN)
     protected readonly repository: Repository<CompanyEntity>,
     private readonly memberService: CompanyMemberService,
+    private readonly profileService: CompanyProfileService,
   ) {}
 
   public async generateSlug(name: string): Promise<string> {
@@ -30,11 +33,21 @@ export class CompanySeedService {
     for (const user of users) {
       const companyName = faker.company.companyName();
 
+      const imageIndex = randomNum(1, 11);
+
+      const profile = await this.profileService.create({
+        profile_image: `https://jobperday-dev.s3.amazonaws.com/sample/profile/profile_sample-${imageIndex}.png`,
+        cover_image:
+          'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_cover.jpg',
+        about: 'about this company....',
+      });
+
       const company = new CompanyEntity();
       company.name = companyName;
       company.slug = await this.generateSlug(companyName);
       company.setup_complete = true;
       company.active = true;
+      company.profile = profile;
       const savedCompany = await this.repository.save(company);
 
       await this.memberService.add(

@@ -1,0 +1,1 @@
+export { SearchHeaderContainer } from './container';

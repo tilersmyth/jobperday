@@ -20,16 +20,16 @@ export class CompanyProfileService extends CrudService<CompanyProfileEntity> {
   }
 
   public async create(
-    company: CompanyEntity,
+    // company: CompanyEntity,
     input: CompanyProfileInput,
   ): Promise<CompanyProfileEntity> {
     return getManager().transaction(async transaction => {
-      company.setup_stage = company.setup_stage + 1;
-      await transaction.save(company);
+      // company.setup_stage = company.setup_stage + 1;
+      // await transaction.save(company);
 
       const profile = new CompanyProfileEntity();
       Object.assign(profile, input);
-      profile.company = company;
+      // profile.company = company;
       return transaction.save(profile);
     });
   }

@@ -22,7 +22,10 @@ export const RegisterView: React.FunctionComponent = () => {
             <Formik
               validateOnBlur={false}
               validateOnChange={false}
-              onSubmit={async (input, { setErrors }) => {
+              onSubmit={async (
+                { confirm_password, ...input },
+                { setErrors },
+              ) => {
                 try {
                   const user = await register({
                     variables: { input },

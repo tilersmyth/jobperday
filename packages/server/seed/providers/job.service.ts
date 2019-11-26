@@ -33,19 +33,21 @@ export class JobSeedService {
 
   async save(companies: CompanyEntity[]): Promise<JobEntity[]> {
     const jobs: JobEntity[] = [];
+
     for (const company of companies) {
-      const jobCount: number = randomNum(1, 5);
+      const jobCount = randomNum(1, 5);
 
       const application = await this.appService.create(company);
 
       for (let i = 1; i <= jobCount; i++) {
+        const imageIndex = randomNum(1, 11);
         const job = new JobEntity();
         job.title = faker.name.jobTitle();
         job.summary = faker.lorem.sentence();
         job.description = faker.lorem.paragraph();
         job.type = faker.name.jobType();
         job.tags = this.tagGenerator();
-        job.default_image = 'pic.png';
+        job.default_image = `https://jobperday-dev.s3.amazonaws.com/sample/cover/cover_sample-${imageIndex}.png`;
         job.default_application = application;
         job.company = company;
         const savedJob = await this.repository.save(job);

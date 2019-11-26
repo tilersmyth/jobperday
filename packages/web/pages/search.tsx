@@ -2,22 +2,21 @@ import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../types';
 import { fetchMe } from '../utils';
-import { SearchView } from '../components/search/search-view';
-import { MeQuery, SearchInput } from '../apollo/generated-components';
+import { SearchInput } from '../apollo/generated-components';
 import { SearchLocation } from '../utils/search/search-location.util';
 import { queryToSearch } from '../utils/search/search-query-map';
+import { CandidateSearchView } from '../components/search';
 
 interface Props {
-  me: MeQuery['me'] | null;
   searchArgs?: SearchInput;
 }
 
-const Search: NextPage<Props> = ({ me, searchArgs }) => {
+const Search: NextPage<Props> = ({ searchArgs }) => {
   if (!searchArgs) {
     return null;
   }
 
-  return <SearchView me={me} searchArgs={searchArgs} />;
+  return <CandidateSearchView searchArgs={searchArgs} />;
 };
 
 Search.getInitialProps = async (ctx: NextPageContextApollo) => {
@@ -27,7 +26,7 @@ Search.getInitialProps = async (ctx: NextPageContextApollo) => {
 
   if (!query.location) {
     console.log('this will eventually be a redirect');
-    return { me };
+    return {};
   }
 
   const search = new SearchLocation(me, ctx);
@@ -36,12 +35,12 @@ Search.getInitialProps = async (ctx: NextPageContextApollo) => {
   // Result of invalid location param in query
   if (!location) {
     console.log('this will eventually be a redirect');
-    return { me };
+    return {};
   }
 
   const searchArgs = queryToSearch(query, location);
 
-  return { me, searchArgs };
+  return { searchArgs };
 };
 
 export default Search;

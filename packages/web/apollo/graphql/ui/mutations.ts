@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const setViewportMutation = gql`
-  mutation ViewportTypeMutation($type: String!) {
-    viewportType(type: $type) @client
+export const viewportMutation = gql`
+  mutation ViewportMutation($breakpoint: BreakpointEnum!) {
+    viewport(breakpoint: $breakpoint) @client
   }
 `;

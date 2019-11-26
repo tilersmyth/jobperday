@@ -1,69 +1,73 @@
 import React, { useState } from 'react';
 import Router from 'next/router';
+import { Layout } from 'antd';
+import { useQuery } from 'react-apollo';
 
 import {
-  MeQuery,
   SearchInput,
-  SearchComponent,
+  SearchQuery,
+  SearchDocument,
 } from '../../apollo/generated-components';
-import { SearchSidebar } from './search-sidebar/search-sidebar';
+import { SearchSidebar } from './sidebar';
+import { SearchContent } from './content';
+import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
+import { searchToQuery } from '../../utils';
 import './style.less';
-import { SearchLayout } from './search-layout';
-import { SearchBar } from '../shared/layout/search-bar/search-bar';
-import { SearchResults } from './search-results/search-results';
-import { searchToQuery } from '../../utils/search/search-query-map';
 
 interface Props {
-  me: MeQuery['me'] | null;
   searchArgs: SearchInput;
 }
 
-export const SearchView: React.FunctionComponent<Props> = ({ searchArgs }) => {
-  const [args, setArgs] = useState(searchArgs);
-  const [search, setSearch] = useState<any>([]);
+export const CandidateSearchView: React.FunctionComponent<Props> = ({
+  searchArgs,
+}) => {
+  const client = useQuery<SearchQuery>(SearchDocument, {
+    variables: { input: searchArgs },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [results, setResults] = useState<SearchQuery['search']['results']>([]);
   const [hasMore, setHasMore] = useState(true);
+  const [args, setArgs] = useState(searchArgs);
+  const [drawer, openDrawer] = useState(false);
+
+  const handleArgsUpdate = async (input: SearchInput) => {
+    const query = searchToQuery(input);
+
+    // Add variables to url
+    await Router.push({
+      pathname: '/search',
+      query,
+    });
+
+    await client.refetch({ input });
+
+    setResults([]);
+    setHasMore(true);
+    setArgs(input);
+  };
 
   return (
-    <SearchComponent
-      variables={{ input: args }}
-      fetchPolicy="cache-and-network"
-    >
-      {client => {
-        const refetch = async (updatedArgs: SearchInput) => {
-          const query = searchToQuery(updatedArgs);
-
-          // Add variables to url
-          await Router.push({
-            pathname: '/search',
-            query,
-          });
-
-          await client.refetch({ input: updatedArgs });
-          setSearch([]);
-          setHasMore(true);
-          setArgs(updatedArgs);
-        };
-
-        return (
-          <SearchLayout
-            searchbar={
-              <SearchBar searchArgs={searchArgs} updateArgs={refetch} />
-            }
-            sidebar={
-              <SearchSidebar searchArgs={searchArgs} updateArgs={refetch} />
-            }
-            results={
-              <SearchResults
-                client={client}
-                results={search}
-                setSearch={setSearch}
-                hasMore={hasMore}
-                setHasMore={setHasMore}
-              />
-            }
+    <CandidateLayout title="Search">
+      <Layout className="search-layout-container">
+        <SearchHeader searchArgs={args} openDrawer={openDrawer} />
+        <Layout.Content className="search-content-container">
+          <SearchSidebar searchArgs={args} updateArgs={handleArgsUpdate} />
+          <SearchContent
+            client={client}
+            setResults={setResults}
+            results={results}
+            setHasMore={setHasMore}
+            hasMore={hasMore}
           />
-        );
-      }}
-    </SearchComponent>
+        </Layout.Content>
+      </Layout>
+      <SearchDrawer
+        visible={drawer}
+        searchArgs={args}
+        updateArgs={handleArgsUpdate}
+        close={() => openDrawer(false)}
+      />
+    </CandidateLayout>
   );
 };

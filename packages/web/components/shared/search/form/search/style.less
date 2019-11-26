@@ -1,0 +1,30 @@
+.search-header-form .ant-form-item {
+  margin-bottom: 0;
+}
+
+.search-header-form .secondary {
+  max-height: 0;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  transition: max-height 0.25s ease-in;
+}
+
+.search-header-form .secondary .ant-col {
+  margin-top: 5px;
+}
+
+.search-header-form .secondary.open {
+  max-height: 300px;
+}
+
+@media (min-width: @screen-lg-min) {
+  .search-header-form .secondary {
+    display: block;
+    overflow: inherit;
+  }
+
+  .search-header-form .secondary .ant-col {
+    margin-top: 0;
+  }
+}

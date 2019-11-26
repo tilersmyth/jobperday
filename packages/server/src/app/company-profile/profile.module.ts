@@ -16,5 +16,6 @@ const PROVIDERS = [
 @Module({
   providers: [...PROVIDERS],
   imports: [UserModule, DatabaseModule, forwardRef(() => CompanyModule)],
+  exports: [CompanyProfileService],
 })
 export class CompanyProfileModule {}

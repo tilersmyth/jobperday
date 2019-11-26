@@ -8,6 +8,7 @@ import { JobEntity, JobPostingEntity } from '../../src/app/job/entity';
 import { JOB_POSTING_TOKEN } from '../../src/app/job/job.constants';
 import { randomCoordGen } from '../utils/randomCoordGen.util';
 import { randomNum } from '../utils/randomNum.util';
+import { AddressRefTypeEnum, AddressService } from '../../src/app/address';
 
 @Injectable()
 export class JobPostingSeedService {
@@ -28,6 +29,7 @@ export class JobPostingSeedService {
   constructor(
     @Inject(JOB_POSTING_TOKEN)
     protected readonly repository: Repository<JobPostingEntity>,
+    private readonly addressService: AddressService,
   ) {}
 
   async save(jobs: JobEntity[]): Promise<JobPostingEntity[]> {
@@ -55,6 +57,21 @@ export class JobPostingSeedService {
           this.datePlusHrs(start_date, randomNum(6, 24)),
         );
 
+        const address = await this.addressService.create(
+          job.company.id,
+          AddressRefTypeEnum.COMPANY,
+          {
+            street: faker.address.streetAddress(),
+            street2: null,
+            city: faker.address.city(),
+            state: faker.address.stateAbbr(),
+            postal_code: faker.address.zipCode(),
+            country: 'US',
+            coord_lat: parseFloat(faker.address.latitude()),
+            coord_lng: parseFloat(faker.address.latitude()),
+          },
+        );
+
         const posting = new JobPostingEntity();
         posting.start_date = start_date;
         posting.end_date = end_date;
@@ -62,6 +79,7 @@ export class JobPostingSeedService {
         posting.total_openings = randomNum(1, 8);
         posting.apply_deadline = apply_deadline;
         posting.location = location;
+        posting.address = address;
         posting.companyId = job.company.id;
         posting.applicationId = job.default_application.id;
         posting.job = job;

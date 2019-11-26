@@ -7,12 +7,15 @@ import { userProviders } from '../src/app/user/user.providers';
 import { companyProviders } from '../src/app/company/company.providers';
 import { SeedDBService } from './providers/db.service';
 import { CompanySeedService } from './providers/company.service';
-import { CompanyMemberService } from '../src/app/company-member';
 import { jobProviders } from '../src/app/job/job.providers';
 import { JobSeedService } from './providers/job.service';
 import { JobPostingSeedService } from './providers/job-posting.service';
 import { ApplicationSeedService } from './providers/application.service';
-import { applicationProviders } from 'server/src/app/application/application.providers';
+import { applicationProviders } from '../src/app/application/application.providers';
+import { CompanyModule } from '../src/app/company/company.module';
+import { CompanyMemberModule } from '../src/app/company-member/member.module';
+import { AddressModule } from '../src/app/address/address.module';
+import { CompanyProfileModule } from '../src/app/company-profile/profile.module';
 
 const PROVIDERS = [
   ...userProviders,
@@ -23,14 +26,19 @@ const PROVIDERS = [
   SeedService,
   UserSeedService,
   CompanySeedService,
-  CompanyMemberService,
   JobSeedService,
   JobPostingSeedService,
   ApplicationSeedService,
 ];
 
 @Module({
-  imports: [DatabaseModule],
+  imports: [
+    DatabaseModule,
+    CompanyModule,
+    CompanyMemberModule,
+    CompanyProfileModule,
+    AddressModule,
+  ],
   providers: [...PROVIDERS],
 })
 export class SeederModule {}

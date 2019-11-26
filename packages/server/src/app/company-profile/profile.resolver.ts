@@ -41,7 +41,9 @@ export class CompanyProfileResolver {
     @Args('input') input: CompanyProfileInput,
     @Args('companySlug') _: string,
   ) {
-    const profile = await this.profileService.create(company, input);
+    const profile = await this.profileService.create(input);
+    company.setup_stage = company.setup_stage + 1;
+    await company.save();
     this.logger.debug(`[createCompanyProfile]: ${company.id}`);
     return profile;
   }

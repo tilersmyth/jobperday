@@ -6,6 +6,7 @@ import {
   BaseEntity,
   OneToMany,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import { Length, ValidateIf, Validate } from 'class-validator';
 
@@ -41,7 +42,8 @@ export class CompanyEntity extends BaseEntity {
 
   @CreateDateColumn() created_at: Date;
 
-  @OneToOne(() => CompanyProfileEntity)
+  @OneToOne(() => CompanyProfileEntity, profile => profile.company)
+  @JoinColumn()
   public profile: CompanyProfileEntity;
 
   @OneToOne(() => CompanyContactEntity, contact => contact.company)

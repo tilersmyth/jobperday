@@ -1,0 +1,50 @@
+.search-result-item {
+  position: relative;
+  background-color: @white;
+  height: 130px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: block;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+  border: 1px solid @white;
+}
+
+.search-result-item.active {
+  border-color: @primary-color;
+}
+
+.search-result-item .company-image-container {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  height: 80px;
+  width: 80px;
+  overflow: hidden;
+  border: 1px solid @border-color-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.search-result-item .company-image-container img {
+  height: 80px;
+  width: auto;
+}
+
+.search-result-item .item-content-container {
+  margin-left: 100px;
+}
+
+.search-result-item .item-content-container .content-item {
+  margin-bottom: 5px;
+  display: block;
+}
+
+.search-result-item .item-content-container .anticon {
+  margin-right: 5px;
+}
+
+.search-result-item .item-content-container .content-item span {
+  margin-right: 20px;
+}

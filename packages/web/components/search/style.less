@@ -1,3 +1,18 @@
-.wrapper {
-  padding-top: 20px;
+.search-layout-container {
+  padding: @layout-gutter-sm;
+}
+
+.search-layout-container .search-content-container {
+  padding-top: @layout-gutter-sm;
+}
+
+@media (min-width: @screen-xl-min) {
+  .ant-layout > .ant-layout.search-layout-container {
+    padding: @layout-gutter-md;
+    overflow-x: visible;
+  }
+
+  .search-layout-container .search-content-container {
+    padding-top: @layout-gutter-md;
+  }
 }

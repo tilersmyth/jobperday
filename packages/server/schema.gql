@@ -312,6 +312,7 @@ type Query {
   findPosting(postingId: String!, companySlug: String!): JobPostingDto!
   findAllApplications(companySlug: String!): [ApplicationDto!]!
   search(input: SearchInput!): SearchDto!
+  searchFindJob(id: ID!): SearchJobResultDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
 }
 
@@ -329,6 +330,15 @@ enum RoleEnum {
   associate
 }
 
+type SearchCompanyDto {
+  name: String!
+  profile: SearchCompanyProfileDto!
+}
+
+type SearchCompanyProfileDto {
+  profile_image: String!
+}
+
 type SearchCoordsDto {
   lng: Float!
   lat: Float!
@@ -336,7 +346,7 @@ type SearchCoordsDto {
 
 type SearchDto {
   count: Int!
-  results: [SearchResultsDto!]!
+  results: [SearchResultListDto!]!
 }
 
 input SearchInput {
@@ -344,6 +354,33 @@ input SearchInput {
   location: LocationInput!
   options: SearchOptionsInput!
   pagination: SearchPaginationInput!
+}
+
+type SearchJobDto {
+  id: ID!
+  title: String!
+  postings: [SearchJobPostingDto!]!
+  company: SearchCompanyDto!
+}
+
+type SearchJobPostingDto {
+  pay_rate: String!
+  end_date: DateTime!
+  start_date: DateTime!
+  apply_deadline: DateTime!
+  remaining_openings: Int!
+  address: AddressDto!
+}
+
+type SearchJobResultDto {
+  id: ID!
+  title: String!
+  postings: [SearchJobPostingDto!]!
+  company: SearchCompanyDto!
+  default_image: String!
+  description: String!
+  type: String!
+  tags: [String!]!
 }
 
 type SearchLocationDto {
@@ -361,8 +398,8 @@ input SearchPaginationInput {
   take: Int!
 }
 
-type SearchResultsDto {
-  job: JobDto!
+type SearchResultListDto {
+  job: SearchJobDto!
   rank: Float!
 }
 

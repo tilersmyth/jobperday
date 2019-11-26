@@ -1,7 +1,7 @@
 import gql from 'graphql-tag';
 
-export const getViewportQuery = gql`
-  query ViewportTypeQuery {
-    viewportType @client
+export const viewportQuery = gql`
+  query ViewportQuery {
+    viewport @client
   }
 `;

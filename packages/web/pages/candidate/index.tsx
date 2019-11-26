@@ -3,11 +3,11 @@ import Router from 'next/router';
 
 import { NextPageContextApollo } from '../../types';
 import { fetchMe } from '../../utils';
-import { CandidateView } from '../../components/candidate/candidate-view';
 import { MeQuery, SearchInput } from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
 import { SearchModel } from '../../utils/search/SearchModel';
 import { SearchLocation } from '../../utils/search/search-location.util';
+import { CandidateHomeView } from '../../components/candidate';
 
 interface Props {
   me: MeQuery['me'] | null;
@@ -18,7 +18,7 @@ const Candidate: NextPage<Props> = ({ me, searchArgs }) => {
   if (!me) {
     return null;
   }
-  return <CandidateView me={me} searchArgs={searchArgs} />;
+  return <CandidateHomeView searchArgs={searchArgs} />;
 };
 
 Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {

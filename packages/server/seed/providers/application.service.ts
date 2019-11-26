@@ -11,12 +11,12 @@ import { randomNum } from '../utils/randomNum.util';
 import {
   APPLICATION_TOKEN,
   APPLICATION_FIELD_TOKEN,
-} from 'server/src/app/application/application.constants';
+} from '../../src/app/application/application.constants';
 import {
   ApplicationEntity,
   ApplicationFieldEntity,
-} from 'server/src/app/application/entity';
-import { CompanyEntity } from 'server/src/app/company/entity';
+} from '../../src/app/application/entity';
+import { CompanyEntity } from '../../src/app/company/entity';
 
 @Injectable()
 export class ApplicationSeedService {

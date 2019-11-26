@@ -25,7 +25,10 @@ export class SearchService {
 
       const query = this.repository
         .createQueryBuilder('job')
-        .innerJoinAndSelect('job.postings', 'postings');
+        .innerJoinAndSelect('job.company', 'company')
+        .innerJoinAndSelect('company.profile', 'profile')
+        .innerJoinAndSelect('job.postings', 'postings')
+        .innerJoinAndSelect('postings.address', 'address');
 
       const search = input.search.trim();
 
@@ -77,5 +80,16 @@ export class SearchService {
       this.logger.error('Search query error', error.name);
       throw error;
     }
+  }
+
+  public async findJob(id: string) {
+    return this.repository
+      .createQueryBuilder('job')
+      .innerJoinAndSelect('job.company', 'company')
+      .innerJoinAndSelect('company.profile', 'profile')
+      .innerJoinAndSelect('job.postings', 'postings')
+      .innerJoinAndSelect('postings.address', 'address')
+      .where('job.id = :id', { id })
+      .getOne();
   }
 }

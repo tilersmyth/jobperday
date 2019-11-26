@@ -10,7 +10,6 @@ import {
 
 import { JobEntity } from './job.entity';
 import { AddressEntity } from '../../address';
-import { ApplicationEntity } from '../../application/entity/application.entity';
 
 @Entity('job_postings')
 export class JobPostingEntity extends BaseEntity {

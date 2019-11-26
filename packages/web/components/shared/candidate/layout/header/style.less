@@ -1,0 +1,82 @@
+.candidate-header.ant-layout-header {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: @layout-header-height-sm;
+}
+
+.candidate-header .candidate-brand {
+  float: left;
+}
+
+@small_pg_margin: @layout-header-height-sm / 4;
+.candidate-header .candidate-brand .logo-placeholder {
+  width: 120px;
+  height: @layout-header-height-sm / 2;
+  background: rgba(255, 255, 255, 0.2);
+  margin: @small_pg_margin 24px @small_pg_margin 0;
+  display: inline-block;
+}
+
+.candidate-header .candidate-brand .menu-icon {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 20px;
+  color: @white;
+  margin: 0 20px;
+  transition: color 0.3s;
+  line-height: @layout-header-height-sm;
+}
+
+.candidate-header .candidate-brand .menu-icon:hover {
+  color: @primary-4;
+}
+
+.candidate-header .header-menu {
+  line-height: @layout-header-height-sm;
+  display: flex;
+}
+
+.header-menu .right-menu {
+  margin-left: auto;
+}
+
+.ant-menu-submenu ul.ant-menu li.ant-menu-item-group {
+  text-align: right;
+}
+
+.ant-menu-submenu
+  ul.ant-menu
+  li.ant-menu-item-group
+  .ant-menu-item-group-title {
+  font-size: 0.8rem;
+}
+
+.ant-menu-submenu
+  ul.ant-menu
+  li.ant-menu-item-group
+  ul.ant-menu-item-group-list {
+  padding-right: 10px;
+}
+
+@media (min-width: @screen-xl-min) {
+  .candidate-header.ant-layout-header {
+    height: @layout-header-height-lg;
+  }
+
+  .candidate-header .header-menu {
+    line-height: @layout-header-height-lg;
+  }
+
+  @large_pg_margin: @layout-header-height-lg / 4;
+  .candidate-header .candidate-brand .logo-placeholder {
+    height: @layout-header-height-lg / 2;
+    margin: @large_pg_margin 24px @large_pg_margin 0;
+  }
+
+  .candidate-header .candidate-brand .menu-icon {
+    display: none;
+  }
+}

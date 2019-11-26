@@ -1,11 +1,20 @@
 import gql from 'graphql-tag';
 
 export const uiTypeDef = gql`
+  enum BreakpointEnum {
+    XS
+    SM
+    MD
+    LG
+    XL
+    XXL
+  }
+
   extend type Mutation {
-    viewportType(type: String!): Boolean!
+    viewport(breakpoint: BreakpointEnum!): BreakpointEnum!
   }
 
   extend type Query {
-    viewportType: String!
+    viewport: BreakpointEnum!
   }
 `;

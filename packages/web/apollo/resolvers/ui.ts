@@ -1,5 +1,6 @@
 import { ApolloCache } from 'apollo-cache';
 import ApolloClient from 'apollo-client';
+import { BreakpointEnum } from '../generated-components';
 
 type GetCacheKey = (obj: { __typename: string; id: string | number }) => any;
 
@@ -10,14 +11,14 @@ interface ApolloContext {
 }
 
 interface Args {
-  type: string;
+  breakpoint: BreakpointEnum;
 }
 
 export const uiResolvers = {
   Mutation: {
-    viewportType: (_root: any, { type }: Args, { cache }: ApolloContext) => {
-      cache.writeData({ data: { viewportType: type } });
-      return true;
+    viewport: (_root: any, { breakpoint }: Args, { cache }: ApolloContext) => {
+      cache.writeData({ data: { viewport: breakpoint } });
+      return breakpoint;
     },
   },
 };

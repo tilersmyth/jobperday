@@ -1,0 +1,1 @@
+export { CandidateContent } from './content';
