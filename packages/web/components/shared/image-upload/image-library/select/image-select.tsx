@@ -1,8 +1,9 @@
 import React from 'react';
 import { Icon } from 'antd';
+import cx from 'classnames';
 
 import { FindAllCompanyImagesQuery } from '../../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   images: FindAllCompanyImagesQuery['findAllCompanyImages'];
@@ -18,17 +19,21 @@ export const UploadImageSelect: React.FunctionComponent<Props> = ({
   return (
     <React.Fragment>
       {images.map(image => {
-        const isSelected = selected.includes(image.path) ? 'selected' : '';
-
         return (
           <a
             href="#"
             key={image.id}
             onClick={() => onSelect(image.path)}
-            className={`img_container ${isSelected}`}
+            className={cx(styles.container, {
+              [styles.selected]: selected.includes(image.path),
+            })}
           >
-            <div className="image_wrapper">
-              <Icon type="check-square" theme="filled" />
+            <div className={styles.image}>
+              <Icon
+                className={styles.icon}
+                type="check-square"
+                theme="filled"
+              />
               <img src={image.path} />
             </div>
           </a>

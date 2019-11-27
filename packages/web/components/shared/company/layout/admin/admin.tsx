@@ -17,7 +17,7 @@ import { CompanySider } from './sider';
 import { CompanyContent } from '../content';
 import { Breakpoints } from '../../../../../utils';
 
-import './style.less';
+import styles from './style.less';
 
 const { Content } = Layout;
 
@@ -93,7 +93,7 @@ export const CompanyAdminLayout: React.FunctionComponent<Props> = ({
               <CompanySider company={company}>
                 <CompanySidebarMenu companySlug={companySlug} />
               </CompanySider>
-              <Layout className="company-admin-content">
+              <Layout className={styles.container}>
                 <Content>{children}</Content>
               </Layout>
               <CompanySidebarDrawer

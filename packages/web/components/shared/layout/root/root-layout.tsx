@@ -9,7 +9,6 @@ import {
   ViewportMutationMutation,
 } from '../../../../apollo';
 import { uiBreakpoint } from '../../../../utils';
-import './style.less';
 
 interface Props {
   title: string;
@@ -33,7 +32,6 @@ export const RootLayout: React.SFC<Props> = ({
       });
     }
   };
-
   return (
     <div>
       <Head>

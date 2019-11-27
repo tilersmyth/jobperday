@@ -13,12 +13,12 @@ import {
   SelectApplicationInput,
   JobSummaryInput,
 } from './inputs';
-import './style.less';
+import styles from './style.less';
 
 export const EditJobForm: React.FunctionComponent<FormikProps<
   UpdateJobInput
 >> = ({ handleSubmit, values, status }) => (
-  <Form onSubmit={handleSubmit} className="job-edit-form">
+  <Form onSubmit={handleSubmit}>
     <EditJobHeader formValues={values} status={status} />
 
     {values.id && !values.defaultApplicationId && (
@@ -30,9 +30,9 @@ export const EditJobForm: React.FunctionComponent<FormikProps<
       />
     )}
 
-    <Row gutter={24} className="content-container">
+    <Row gutter={24} className={styles.container}>
       <Col md={{ span: 15 }}>
-        <div className="form-main">
+        <div className={styles.textEditor}>
           <Field
             name="title"
             placeholder="Enter Job Title"

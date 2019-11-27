@@ -3,7 +3,7 @@ import { Field } from 'formik';
 import { Row, Col, Form } from 'antd';
 
 import { InputField } from '../../../../../../../shared/input/input-field';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   change: () => void;
@@ -14,7 +14,7 @@ export const AddressComponents: React.FunctionComponent<Props> = ({
 }) => {
   return (
     <Form.Item
-      className="address_components"
+      className={styles.container}
       label={
         <React.Fragment>
           Address (

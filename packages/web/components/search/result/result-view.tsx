@@ -4,8 +4,8 @@ import { useQuery } from 'react-apollo';
 import { SearchFindJobDocument, SearchFindJobQuery } from '../../../apollo';
 import { LoaderMask } from '../../shared';
 import { SearchResultViewHeader } from './header';
-import './style.less';
 import { SearchResultViewContent } from './content';
+import styles from './style.less';
 
 interface Props {
   jobId: string;
@@ -24,7 +24,7 @@ export const SearchResultView: React.FunctionComponent<Props> = ({ jobId }) => {
   }
 
   return (
-    <div className="job-result-view-container">
+    <div className={styles.container}>
       {loading && <LoaderMask />}
       <SearchResultViewHeader job={data.searchFindJob} />
       <SearchResultViewContent job={data.searchFindJob} />

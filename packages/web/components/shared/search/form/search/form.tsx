@@ -1,10 +1,11 @@
 import React from 'react';
 import { Form, Row, Col, Button, Icon } from 'antd';
 import { Field, FormikProps } from 'formik';
+import cx from 'classnames';
 
 import { SearchInput } from '../../../../../apollo';
 import { SearchLocationInput, SearchJobInput } from './inputs';
-import './style.less';
+import styles from './style.less';
 
 interface Props extends FormikProps<SearchInput> {
   secondary: string;
@@ -14,12 +15,12 @@ interface Props extends FormikProps<SearchInput> {
 
 export const SearchHeaderForm: React.FunctionComponent<Props> = ({
   handleSubmit,
-  secondary,
   setSecondary,
+  secondary,
   openDrawer,
 }) => {
   return (
-    <Form onSubmit={handleSubmit} className="search-header-form">
+    <Form onSubmit={handleSubmit}>
       <Row gutter={{ lg: 32, md: 16, sm: 8, xs: 8 }}>
         <Col
           xl={{ span: 7, offset: 3 }}
@@ -43,8 +44,18 @@ export const SearchHeaderForm: React.FunctionComponent<Props> = ({
             <Icon type="filter" />
           </Button>
         </Col>
-        <div className={`secondary ${secondary ? 'open' : ''}`}>
-          <Col xl={{ span: 7 }} lg={{ span: 8 }} xs={{ span: 24 }}>
+        <div
+          className={cx({
+            [styles.secondaryFields]: true,
+            [styles.open]: secondary,
+          })}
+        >
+          <Col
+            xl={{ span: 7 }}
+            lg={{ span: 8 }}
+            xs={{ span: 24 }}
+            className={styles.fieldItem}
+          >
             <Field
               name="location.locality"
               size="large"
@@ -57,6 +68,7 @@ export const SearchHeaderForm: React.FunctionComponent<Props> = ({
             lg={{ span: 6 }}
             md={{ span: 24 }}
             xs={{ span: 24 }}
+            className={styles.fieldItem}
           >
             <Row gutter={32}>
               <Col
@@ -64,6 +76,7 @@ export const SearchHeaderForm: React.FunctionComponent<Props> = ({
                 lg={{ span: 0 }}
                 md={{ span: 18 }}
                 xs={{ span: 16 }}
+                className={styles.fieldItem}
               >
                 <Button type="link" onClick={() => setSecondary(false)}>
                   Close
@@ -74,6 +87,7 @@ export const SearchHeaderForm: React.FunctionComponent<Props> = ({
                 lg={{ span: 24 }}
                 md={{ span: 6 }}
                 xs={{ span: 8 }}
+                className={styles.fieldItem}
               >
                 <Button
                   htmlType="submit"

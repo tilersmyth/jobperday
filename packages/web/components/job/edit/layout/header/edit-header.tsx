@@ -3,6 +3,7 @@ import { Button, Icon } from 'antd';
 
 import { UpdateJobInput } from '../../../../../apollo/generated-components';
 import { CompanyPageHeader } from '../../../../shared';
+import styles from './style.less';
 
 interface Props {
   formValues: UpdateJobInput;
@@ -14,6 +15,7 @@ export const EditJobHeader: React.FunctionComponent<Props> = ({
   status,
 }) => (
   <CompanyPageHeader
+    className={styles.container}
     title={formValues.id ? `Edit: ${formValues.title}` : 'Create New Job'}
     extra={[
       formValues.id && formValues.defaultApplicationId && (

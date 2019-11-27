@@ -1,15 +1,17 @@
-.company_navbar {
+.container {
   display: block;
   background-color: @white;
   margin-bottom: 20px;
 }
 
-.company_navbar .ant-page-header-heading-title {
-  font-size: 24px;
+.container :global {
+  .ant-page-header-heading-title {
+    margin: 20px;
+  }
 }
 
 @media (min-width: @screen-xl-min) {
-  .company_navbar {
+  .container {
     display: none;
   }
 }

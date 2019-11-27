@@ -4,7 +4,7 @@ import { Card } from 'antd';
 import { SearchInput } from '../../../apollo/generated-components';
 import { SearchFilterForm } from '../../shared';
 import { SearchAffix } from '../affix';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   searchArgs: SearchInput;
@@ -16,7 +16,7 @@ export const SearchSidebar: React.FunctionComponent<Props> = ({
   updateArgs,
 }) => {
   return (
-    <SearchAffix className="search-filter-card">
+    <SearchAffix className={styles.container}>
       <Card title="Search Filter" bordered={false}>
         <SearchFilterForm searchArgs={searchArgs} updateArgs={updateArgs} />
       </Card>

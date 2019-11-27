@@ -13,7 +13,7 @@ import { AddFieldButton } from './inputs';
 import { ApplicationFieldPreview } from '../create/field-preview/application-field-preview';
 import { ModalState } from './add-field-modal/modal-types';
 import { initialApplicationFieldValues } from '../create/initial-values';
-import './style.less';
+import styles from './style.less';
 
 export const EditApplicationForm: React.FunctionComponent<FormikProps<
   ApplicationInput
@@ -60,7 +60,7 @@ export const EditApplicationForm: React.FunctionComponent<FormikProps<
               />
 
               {values.fields.length > 0 && (
-                <div className="field-preview-container">
+                <div className={styles.container}>
                   <Typography.Title level={4}>Fields Preview</Typography.Title>
                   {values.fields.map((field, i) => (
                     <React.Fragment key={i}>
@@ -85,7 +85,7 @@ export const EditApplicationForm: React.FunctionComponent<FormikProps<
                       >
                         <ApplicationFieldPreview field={field} index={i} />
                       </List.Item>
-                      <Divider />
+                      <Divider className={styles.divider} />
                     </React.Fragment>
                   ))}
                 </div>

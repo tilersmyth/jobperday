@@ -4,7 +4,7 @@ import { FieldProps } from 'formik';
 
 import { PROFILE_DEFAULT_IMAGES } from '../../initial-values';
 import { ImageUploadModal } from '../../../../../../../shared';
-import './style.less';
+import styles from './style.less';
 
 export const SelectProfileImage: React.FunctionComponent<FieldProps> = ({
   field,
@@ -14,12 +14,9 @@ export const SelectProfileImage: React.FunctionComponent<FieldProps> = ({
 
   return (
     <React.Fragment>
-      <Form.Item className="profile-field-container">
-        <div className="profile-image-container">
-          <div
-            className="profile-image-mask"
-            onClick={() => setImageModal(true)}
-          />
+      <Form.Item className={styles.container}>
+        <div className={styles.profile}>
+          <div className={styles.mask} onClick={() => setImageModal(true)} />
           <img
             src={
               field.value ? field.value : PROFILE_DEFAULT_IMAGES.profile_image

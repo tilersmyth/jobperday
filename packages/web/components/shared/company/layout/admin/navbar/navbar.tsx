@@ -2,7 +2,7 @@ import React from 'react';
 import { PageHeader, Icon } from 'antd';
 import { useQuery } from 'react-apollo';
 
-import './style.less';
+import styles from './style.less';
 import {
   CurrentCompanyDocument,
   CurrentCompanyQuery,
@@ -27,7 +27,7 @@ export const CompanyNavbar: React.FunctionComponent<Props> = ({
 
   return (
     <PageHeader
-      className="company_navbar"
+      className={styles.container}
       avatar={{
         src:
           'https://pbs.twimg.com/profile_images/517308223716487168/FBTn9ivB_400x400.png',

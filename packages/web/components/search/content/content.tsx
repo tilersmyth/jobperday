@@ -11,7 +11,7 @@ import { SearchResultList } from '../result-list';
 import { SearchResultView } from '../result';
 import { Breakpoints } from '../../../utils';
 import { SearchAffix } from '../affix';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   client: QueryResult<SearchQuery, Record<string, any>>;
@@ -47,7 +47,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
   };
 
   return (
-    <div className="search-content">
+    <div className={styles.container}>
       <Row gutter={24}>
         <Col xl={9} xs={24}>
           <SearchResultList

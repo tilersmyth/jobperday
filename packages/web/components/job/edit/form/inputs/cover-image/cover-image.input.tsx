@@ -4,7 +4,7 @@ import { Button } from 'antd';
 
 import { ImageUploadModal } from '../../../../../shared';
 import { JobInputCard } from '../../../layout';
-import './style.less';
+import styles from './style.less';
 
 export const JobCoverImageInput: React.FunctionComponent<FieldProps> = ({
   field,
@@ -21,7 +21,7 @@ export const JobCoverImageInput: React.FunctionComponent<FieldProps> = ({
         </Button>
       }
     >
-      <div className="default-image-input-container">
+      <div className={styles.container}>
         <img src={field.value} />
       </div>
       <ImageUploadModal

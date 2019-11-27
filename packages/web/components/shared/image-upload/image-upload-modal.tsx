@@ -8,7 +8,7 @@ import {
   CurrentCompanyDocument,
   CurrentCompanyQuery,
 } from '../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 const { TabPane } = Tabs;
 
@@ -72,7 +72,7 @@ export const ImageUploadModal: React.FunctionComponent<Props> = ({
           Continue
         </Button>,
       ]}
-      className="image-upload-modal"
+      className={styles.container}
     >
       <Tabs activeKey={currentTab} onChange={key => setCurrentTab(key)}>
         <TabPane

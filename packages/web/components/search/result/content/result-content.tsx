@@ -3,7 +3,7 @@ import { Row, Col, Button, Icon } from 'antd';
 import moment from 'moment';
 
 import { SearchFindJobQuery } from '../../../../apollo';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   job: SearchFindJobQuery['searchFindJob'];
@@ -29,10 +29,10 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
   const { remaining_openings, pay_rate, start_date, address } = postings[0];
 
   return (
-    <div className="job-result-view-content">
-      <div className="content-header">
+    <div>
+      <div className={styles.header}>
         <Row>
-          <Col xl={{ span: 18 }} className="post-status">
+          <Col xl={{ span: 18 }} className={styles.status}>
             This post has{' '}
             <strong>
               {remaining_openings} opening
@@ -50,22 +50,22 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
           </Col>
         </Row>
       </div>
-      <ul className="post-details">
+      <ul className={styles.details}>
         <li>
-          <Icon type="dollar" />
+          <Icon type="dollar" className={styles.icon} />
           {pay_rate}/hr
         </li>
         <li>
-          <Icon type="calendar" />
+          <Icon type="calendar" className={styles.icon} />
           {moment.utc(start_date).calendar()}
         </li>
         <li className="address">
-          <Icon type="environment" />
+          <Icon type="environment" className={styles.icon} />
           {address.street} {address.street2 ? address.street2 : ''}{' '}
           {address.city}, {address.state} {address.postal_code}
         </li>
       </ul>
-      <div className="content-main">{job.description}</div>
+      <div className={styles.description}>{job.description}</div>
     </div>
   );
 };

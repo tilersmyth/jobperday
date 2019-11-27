@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Avatar, Typography } from 'antd';
 
-import { FindCompanyProfileQuery } from '../../../../../../apollo';
-import { LoaderMask } from '../../../../loader';
+import { FindCompanyProfileQuery } from '../../../../../../../apollo';
+import { LoaderMask } from '../../../../../loader';
+import styles from './style.less';
 
 interface Props {
   name: string;
@@ -25,14 +26,20 @@ export const SiderBrand: React.FunctionComponent<Props> = ({
 
   return (
     <div
-      className="sider-brand-container"
+      className={styles.container}
       style={{ backgroundImage: `url(${coverImg})` }}
     >
       {loading && <LoaderMask />}
       {profile && (
-        <div className="sider-brand-inner">
-          <Typography.Title level={2}>{name}</Typography.Title>
-          <Avatar size={80} src={profile.profile_image} />
+        <div className={styles.inner}>
+          <Typography.Title level={2} className={styles.title}>
+            {name}
+          </Typography.Title>
+          <Avatar
+            className={styles.avatar}
+            size={80}
+            src={profile.profile_image}
+          />
         </div>
       )}
     </div>

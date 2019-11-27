@@ -1,7 +1,7 @@
 import React from 'react';
 import { Drawer } from 'antd';
 
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   children: any;
@@ -22,7 +22,7 @@ export const CompanySidebarDrawer: React.FunctionComponent<Props> = ({
     onClose={close}
     visible={visible}
     title={companyName}
-    className="company-sidebar-drawer"
+    className={styles.container}
   >
     {children}
   </Drawer>

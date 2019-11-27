@@ -1,22 +1,24 @@
-.edit-job-title-input {
+.container {
   padding: 0 16px;
 }
 
-.edit-job-title-input input.ant-input {
-  border: none;
-  font-size: 30px;
-  padding: 0;
-  line-height: 3em;
-}
+.container :global {
+  input.ant-input {
+    border: none;
+    font-size: 30px;
+    padding: 0;
+    line-height: 3em;
+  }
 
-.edit-job-title-input .ant-form-item-control.has-error {
-  border-bottom: 1px solid @error-color;
-  -webkit-transition: border 100ms ease-out;
-  -moz-transition: border 100ms ease-out;
-  -o-transition: border 100ms ease-out;
-  transition: border 100ms ease-out;
-}
+  .ant-form-item-control.has-error {
+    border-bottom: 1px solid @error-color;
+    -webkit-transition: border 100ms ease-out;
+    -moz-transition: border 100ms ease-out;
+    -o-transition: border 100ms ease-out;
+    transition: border 100ms ease-out;
+  }
 
-.edit-job-title-input input.ant-input:focus {
-  box-shadow: none;
+  input.ant-input:focus {
+    box-shadow: none;
+  }
 }

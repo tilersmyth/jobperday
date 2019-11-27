@@ -1,4 +1,4 @@
-.candidate-header.ant-layout-header {
+.headerContainer {
   position: fixed;
   z-index: 10;
   width: 100%;
@@ -7,12 +7,12 @@
   height: @layout-header-height-sm;
 }
 
-.candidate-header .candidate-brand {
+.headerBrand {
   float: left;
 }
 
 @small_pg_margin: @layout-header-height-sm / 4;
-.candidate-header .candidate-brand .logo-placeholder {
+.brandPlaceholder {
   width: 120px;
   height: @layout-header-height-sm / 2;
   background: rgba(255, 255, 255, 0.2);
@@ -20,7 +20,7 @@
   display: inline-block;
 }
 
-.candidate-header .candidate-brand .menu-icon {
+.menuIcon {
   display: inline-block;
   vertical-align: top;
   font-size: 20px;
@@ -30,53 +30,39 @@
   line-height: @layout-header-height-sm;
 }
 
-.candidate-header .candidate-brand .menu-icon:hover {
+.menuIcon:hover {
   color: @primary-4;
 }
 
-.candidate-header .header-menu {
+.headerMenu {
   line-height: @layout-header-height-sm;
   display: flex;
 }
 
-.header-menu .right-menu {
+.headerSubMenu {
   margin-left: auto;
 }
 
-.ant-menu-submenu ul.ant-menu li.ant-menu-item-group {
+.headerMenuGroup {
   text-align: right;
 }
 
-.ant-menu-submenu
-  ul.ant-menu
-  li.ant-menu-item-group
-  .ant-menu-item-group-title {
-  font-size: 0.8rem;
-}
-
-.ant-menu-submenu
-  ul.ant-menu
-  li.ant-menu-item-group
-  ul.ant-menu-item-group-list {
-  padding-right: 10px;
-}
-
 @media (min-width: @screen-xl-min) {
-  .candidate-header.ant-layout-header {
+  .headerContainer {
     height: @layout-header-height-lg;
   }
 
-  .candidate-header .header-menu {
+  .headerMenu {
     line-height: @layout-header-height-lg;
   }
 
   @large_pg_margin: @layout-header-height-lg / 4;
-  .candidate-header .candidate-brand .logo-placeholder {
+  .brandPlaceholder {
     height: @layout-header-height-lg / 2;
     margin: @large_pg_margin 24px @large_pg_margin 0;
   }
 
-  .candidate-header .candidate-brand .menu-icon {
+  .menuIcon {
     display: none;
   }
 }

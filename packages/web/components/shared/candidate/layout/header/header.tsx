@@ -6,7 +6,7 @@ import {
   CurrentUserDocument,
   CurrentUserQuery,
 } from '../../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   openDrawer?: (value: boolean) => void;
@@ -28,25 +28,24 @@ export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
   };
 
   return (
-    <Layout.Header className="candidate-header">
-      <div className="candidate-brand">
+    <Layout.Header className={styles.headerContainer}>
+      <div className={styles.headerBrand}>
         {openDrawer && (
-          <div className="menu-icon">
+          <div className={styles.menuIcon}>
             <Icon type="menu" onClick={() => openDrawer(true)} />
           </div>
         )}
-        <div className="logo-placeholder" />
+        <div className={styles.brandPlaceholder} />
       </div>
-      <Menu theme="dark" mode="horizontal" className="header-menu">
+      <Menu theme="dark" mode="horizontal" className={styles.headerMenu}>
         <Menu.SubMenu
-          title={
-            <span className="submenu-title-wrapper">
-              {currentUser.first_name}
-            </span>
-          }
-          className="right-menu"
+          title={currentUser.first_name}
+          className={styles.headerSubMenu}
         >
-          <Menu.ItemGroup title={currentUser.email}>
+          <Menu.ItemGroup
+            title={currentUser.email}
+            className={styles.headerMenuGroup}
+          >
             <Menu.Item key="setting:1">Account</Menu.Item>
             <Menu.Item key="setting:2" onClick={handleLogout}>
               Logout

@@ -9,7 +9,7 @@ import { InputProps } from 'antd/lib/input';
 import { ValidInputElement } from 'antd/lib/auto-complete';
 import { OptionProps } from 'antd/lib/select';
 
-import './style.less';
+import styles from './style.less';
 
 const { Option } = AutoComplete;
 
@@ -83,7 +83,7 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
           handleSelect(value as string, object as object);
         return (
           <AutoComplete
-            className="places-autocomplete"
+            className={styles.container}
             defaultValue={field.value}
             onSelect={onSelect}
             onSearch={onSearch}

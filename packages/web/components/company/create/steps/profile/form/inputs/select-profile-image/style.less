@@ -1,4 +1,4 @@
-.company-images-container .profile-field-container {
+.container {
   position: absolute;
   top: 20px;
   left: 20px;
@@ -7,7 +7,7 @@
   padding: 5px;
 }
 
-.company-images-container .profile-field-container .profile-image-container {
+.container .profile {
   position: relative;
   height: 200px;
   width: 200px;
@@ -17,10 +17,7 @@
   overflow: hidden;
 }
 
-.company-images-container
-  .profile-field-container
-  .profile-image-container
-  .profile-image-mask {
+.container .profile .mask {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -31,18 +28,12 @@
   transition: 0.5s;
 }
 
-.company-images-container
-  .profile-field-container
-  .profile-image-container
-  .profile-image-mask:hover {
+.container .profile .mask:hover {
   cursor: pointer;
   opacity: 0.5;
 }
 
-.company-images-container
-  .profile-field-container
-  .profile-image-container
-  img {
+.container .profile img {
   height: 200px;
   width: auto;
 }

@@ -7,8 +7,8 @@ import {
   FindCompanyProfileDocument,
   FindCompanyProfileQuery,
 } from '../../../../../../apollo';
-import { SiderBrand } from './sider-brand';
-import './style.less';
+import { SiderBrand } from './brand';
+import styles from './style.less';
 
 const { Sider } = Layout;
 
@@ -35,7 +35,7 @@ export const CompanySider: React.FunctionComponent<Props> = ({
   const profile = data.findCompanyProfile;
 
   return (
-    <Sider width={300} className="company-admin-sider">
+    <Sider width={300} className={styles.container}>
       <SiderBrand name={company.name} profile={profile} />
       {children}
     </Sider>

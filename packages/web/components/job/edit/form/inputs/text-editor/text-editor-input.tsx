@@ -5,12 +5,12 @@ import { Form } from 'antd';
 import 'react-quill/dist/quill.snow.css';
 
 import { LoaderMask } from '../../../../../shared';
-import './style.less';
+import styles from './style.less';
 
 const ReactQuill = dynamic(import('react-quill'), {
   ssr: false,
   loading: () => (
-    <div className="quill-loader-container">
+    <div className={styles.loader}>
       <LoaderMask />
     </div>
   ),
@@ -21,9 +21,10 @@ export const TextEditorInput: React.FunctionComponent<FieldProps> = ({
   form: { setFieldValue },
 }) => {
   return (
-    <Form.Item className="edit-job-text-editor">
+    <Form.Item>
       <ReactQuill
         {...field}
+        className={styles.quill}
         onChange={(value: string) => setFieldValue(field.name, value)}
       />
     </Form.Item>

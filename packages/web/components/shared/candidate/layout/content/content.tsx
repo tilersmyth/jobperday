@@ -1,12 +1,12 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { Layout } from 'antd';
 
-import './style.less';
+import styles from './style.less';
 
 interface Props {
-  children: any;
+  children: ReactNode;
 }
 
 export const CandidateContent: React.FunctionComponent<Props> = ({
   children,
-}) => <Layout className="candidate-content">{children}</Layout>;
+}) => <Layout className={styles.container}>{children}</Layout>;

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FieldProps } from 'formik';
 import { Input, Button, Tag, Form } from 'antd';
 
-import './style.less';
+import styles from './style.less';
 
 export const JobTagsInput: React.FunctionComponent<FieldProps> = ({
   field,
@@ -10,9 +10,9 @@ export const JobTagsInput: React.FunctionComponent<FieldProps> = ({
 }: FieldProps) => {
   const [inputValue, setInputValue] = useState<string>('');
   return (
-    <Form.Item className="job-tags-input" help={errors[field.name]}>
+    <Form.Item className={styles.container} help={errors[field.name]}>
       {field.value.length > 0 && (
-        <div className="job-tags-preview-container">
+        <div className={styles.tags}>
           {field.value.map((tag: string, i: number) => (
             <Tag
               key={i}

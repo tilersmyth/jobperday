@@ -7,6 +7,7 @@ import {
   FindCompanyAddressesDocument,
   FindCompanyAddressesQuery,
 } from '../../../../../../apollo/generated-components';
+import styles from './style.less';
 
 const { Option } = Select;
 
@@ -88,11 +89,11 @@ export const SelectAddressInput: React.FunctionComponent<Props> = ({
             .includes(input.toLowerCase());
         }}
         dropdownRender={menu => (
-          <div className="posting-select-menu">
+          <div className={styles.menu}>
             {menu}
-            <Divider />
+            <Divider className={styles.divider} />
             <div
-              className="extra-option"
+              className={styles.extra}
               onMouseDown={e => e.preventDefault()}
               onClick={() => switchAddress(true)}
             >

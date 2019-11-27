@@ -2,6 +2,8 @@ import React from 'react';
 import { Form, DatePicker } from 'antd';
 import { FieldProps, getIn } from 'formik';
 
+import styles from './style.less';
+
 interface Props extends FieldProps {
   label: string;
 }
@@ -23,6 +25,7 @@ export const DatepickerInput: React.FunctionComponent<Props> = ({
     >
       <DatePicker
         {...inputProps}
+        className={styles.datepicker}
         showTime={true}
         onChange={value => value && setFieldValue(field.name, value.format())}
         onOk={value => setFieldValue(field.name, value.format())}

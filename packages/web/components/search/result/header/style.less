@@ -1,4 +1,4 @@
-.job-result-view-header {
+.container {
   width: 100%;
   position: relative;
   height: 150px;
@@ -7,7 +7,7 @@
   background-position: center;
 }
 
-.job-result-view-header .header-mask {
+.container .mask {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -17,35 +17,12 @@
   padding: 30px 20px 0 200px;
 }
 
-.job-result-view-header .job-title-container .ant-typography {
+.container .mask .title {
   color: @white;
   margin: 0;
 }
 
-.job-result-view-header .company-image-container {
-  position: absolute;
-  padding: 5px;
-  background-color: @white;
-  bottom: -50px;
-  left: 30px;
-  border: 1px solid @border-color-base;
-}
-
-.job-result-view-header .company-image-container .company-image-inner {
-  height: 130px;
-  width: 130px;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.job-result-view-header .company-image-container .company-image-inner img {
-  height: 130px;
-  width: auto;
-}
-
-.job-result-view-header .job-type-container {
+.container .type {
   position: absolute;
   left: 0;
   top: 0;
@@ -56,4 +33,27 @@
   padding: 5px;
   color: @white;
   letter-spacing: 0.1em;
+}
+
+.container .profile {
+  position: absolute;
+  padding: 5px;
+  background-color: @white;
+  bottom: -50px;
+  left: 30px;
+  border: 1px solid @border-color-base;
+}
+
+.container .profile .imageContainer {
+  height: 130px;
+  width: 130px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .profile .imageContainer img {
+  height: 130px;
+  width: auto;
 }

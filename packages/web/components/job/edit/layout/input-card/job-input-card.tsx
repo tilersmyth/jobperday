@@ -2,8 +2,6 @@ import React from 'react';
 import { Card, Form, Tooltip, Icon } from 'antd';
 import { CardProps } from 'antd/lib/card';
 
-import './style.less';
-
 interface Props extends CardProps {
   title: string;
   children: React.ReactNode;

@@ -1,4 +1,4 @@
-a.img_container {
+.container {
   position: relative;
   display: inline-block;
   border: 1px solid @border-color-base;
@@ -6,7 +6,7 @@ a.img_container {
   margin-right: 20px;
 }
 
-a.img_container .anticon {
+.container .icon {
   position: absolute;
   top: 5px;
   right: 5px;
@@ -17,22 +17,22 @@ a.img_container .anticon {
   background-color: @white;
 }
 
-a.img_container.selected .anticon {
+.container.selected {
+  border-color: @primary-color;
+}
+
+.container.selected .icon {
   visibility: visible;
   opacity: 1;
 }
 
-a.img_container.selected {
-  border-color: @primary-color;
-}
-
-a.img_container .image_wrapper {
+.container .image {
   width: 150px;
   height: 150px;
   overflow: hidden;
 }
 
-a.img_container .image_wrapper img {
+.container .image img {
   height: 150px;
   width: auto;
 }

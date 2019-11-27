@@ -9,7 +9,7 @@ import {
   FindCurrentPostingsQuery,
   FindCurrentPostingsDocument,
 } from '../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   companySlug: string;
@@ -32,35 +32,6 @@ export const JobPostingsTable: React.FunctionComponent<Props> = ({
   if (error || !data) {
     return null;
   }
-
-  // const loadMore = ({ current }: PaginationConfig) => {
-  //   const skip = current ? queryLimit * (current - 1) : 0;
-  //   return {
-  //     page: current,
-  //     client: fetchMore({
-  //       variables: {
-  //         companySlug,
-  //         input: {
-  //           skip,
-  //           limit: queryLimit,
-  //         },
-  //       },
-  //       updateQuery: (prev, { fetchMoreResult }) => {
-  //         if (!fetchMoreResult) {
-  //           return prev;
-  //         }
-
-  //         return Object.assign({}, prev, {
-  //           count: prev.findCurrentPostings.count,
-  //           postings: [
-  //             ...prev.findCurrentPostings.postings,
-  //             ...fetchMoreResult.findCurrentPostings.postings,
-  //           ],
-  //         });
-  //       },
-  //     }),
-  //   };
-  // };
 
   const columns = [
     {
@@ -121,7 +92,7 @@ export const JobPostingsTable: React.FunctionComponent<Props> = ({
 
   return (
     <Table
-      className="job-postings-list-table"
+      className={styles.container}
       dataSource={dataSource}
       loading={loading}
       columns={columns}

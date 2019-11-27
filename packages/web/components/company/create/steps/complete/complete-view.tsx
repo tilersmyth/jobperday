@@ -4,7 +4,7 @@ import { Card, PageHeader, Icon, Result, Button, Row, Col } from 'antd';
 
 import { FindCompanyQuery } from '../../../../../apollo';
 import { CompanyHeader, CompanyContent, RootLayout } from '../../../../shared';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   company: FindCompanyQuery['findCompany'];
@@ -29,7 +29,7 @@ export const CreateCompanyCompleteView: React.SFC<Props> = ({ company }) => {
             xs={{ span: 24 }}
           >
             <PageHeader
-              className="steps-header"
+              className={styles.header}
               onBack={() => null}
               backIcon={<Icon type="home" />}
               title="Company setup complete"

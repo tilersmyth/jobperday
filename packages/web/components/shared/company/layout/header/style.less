@@ -1,4 +1,4 @@
-.company-header.ant-layout-header {
+.container {
   position: fixed;
   z-index: 10;
   width: 100%;
@@ -7,20 +7,11 @@
   height: @layout-header-height-sm;
 }
 
-.company-header .company-brand {
+.container .brand {
   float: left;
 }
 
-@small_pg_margin: @layout-header-height-sm / 4;
-.company-header .company-brand .logo-placeholder {
-  width: 120px;
-  height: @layout-header-height-sm / 2;
-  background: rgba(255, 255, 255, 0.2);
-  margin: @small_pg_margin 24px @small_pg_margin 0;
-  display: inline-block;
-}
-
-.company-header .company-brand .menu-icon {
+.container .brand .menuIcon {
   display: inline-block;
   vertical-align: top;
   font-size: 20px;
@@ -30,53 +21,48 @@
   line-height: @layout-header-height-sm;
 }
 
-.company-header .company-brand .menu-icon:hover {
+.container .brand .menuIcon:hover {
   color: @primary-4;
 }
 
-.company-header .header-menu {
+@small_pg_margin: @layout-header-height-sm / 4;
+.container .brand .placeholder {
+  width: 120px;
+  height: @layout-header-height-sm / 2;
+  background: rgba(255, 255, 255, 0.2);
+  margin: @small_pg_margin 24px @small_pg_margin 0;
+  display: inline-block;
+}
+
+.container .menu {
   line-height: @layout-header-height-sm;
   display: flex;
 }
 
-.header-menu .right-menu {
+.container .menu .subMenu {
   margin-left: auto;
 }
 
-.ant-menu-submenu ul.ant-menu li.ant-menu-item-group {
+.container .menu .subMenu .itemGroup {
   text-align: right;
 }
 
-.ant-menu-submenu
-  ul.ant-menu
-  li.ant-menu-item-group
-  .ant-menu-item-group-title {
-  font-size: 0.8rem;
-}
-
-.ant-menu-submenu
-  ul.ant-menu
-  li.ant-menu-item-group
-  ul.ant-menu-item-group-list {
-  padding-right: 10px;
-}
-
 @media (min-width: @screen-xl-min) {
-  .company-header.ant-layout-header {
+  .container {
     height: @layout-header-height-lg;
   }
 
-  .company-header .header-menu {
+  .container .menu {
     line-height: @layout-header-height-lg;
   }
 
   @large_pg_margin: @layout-header-height-lg / 4;
-  .company-header .company-brand .logo-placeholder {
+  .container .brand .placeholder {
     height: @layout-header-height-lg / 2;
     margin: @large_pg_margin 24px @large_pg_margin 0;
   }
 
-  .company-header .company-brand .menu-icon {
+  .container .brand .menuIcon {
     display: none;
   }
 }

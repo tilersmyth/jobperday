@@ -3,7 +3,7 @@ import { Layout } from 'antd';
 
 import { SearchInput } from '../../../apollo/generated-components';
 import { CandidateLayout, SearchHeader, SearchDrawer } from '../../shared';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   searchArgs: SearchInput;
@@ -23,7 +23,7 @@ export const CandidateHomeView: React.FunctionComponent<Props> = ({
 
   return (
     <CandidateLayout title="Candidate">
-      <Layout className="candidate-search-content">
+      <Layout className={styles.container}>
         <SearchHeader searchArgs={args} openDrawer={openDrawer} />
         condidate
       </Layout>

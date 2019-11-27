@@ -1,4 +1,4 @@
-.search-result-item {
+.container {
   position: relative;
   background-color: @white;
   height: 130px;
@@ -10,11 +10,11 @@
   border: 1px solid @white;
 }
 
-.search-result-item.active {
+.container.active {
   border-color: @primary-color;
 }
 
-.search-result-item .company-image-container {
+.container .image {
   position: absolute;
   left: 20px;
   top: 20px;
@@ -27,24 +27,24 @@
   justify-content: center;
 }
 
-.search-result-item .company-image-container img {
+.container .image img {
   height: 80px;
   width: auto;
 }
 
-.search-result-item .item-content-container {
+.container .content {
   margin-left: 100px;
 }
 
-.search-result-item .item-content-container .content-item {
+.container .content .item {
   margin-bottom: 5px;
   display: block;
 }
 
-.search-result-item .item-content-container .anticon {
+.container .content .item .icon {
   margin-right: 5px;
 }
 
-.search-result-item .item-content-container .content-item span {
+.container .content .item span {
   margin-right: 20px;
 }

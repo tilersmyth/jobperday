@@ -1,4 +1,4 @@
-.company-images-container .cover-image-container {
+.container {
   position: relative;
   overflow: hidden;
   max-height: 200px;
@@ -8,7 +8,7 @@
   border: 1px solid @border-color-base;
 }
 
-.company-images-container .cover-image-container .cover-image-mask {
+.container .mask {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -19,12 +19,12 @@
   transition: 0.5s;
 }
 
-.company-images-container .cover-image-container .cover-image-mask:hover {
+.container .mask:hover {
   cursor: pointer;
   opacity: 0.5;
 }
 
-.company-images-container .cover-image-container img {
+.container img {
   height: auto;
   max-width: 100%;
 }

@@ -9,7 +9,7 @@ import {
   CurrentCompanyDocument,
   CurrentCompanyQuery,
 } from '../../../../../../apollo';
-import './style.less';
+import styles from './style.less';
 
 const { Option } = Select;
 
@@ -75,7 +75,7 @@ export const SelectApplicationInput: React.FunctionComponent<FieldProps> = ({
         notFoundContent={<div>No applications available</div>}
         dropdownRender={menu => {
           if (queryState.state !== 'Done') {
-            return <div className="incomplete-option">{queryState.state}</div>;
+            return <div className={styles.loading}>{queryState.state}</div>;
           }
 
           return <div>{menu}</div>;

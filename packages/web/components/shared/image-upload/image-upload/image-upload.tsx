@@ -7,7 +7,7 @@ import {
   UploadImageMutation,
   FindAllCompanyImagesDocument,
 } from '../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 const { Dragger } = Upload;
 
@@ -84,7 +84,7 @@ export const ImageUpload: React.FunctionComponent<Props> = ({
 
   return (
     <Dragger
-      className="dragger-container"
+      className={styles.container}
       multiple={multiple}
       onChange={onChange}
       customRequest={request}

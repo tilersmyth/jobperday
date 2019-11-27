@@ -1,9 +1,10 @@
 import React from 'react';
 import { Typography, Icon } from 'antd';
 import moment from 'moment';
+import cx from 'classnames';
 
 import { SearchQuery } from '../../../../apollo';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   job: SearchQuery['search']['results'][0]['job'];
@@ -28,27 +29,29 @@ export const SearchResultItem: React.FunctionComponent<Props> = ({
 
   return (
     <div
-      className={`search-result-item ${selectedId === job.id ? 'active' : ''}`}
+      className={cx(styles.container, {
+        [styles.active]: selectedId === job.id,
+      })}
       onClick={() => selectJob(job.id)}
     >
-      <div className="company-image-container">
+      <div className={styles.image}>
         <img src={job.company.profile.profile_image} />
       </div>
-      <div className="item-content-container">
-        <Typography.Text strong={true} className="content-item">
+      <div className={styles.content}>
+        <Typography.Text strong={true} className={styles.item}>
           {job.title}
         </Typography.Text>
-        <div className="content-item">
-          <Icon type="environment" />
+        <div className={styles.item}>
+          <Icon type="environment" className={styles.icon} />
           {postings[0].address.city}, {postings[0].address.state}
         </div>
-        <div className="content-item">
+        <div className={styles.item}>
           <span>
-            <Icon type="dollar" />
+            <Icon type="dollar" className={styles.icon} />
             {postings[0].pay_rate}/hr
           </span>
           <span>
-            <Icon type="calendar" />
+            <Icon type="calendar" className={styles.icon} />
             {moment.utc(postings[0].start_date).calendar()}
           </span>
         </div>

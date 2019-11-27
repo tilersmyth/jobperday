@@ -1,7 +1,7 @@
 import React from 'react';
-import { Spin } from 'antd';
 
-import './style.less';
+import styles from './style.less';
+import { LoaderMask } from '../../../../shared';
 
 interface Props {
   loading: boolean;
@@ -13,12 +13,8 @@ export const EditJobLayout: React.FunctionComponent<Props> = ({
   children,
 }) => {
   return (
-    <div className="edit-job-layout-container">
-      {loading && (
-        <div className="content-loader">
-          <Spin />
-        </div>
-      )}
+    <div className={styles.container}>
+      {loading && <LoaderMask />}
       {children}
     </div>
   );

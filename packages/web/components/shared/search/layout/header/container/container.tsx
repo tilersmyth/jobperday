@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-apollo';
 import { Affix } from 'antd';
+import cx from 'classnames';
 
 import {
   ViewportQueryDocument,
   ViewportQueryQuery,
 } from '../../../../../../apollo/generated-components';
 import { Breakpoints } from '../../../../../../utils';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   children: any;
@@ -28,9 +29,15 @@ export const SearchHeaderContainer: React.FunctionComponent<Props> = ({
     <Affix
       offsetTop={Breakpoints[data.viewport] < Breakpoints.XL ? 54 : 64}
       onChange={setAffix}
-      className="search-header"
+      className={styles.container}
     >
-      <div className={`header-inner ${affix ? 'affix' : ''}`}>{children}</div>
+      <div
+        className={cx(styles.inner, {
+          [styles.affix]: affix,
+        })}
+      >
+        {children}
+      </div>
     </Affix>
   );
 };

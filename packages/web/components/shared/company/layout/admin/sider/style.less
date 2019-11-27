@@ -1,4 +1,4 @@
-.company-admin-sider {
+.container {
   background-color: @white;
   display: none;
   position: fixed;
@@ -6,50 +6,8 @@
   overflow: auto;
 }
 
-.company-admin-sider .sider-brand-container {
-  position: relative;
-  width: 100%;
-  height: 150px;
-  margin-bottom: 40px;
-  background-size: auto 100%;
-  background-position: center;
-}
-
-.company-admin-sider .sider-brand-container .sider-brand-inner {
-  background-color: rgba(0, 0, 0, 0.7);
-  height: 150px;
-  display: flex;
-  align-items: center;
-  padding: 0 10px 35px 20px;
-}
-.company-admin-sider .sider-brand-container .sider-brand-inner .ant-typography {
-  color: @white;
-}
-
-.company-admin-sider .sider-brand-container img {
-  height: 150px;
-  width: auto;
-}
-
-.company-admin-sider .sider-brand-container .ant-avatar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  bottom: -30px;
-  left: 20px;
-  -webkit-box-shadow: 0 6px 4px -6px black;
-  -moz-box-shadow: 0 6px 4px -6px black;
-  box-shadow: 0 6px 4px -6px black;
-  z-index: 10;
-}
-
-.company-admin-sider .sider-brand-container .ant-avatar img {
-  height: 80px;
-}
-
 @media (min-width: @screen-xl-min) {
-  .company-admin-sider {
+  .container {
     display: inline;
   }
 }

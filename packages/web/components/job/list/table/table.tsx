@@ -8,7 +8,7 @@ import {
   FindAllJobsDocument,
   FindAllJobsQuery,
 } from '../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   companySlug: string;
@@ -78,7 +78,7 @@ export const JobsTable: React.FunctionComponent<Props> = ({ companySlug }) => {
 
   return (
     <Table
-      className="jobs-list-table"
+      className={styles.container}
       dataSource={jobsData}
       loading={loading}
       columns={columns}

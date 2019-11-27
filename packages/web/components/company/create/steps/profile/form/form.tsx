@@ -5,7 +5,7 @@ import { Field, FormikProps } from 'formik';
 import { CreateCompanyStepsActions } from '../../../shared';
 import { TextAreaField } from '../../../../../shared/input/textarea-field';
 import { SelectCoverImage, SelectProfileImage } from './inputs';
-import './style.less';
+import styles from './style.less';
 
 interface Props extends FormikProps<{}> {
   step: number;
@@ -22,7 +22,7 @@ export const CompanyProfileForm: React.FunctionComponent<Props> = ({
           Profile and Cover Image (click to update)
         </label>
       </div>
-      <div className="company-images-container">
+      <div className={styles.container}>
         <Field name="cover_image" component={SelectCoverImage} />
         <Field name="profile_image" component={SelectProfileImage} />
       </div>

@@ -13,7 +13,10 @@ export const SearchJobInput = ({
   const errorMessage = touched[field.name] && errors[field.name];
   const { onFocus } = props;
   return (
-    <Form.Item validateStatus={errorMessage ? 'error' : undefined}>
+    <Form.Item
+      validateStatus={errorMessage ? 'error' : undefined}
+      style={{ marginBottom: 0 }}
+    >
       <Input
         {...field}
         prefix={<Icon type="search" style={{ color: 'rgba(0,0,0,.25)' }} />}

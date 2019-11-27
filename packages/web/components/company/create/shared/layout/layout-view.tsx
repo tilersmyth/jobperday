@@ -1,14 +1,19 @@
 import React, { ReactNode } from 'react';
 import { useQuery } from 'react-apollo';
-import { Row, Col, Card, PageHeader, Steps, Spin } from 'antd';
+import { Row, Col, Card, PageHeader, Steps } from 'antd';
 import { createCompanySteps } from '@jobperday/common';
 
 import {
   CurrentCompanyDocument,
   CurrentCompanyQuery,
 } from '../../../../../apollo';
-import { CompanyHeader, CompanyContent, RootLayout } from '../../../../shared';
-import './style.less';
+import {
+  CompanyHeader,
+  CompanyContent,
+  RootLayout,
+  LoaderMask,
+} from '../../../../shared';
+import styles from './style.less';
 
 const { Step } = Steps;
 
@@ -47,7 +52,7 @@ export const CreateCompanyLayout: React.SFC<Props> = ({
             xs={{ span: 24 }}
           >
             <PageHeader
-              className="steps-header"
+              className={styles.header}
               onBack={() => null}
               title={currentCompany ? currentCompany.name : 'Create Company'}
             />
@@ -57,20 +62,20 @@ export const CreateCompanyLayout: React.SFC<Props> = ({
                   <Step key={s.step} title={s.title} />
                 ))}
               </Steps>
-              <Row gutter={32} className="steps-container">
+              <Row gutter={32} className={styles.steps}>
                 <Col
                   xs={{ span: 24 }}
                   xl={{ span: 9, push: 15 }}
-                  className="steps-helper-container"
+                  className={styles.helper}
                 >
                   {helper}
                 </Col>
                 <Col
                   xs={{ span: 24 }}
                   xl={{ span: 15, pull: 9 }}
-                  className="steps-content-container"
+                  className={styles.content}
                 >
-                  {formLoading && <Spin />}
+                  {formLoading && <LoaderMask />}
                   {form}
                 </Col>
               </Row>

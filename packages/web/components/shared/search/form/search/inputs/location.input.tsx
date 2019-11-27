@@ -42,6 +42,7 @@ export const SearchLocationInput = (props: FieldProps) => {
       className="autocomplete-has-icon"
       validateStatus={error ? 'error' : undefined}
       help={errorMsg}
+      style={{ marginBottom: 0 }}
     >
       <PlacesAutocompleteInput
         searchOptions={PlacesInputOptions}

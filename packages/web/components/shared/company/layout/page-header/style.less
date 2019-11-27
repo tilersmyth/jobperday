@@ -1,20 +1,20 @@
-.company-page-header {
+.container {
   z-index: 1;
 }
 
-.company-page-header .header-inner {
+.inner {
   background-color: @white;
   transition: all 50ms ease-in-out;
 }
 
-.company-page-header .header-inner.affix {
+.inner.affix {
   box-shadow: 0 2px 2px -2px gray;
   margin-left: -@layout-gutter-sm;
   margin-right: -@layout-gutter-sm;
 }
 
 @media (min-width: @screen-xl-min) {
-  .company-page-header .header-inner.affix {
+  .container .inner.affix {
     box-shadow: 0 2px 2px -2px gray;
     margin-left: -@layout-gutter-lg;
     margin-right: -@layout-gutter-lg;

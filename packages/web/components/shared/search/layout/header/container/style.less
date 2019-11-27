@@ -1,21 +1,21 @@
-.search-header {
+.container {
   z-index: 1;
 }
 
-.search-header .header-inner {
+.inner {
   padding: @layout-gutter-xs;
   background-color: @white;
   transition: all 50ms ease-in-out;
 }
 
-.search-header .header-inner.affix {
+.inner.affix {
   box-shadow: 0 2px 2px -2px gray;
   margin-left: -@layout-gutter-sm;
   margin-right: -@layout-gutter-sm;
 }
 
 @media (min-width: @screen-xl-min) {
-  .search-header .header-inner.affix {
+  .container .inner.affix {
     box-shadow: 0 2px 2px -2px gray;
     margin-left: -@layout-gutter-md;
     margin-right: -@layout-gutter-md;

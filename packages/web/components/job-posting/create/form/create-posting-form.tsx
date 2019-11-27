@@ -12,7 +12,6 @@ import {
   ActiveSwitch,
   SelectApplicationInput,
 } from './inputs';
-import './style.less';
 
 interface Props extends FormikProps<FormikValues> {
   companySlug: string;
@@ -25,11 +24,7 @@ export const CreatePostingForm: React.FunctionComponent<Props> = ({
   jobs,
 }) => {
   return (
-    <Form
-      layout="vertical"
-      onSubmit={handleSubmit}
-      className="job_posting_form"
-    >
+    <Form layout="vertical" onSubmit={handleSubmit}>
       <Field name="posting.active" size="large" component={ActiveSwitch} />
       <Row gutter={16}>
         <Col lg={{ span: 12 }}>

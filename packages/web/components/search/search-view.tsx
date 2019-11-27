@@ -12,7 +12,7 @@ import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
 import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
 import { searchToQuery } from '../../utils';
-import './style.less';
+import styles from './style.less';
 
 interface Props {
   searchArgs: SearchInput;
@@ -49,9 +49,9 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
 
   return (
     <CandidateLayout title="Search">
-      <Layout className="search-layout-container">
+      <Layout className={styles.container}>
         <SearchHeader searchArgs={args} openDrawer={openDrawer} />
-        <Layout.Content className="search-content-container">
+        <Layout.Content className={styles.content}>
           <SearchSidebar searchArgs={args} updateArgs={handleArgsUpdate} />
           <SearchContent
             client={client}

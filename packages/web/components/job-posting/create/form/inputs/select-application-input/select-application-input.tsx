@@ -7,7 +7,7 @@ import {
   FindAllApplicationsDocument,
   FindAllApplicationsQuery,
 } from '../../../../../../apollo/generated-components';
-import './style.less';
+import styles from './style.less';
 
 const { Option } = Select;
 
@@ -66,7 +66,7 @@ export const SelectApplicationInput: React.FunctionComponent<Props> = ({
         onChange={(value: string) => setFieldValue(name, value)}
         dropdownRender={menu => {
           if (queryState.state !== 'Done') {
-            return <div className="incomplete-option">{queryState.state}</div>;
+            return <div className={styles.loading}>{queryState.state}</div>;
           }
 
           return <div>{menu}</div>;
