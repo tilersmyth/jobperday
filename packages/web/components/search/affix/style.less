@@ -1,0 +1,10 @@
+:export {
+  // unit strips the px suffix
+  affixLg: unit(
+    @layout-header-height-lg + (@padding-xs*2 + @input-height-lg + @padding-md)
+  );
+
+  affixSm: unit(
+    @layout-header-height-sm + (@padding-xs*2 + @input-height-lg + @padding-sm)
+  );
+}

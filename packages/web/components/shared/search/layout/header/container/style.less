@@ -3,21 +3,26 @@
 }
 
 .inner {
-  padding: @layout-gutter-xs;
+  padding: @padding-xs;
   background-color: @white;
   transition: all 50ms ease-in-out;
 }
 
 .inner.affix {
   box-shadow: 0 2px 2px -2px gray;
-  margin-left: -@layout-gutter-sm;
-  margin-right: -@layout-gutter-sm;
+  margin-left: -@padding-sm;
+  margin-right: -@padding-sm;
 }
 
 @media (min-width: @screen-xl-min) {
   .container .inner.affix {
     box-shadow: 0 2px 2px -2px gray;
-    margin-left: -@layout-gutter-md;
-    margin-right: -@layout-gutter-md;
+    margin-left: -@padding-md;
+    margin-right: -@padding-md;
   }
+}
+
+:export {
+  affixLg: unit(@layout-header-height-lg);
+  affixSm: unit(@layout-header-height-sm);
 }

@@ -9,14 +9,19 @@
 
 .inner.affix {
   box-shadow: 0 2px 2px -2px gray;
-  margin-left: -@layout-gutter-sm;
-  margin-right: -@layout-gutter-sm;
+  margin-left: -@padding-sm;
+  margin-right: -@padding-sm;
 }
 
 @media (min-width: @screen-xl-min) {
   .container .inner.affix {
     box-shadow: 0 2px 2px -2px gray;
-    margin-left: -@layout-gutter-lg;
-    margin-right: -@layout-gutter-lg;
+    margin-left: -@padding-lg;
+    margin-right: -@padding-lg;
   }
+}
+
+:export {
+  affixLg: unit(@layout-header-height-lg);
+  affixSm: unit(@layout-header-height-sm);
 }

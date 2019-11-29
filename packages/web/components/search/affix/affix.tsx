@@ -9,6 +9,8 @@ import {
 } from '../../../apollo/generated-components';
 import { Breakpoints } from '../../../utils';
 
+import styles from './style.less';
+
 interface Props extends AffixProps {
   children: JSX.Element;
 }
@@ -23,11 +25,13 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
     return null;
   }
 
-  // smOffset = header-menu height + (layout-gutter-xs*2 + ant-input-lg) + layout-gutter-sm
-  // lgOffset = header-menu height + (layout-gutter-xs*2 + ant-input-lg) + layout-gutter-md
   return (
     <Affix
-      offsetTop={Breakpoints[data.viewport] < Breakpoints.XL ? 136 : 144}
+      offsetTop={
+        Breakpoints[data.viewport] < Breakpoints.XL
+          ? parseInt(styles.affixSm, 10)
+          : parseInt(styles.affixLg, 10)
+      }
       {...htmlProps}
     >
       {children}

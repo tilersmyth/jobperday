@@ -27,7 +27,11 @@ export const SearchHeaderContainer: React.FunctionComponent<Props> = ({
 
   return (
     <Affix
-      offsetTop={Breakpoints[data.viewport] < Breakpoints.XL ? 54 : 64}
+      offsetTop={
+        Breakpoints[data.viewport] < Breakpoints.XL
+          ? parseInt(styles.affixSm, 10)
+          : parseInt(styles.affixLg, 10)
+      }
       onChange={setAffix}
       className={styles.container}
     >

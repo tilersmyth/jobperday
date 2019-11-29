@@ -48,7 +48,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
 
   return (
     <div className={styles.container}>
-      <Row gutter={24}>
+      <Row gutter={16}>
         <Col xl={9} xs={24}>
           <SearchResultList
             {...props}

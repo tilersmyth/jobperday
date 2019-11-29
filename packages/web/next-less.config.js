@@ -9,7 +9,7 @@ const cssLoaderConfig = require('@zeit/next-css/css-loader-config');
 module.exports = (nextConfig = {}) => {
   const themeVariables = lessToJS(
     fs.readFileSync(
-      path.resolve(__dirname, './theme/antd-custom.less'),
+      path.resolve(__dirname, './theme/antd-defaults.less'),
       'utf8',
     ),
   );
