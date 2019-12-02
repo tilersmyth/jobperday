@@ -1,18 +1,22 @@
 import * as React from 'react';
-import { Layout, Menu, Icon } from 'antd';
-import { useQuery } from 'react-apollo';
+import { Layout, Icon } from 'antd';
+import { useQuery, useMutation } from 'react-apollo';
 
 import {
   CurrentUserDocument,
   CurrentUserQuery,
+  LogoutDocument,
+  LogoutMutation,
 } from '../../../../../apollo/generated-components';
 import styles from './style.less';
+import { CandidateHeaderMenu } from './menu';
 
 interface Props {
   openDrawer?: (value: boolean) => void;
 }
 
 export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
+  const [logout] = useMutation<LogoutMutation>(LogoutDocument);
   const { loading, data, error } = useQuery<CurrentUserQuery>(
     CurrentUserDocument,
   );
@@ -23,8 +27,20 @@ export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
 
   const { currentUser } = data;
 
-  const handleLogout = async () => {
-    console.log('logoout');
+  const handleLogout = () => {
+    logout({
+      update(cache, { data: logoutData }) {
+        if (!logoutData || !logoutData.logout) {
+          console.log('error logging out');
+          return;
+        }
+
+        cache.writeQuery({
+          query: CurrentUserDocument,
+          data: { currentUser: null },
+        });
+      },
+    });
   };
 
   return (
@@ -37,22 +53,7 @@ export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
         )}
         <div className={styles.brandPlaceholder} />
       </div>
-      <Menu theme="dark" mode="horizontal" className={styles.headerMenu}>
-        <Menu.SubMenu
-          title={currentUser.first_name}
-          className={styles.headerSubMenu}
-        >
-          <Menu.ItemGroup
-            title={currentUser.email}
-            className={styles.headerMenuGroup}
-          >
-            <Menu.Item key="setting:1">Account</Menu.Item>
-            <Menu.Item key="setting:2" onClick={handleLogout}>
-              Logout
-            </Menu.Item>
-          </Menu.ItemGroup>
-        </Menu.SubMenu>
-      </Menu>
+      <CandidateHeaderMenu user={currentUser} logout={handleLogout} />
     </Layout.Header>
   );
 };

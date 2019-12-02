@@ -59,7 +59,9 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
         </Col>
         <Col xl={15} xs={0}>
           <SearchAffix>
-            <div>{showJob && <SearchResultView jobId={currentJobId} />}</div>
+            <div className={styles.result}>
+              {showJob && <SearchResultView jobId={currentJobId} />}
+            </div>
           </SearchAffix>
         </Col>
       </Row>
