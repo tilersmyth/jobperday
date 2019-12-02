@@ -17,12 +17,12 @@ export const searchToQuery = (search: SearchInput): SearchQuery => {
     query.search = search.search;
   }
 
-  if (search.options.radius < 200) {
-    query.radius = search.options.radius;
+  if (search.filters.radius && search.filters.radius < 200) {
+    query.radius = search.filters.radius;
   }
 
-  if (search.options.pay_rate > 0) {
-    query.pay_rate = search.options.pay_rate;
+  if (search.filters.pay_rate && search.filters.pay_rate > 0) {
+    query.pay_rate = search.filters.pay_rate;
   }
 
   return query;
@@ -47,12 +47,12 @@ export const queryToSearch = (
 
   const radius = query.radius as string;
   if (radius) {
-    search.options.radius = parseFloat(radius);
+    search.filters.radius = parseFloat(radius);
   }
 
   const pay_rate = query.pay_rate as string;
   if (pay_rate) {
-    search.options.pay_rate = parseFloat(pay_rate);
+    search.filters.pay_rate = parseFloat(pay_rate);
   }
 
   return search;

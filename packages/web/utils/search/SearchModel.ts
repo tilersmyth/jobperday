@@ -1,7 +1,7 @@
 import {
   SearchInput,
   LocationInput,
-  SearchOptionsInput,
+  SearchFiltersInput,
   SearchPaginationInput,
 } from '../../apollo/generated-components';
 
@@ -14,10 +14,7 @@ export class SearchModel implements SearchInput {
       lng: 0,
     },
   };
-  public options: SearchOptionsInput = {
-    radius: 200,
-    pay_rate: 0,
-  };
+  public filters: SearchFiltersInput = {};
   public pagination: SearchPaginationInput = {
     skip: 0,
     take: 2,

@@ -30,7 +30,7 @@ export const CandidateHomeView: React.FunctionComponent<Props> = ({
       <SearchDrawer
         visible={drawer}
         searchArgs={args}
-        updateArgs={handleDrawerArgs}
+        setSearchArgs={handleDrawerArgs}
         close={() => openDrawer(false)}
       />
     </CandidateLayout>

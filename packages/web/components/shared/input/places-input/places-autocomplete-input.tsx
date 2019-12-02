@@ -9,6 +9,7 @@ import { InputProps } from 'antd/lib/input';
 import { ValidInputElement } from 'antd/lib/auto-complete';
 import { OptionProps } from 'antd/lib/select';
 
+import { ErrorBoundary } from '../../error';
 import styles from './style.less';
 
 const { Option } = AutoComplete;
@@ -69,30 +70,32 @@ export const PlacesAutocompleteInput: React.FunctionComponent<Props> = ({
   };
 
   return (
-    <PlacesAutocomplete
-      searchOptions={searchOptions}
-      value={field.value}
-      onChange={inputChange}
-      shouldFetchSuggestions={field.value.length > 1}
-      onError={onError}
-    >
-      {({ getInputProps, suggestions, loading }) => {
-        const { onChange } = getInputProps();
-        const onSearch = (value: string) => onChange({ target: { value } });
-        const onSelect = (value: any, object: any) =>
-          handleSelect(value as string, object as object);
-        return (
-          <AutoComplete
-            className={styles.container}
-            defaultValue={field.value}
-            onSelect={onSelect}
-            onSearch={onSearch}
-            dataSource={results(loading, resultsError, suggestions)}
-            children={children}
-            {...fieldProps}
-          />
-        );
-      }}
-    </PlacesAutocomplete>
+    <ErrorBoundary>
+      <PlacesAutocomplete
+        searchOptions={searchOptions}
+        value={field.value}
+        onChange={inputChange}
+        shouldFetchSuggestions={field.value.length > 1}
+        onError={onError}
+      >
+        {({ getInputProps, suggestions, loading }) => {
+          const { onChange } = getInputProps();
+          const onSearch = (value: string) => onChange({ target: { value } });
+          const onSelect = (value: any, object: any) =>
+            handleSelect(value as string, object as object);
+          return (
+            <AutoComplete
+              className={styles.container}
+              defaultValue={field.value}
+              onSelect={onSelect}
+              onSearch={onSearch}
+              dataSource={results(loading, resultsError, suggestions)}
+              children={children}
+              {...fieldProps}
+            />
+          );
+        }}
+      </PlacesAutocomplete>
+    </ErrorBoundary>
   );
 };

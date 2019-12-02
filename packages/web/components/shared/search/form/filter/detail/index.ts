@@ -1,0 +1,1 @@
+export { SearchFilterDetail } from './detail';

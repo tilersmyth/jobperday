@@ -3,21 +3,21 @@ import Router from 'next/router';
 
 import { NextPageContextApollo } from '../../types';
 import { fetchMe } from '../../utils';
-import { MeQuery, SearchInput } from '../../apollo/generated-components';
+import { SearchInput } from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
 import { SearchModel } from '../../utils/search/SearchModel';
 import { SearchLocation } from '../../utils/search/search-location.util';
 import { CandidateHomeView } from '../../components/candidate';
 
 interface Props {
-  me: MeQuery['me'] | null;
-  searchArgs: SearchInput;
+  searchArgs?: SearchInput;
 }
 
-const Candidate: NextPage<Props> = ({ me, searchArgs }) => {
-  if (!me) {
+const Candidate: NextPage<Props> = ({ searchArgs }) => {
+  if (!searchArgs) {
     return null;
   }
+
   return <CandidateHomeView searchArgs={searchArgs} />;
 };
 
@@ -30,13 +30,13 @@ Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
       redirect(ctx, '/login');
     }
     Router.replace('/login');
-    return { me, searchArgs };
+    return {};
   }
 
   // Load user search loc from session
   if (me.search) {
     searchArgs.location = me.search;
-    return { me, searchArgs };
+    return { searchArgs };
   }
 
   const search = new SearchLocation(me, ctx);

@@ -8,14 +8,14 @@ interface Props {
   visible: boolean;
   close: () => void;
   searchArgs: SearchInput;
-  updateArgs: (args: SearchInput) => Promise<void>;
+  setSearchArgs: (args: SearchInput) => Promise<void>;
 }
 
 export const SearchDrawer: React.FunctionComponent<Props> = ({
   visible,
   close,
   searchArgs,
-  updateArgs,
+  setSearchArgs,
 }) => (
   <Drawer
     title="Search Filter"
@@ -24,6 +24,6 @@ export const SearchDrawer: React.FunctionComponent<Props> = ({
     onClose={close}
     visible={visible}
   >
-    <SearchFilterForm searchArgs={searchArgs} updateArgs={updateArgs} />
+    <SearchFilterForm searchArgs={searchArgs} setSearchArgs={setSearchArgs} />
   </Drawer>
 );

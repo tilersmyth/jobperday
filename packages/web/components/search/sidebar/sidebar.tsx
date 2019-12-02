@@ -1,25 +1,36 @@
 import React from 'react';
-import { Card } from 'antd';
 
 import { SearchInput } from '../../../apollo/generated-components';
-import { SearchFilterForm } from '../../shared';
+import { SearchFilterForm, SearchFilterDetail } from '../../shared';
 import { SearchAffix } from '../affix';
+import { SearchResults } from '../search-type';
+import { SearchResultDetail } from './result-detail';
 import styles from './style.less';
 
 interface Props {
+  search: SearchResults;
   searchArgs: SearchInput;
-  updateArgs: (args: SearchInput) => Promise<void>;
+  setSearchArgs: (args: SearchInput) => Promise<void>;
 }
 
 export const SearchSidebar: React.FunctionComponent<Props> = ({
+  search,
   searchArgs,
-  updateArgs,
+  setSearchArgs,
 }) => {
   return (
     <SearchAffix className={styles.container}>
-      <Card title="Search Filter" bordered={false}>
-        <SearchFilterForm searchArgs={searchArgs} updateArgs={updateArgs} />
-      </Card>
+      <React.Fragment>
+        <SearchResultDetail search={search} />
+        <SearchFilterDetail
+          searchArgs={searchArgs}
+          setSearchArgs={setSearchArgs}
+        />
+        <SearchFilterForm
+          searchArgs={searchArgs}
+          setSearchArgs={setSearchArgs}
+        />
+      </React.Fragment>
     </SearchAffix>
   );
 };

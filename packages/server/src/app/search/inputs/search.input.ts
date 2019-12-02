@@ -1,7 +1,8 @@
-import { InputType, Field, Int } from 'type-graphql';
+import { InputType, Field } from 'type-graphql';
+
 import { LocationInput } from './location.input';
-import { SearchOptionsInput } from './options.input';
 import { SearchPaginationInput } from './pagination.input';
+import { SearchFiltersInput } from './filters.input';
 
 @InputType()
 export class SearchInput {
@@ -9,8 +10,8 @@ export class SearchInput {
   readonly search: string;
   @Field(() => LocationInput)
   readonly location: LocationInput;
-  @Field(() => SearchOptionsInput)
-  readonly options: SearchOptionsInput;
+  @Field(() => SearchFiltersInput)
+  readonly filters: SearchFiltersInput;
   @Field(() => SearchPaginationInput)
   readonly pagination: SearchPaginationInput;
 }

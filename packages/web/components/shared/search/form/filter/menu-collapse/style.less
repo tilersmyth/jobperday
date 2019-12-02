@@ -1,0 +1,37 @@
+.header {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.header .title {
+  margin-bottom: 0;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+            supported by Chrome, Opera and Firefox */
+}
+
+.icon {
+  margin-left: auto;
+}
+
+.content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.5s;
+  transition-timing-function: @ease-out;
+}
+
+.content.active {
+  height: auto;
+  max-height: 500px;
+}
+
+.divider {
+  background-color: @black;
+  height: 2px;
+}

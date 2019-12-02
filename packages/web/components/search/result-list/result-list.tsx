@@ -5,11 +5,12 @@ import { Spin } from 'antd';
 
 import { SearchQuery } from '../../../apollo';
 import { SearchResultItem } from './item';
+import { SearchResults } from '../search-type';
 
 interface Props {
   client: QueryResult<SearchQuery, Record<string, any>>;
-  setResults: (results: SearchQuery['search']['results']) => void;
-  results: SearchQuery['search']['results'];
+  setSearch: (results: SearchResults) => void;
+  search: SearchResults;
   setHasMore: (value: boolean) => void;
   hasMore: boolean;
   selectJob: (id: string) => void;
@@ -18,8 +19,8 @@ interface Props {
 
 export const SearchResultList: React.FunctionComponent<Props> = ({
   client,
-  setResults,
-  results,
+  setSearch,
+  search,
   setHasMore,
   hasMore,
   selectJob,
@@ -38,7 +39,7 @@ export const SearchResultList: React.FunctionComponent<Props> = ({
     }
 
     if (page === 1) {
-      setResults(data.search.results);
+      setSearch({ ...data.search, loading: false });
 
       if (data.search.results.length > 0) {
         selectJob(data.search.results[0].job.id);
@@ -50,7 +51,7 @@ export const SearchResultList: React.FunctionComponent<Props> = ({
       ...variables.input,
       pagination: {
         ...variables.input.pagination,
-        skip: results.length,
+        skip: search.results.length,
       },
     };
 
@@ -62,12 +63,18 @@ export const SearchResultList: React.FunctionComponent<Props> = ({
           return;
         }
 
-        setResults([...results, ...fetchMoreResult.search.results]);
+        const results = Object.assign({}, search, {
+          loading: false,
+          count: fetchMoreResult.search.count,
+          results: [...search.results, ...fetchMoreResult.search.results],
+        });
+
+        setSearch(results);
       },
     });
   };
 
-  const items = results.map(({ job }) => (
+  const items = search.results.map(({ job }) => (
     <SearchResultItem
       key={job.id}
       job={job}

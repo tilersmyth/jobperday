@@ -11,12 +11,13 @@ import { SearchResultList } from '../result-list';
 import { SearchResultView } from '../result';
 import { Breakpoints } from '../../../utils';
 import { SearchAffix } from '../affix';
+import { SearchResults } from '../search-type';
 import styles from './style.less';
 
 interface Props {
   client: QueryResult<SearchQuery, Record<string, any>>;
-  setResults: (results: SearchQuery['search']['results']) => void;
-  results: SearchQuery['search']['results'];
+  setSearch: (search: SearchResults) => void;
+  search: SearchResults;
   setHasMore: (value: boolean) => void;
   hasMore: boolean;
 }

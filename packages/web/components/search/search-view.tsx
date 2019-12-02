@@ -12,6 +12,8 @@ import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
 import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
 import { searchToQuery } from '../../utils';
+import { SearchResults } from './search-type';
+import { SearchMobileDetail } from './mobile-detail';
 import styles from './style.less';
 
 interface Props {
@@ -26,7 +28,11 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
     fetchPolicy: 'cache-and-network',
   });
 
-  const [results, setResults] = useState<SearchQuery['search']['results']>([]);
+  const [search, setSearch] = useState<SearchResults>({
+    loading: true,
+    count: 0,
+    results: [],
+  });
   const [hasMore, setHasMore] = useState(true);
   const [args, setArgs] = useState(searchArgs);
   const [drawer, openDrawer] = useState(false);
@@ -42,7 +48,7 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
 
     await client.refetch({ input });
 
-    setResults([]);
+    setSearch({ ...search, loading: false, results: [] });
     setHasMore(true);
     setArgs(input);
   };
@@ -52,11 +58,20 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
       <Layout className={styles.container}>
         <SearchHeader searchArgs={args} openDrawer={openDrawer} />
         <Layout.Content className={styles.content}>
-          <SearchSidebar searchArgs={args} updateArgs={handleArgsUpdate} />
+          <SearchSidebar
+            search={search}
+            searchArgs={args}
+            setSearchArgs={handleArgsUpdate}
+          />
+          <SearchMobileDetail
+            search={search}
+            searchArgs={args}
+            setSearchArgs={handleArgsUpdate}
+          />
           <SearchContent
             client={client}
-            setResults={setResults}
-            results={results}
+            setSearch={setSearch}
+            search={search}
             setHasMore={setHasMore}
             hasMore={hasMore}
           />
@@ -65,7 +80,7 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
       <SearchDrawer
         visible={drawer}
         searchArgs={args}
-        updateArgs={handleArgsUpdate}
+        setSearchArgs={handleArgsUpdate}
         close={() => openDrawer(false)}
       />
     </CandidateLayout>

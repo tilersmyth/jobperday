@@ -4,3 +4,4 @@ export * from './loader';
 export * from './layout';
 export * from './candidate';
 export * from './search';
+export * from './error';

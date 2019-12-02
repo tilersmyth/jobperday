@@ -28,7 +28,7 @@ export const SearchHeaderContainer: React.FunctionComponent<Props> = ({
   return (
     <Affix
       offsetTop={
-        Breakpoints[data.viewport] < Breakpoints.XL
+        Breakpoints[data.viewport] < Breakpoints.XXL
           ? parseInt(styles.affixSm, 10)
           : parseInt(styles.affixLg, 10)
       }

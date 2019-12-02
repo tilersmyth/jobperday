@@ -349,10 +349,15 @@ type SearchDto {
   results: [SearchResultListDto!]!
 }
 
+input SearchFiltersInput {
+  radius: Int = 200
+  pay_rate: Int = 0
+}
+
 input SearchInput {
   search: String!
   location: LocationInput!
-  options: SearchOptionsInput!
+  filters: SearchFiltersInput!
   pagination: SearchPaginationInput!
 }
 
@@ -386,11 +391,6 @@ type SearchJobResultDto {
 type SearchLocationDto {
   locality: String!
   coords: SearchCoordsDto!
-}
-
-input SearchOptionsInput {
-  radius: Int!
-  pay_rate: Int!
 }
 
 input SearchPaginationInput {

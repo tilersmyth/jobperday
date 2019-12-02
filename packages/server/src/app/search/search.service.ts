@@ -19,7 +19,7 @@ export class SearchService {
     try {
       const {
         location: { coords },
-        options,
+        filters,
         pagination,
       } = input;
 
@@ -42,7 +42,7 @@ export class SearchService {
       query
         .where('postings.apply_deadline > DATE(NOW())')
         .andWhere('postings.pay_rate >= :pay_rate', {
-          pay_rate: options.pay_rate,
+          pay_rate: filters.pay_rate,
         });
 
       if (search) {
@@ -52,7 +52,7 @@ export class SearchService {
       }
 
       // convert miles to meters for PostGIS (default 200 mi if no selection)
-      const radius = options.radius > 0 ? options.radius * 1609.344 : 321869;
+      const radius = filters.radius * 1609.344;
       this.logger.debug(`RADIUS ${radius}`);
       query.andWhere(
         `ST_DWithin(ST_GeogFromText('SRID=4326;POINT(${coords.lng} ${coords.lat})'),

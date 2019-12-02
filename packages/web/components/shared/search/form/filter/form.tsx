@@ -1,66 +1,42 @@
 import React from 'react';
-import { Form, Select } from 'antd';
-import { Formik } from 'formik';
+import { Form } from 'antd';
+import { Formik, Field } from 'formik';
 import { ApolloConsumer } from 'react-apollo';
 
+import { FilterRadiusInput, FilterPayrateInput } from './inputs';
 import { SearchInput } from '../../../../../apollo/generated-components';
-
-const { Option } = Select;
+import { FilterMenuCollapse } from './menu-collapse';
 
 interface Props {
   searchArgs: SearchInput;
-  updateArgs: (args: SearchInput) => void;
+  setSearchArgs: (args: SearchInput) => Promise<void>;
 }
 
 export const SearchFilterForm: React.FunctionComponent<Props> = ({
   searchArgs,
-  updateArgs,
+  setSearchArgs,
 }) => {
   return (
     <ApolloConsumer>
       {() => (
         <Formik
+          enableReinitialize={true}
           validateOnBlur={false}
           validateOnChange={false}
           onSubmit={async variables => {
-            searchArgs.options = variables;
-            await updateArgs(searchArgs);
+            searchArgs.filters = variables;
+            await setSearchArgs(searchArgs);
           }}
-          initialValues={{
-            ...searchArgs.options,
-          }}
+          initialValues={searchArgs.filters}
         >
-          {({ handleSubmit, setFieldValue, values }) => (
+          {() => (
             <Form layout="vertical">
-              <Form.Item label="Radius">
-                <Select
-                  defaultValue={values.radius}
-                  onChange={(value: number) => {
-                    setFieldValue('radius', value);
-                    handleSubmit();
-                  }}
-                >
-                  <Option value={20}>within 20 miles</Option>
-                  <Option value={50}>within 50 miles</Option>
-                  <Option value={100}>within 100 miles</Option>
-                  <Option value={200}>Any distance</Option>
-                </Select>
-              </Form.Item>
-              <Form.Item label="Hourly Rate">
-                <Select
-                  defaultValue={values.pay_rate}
-                  onChange={(value: number) => {
-                    setFieldValue('pay_rate', value);
-                    handleSubmit();
-                  }}
-                >
-                  <Option value={15}>$15+</Option>
-                  <Option value={20}>$20+</Option>
-                  <Option value={25}>$25+</Option>
-                  <Option value={30}>$30+</Option>
-                  <Option value={0}>All hourly rates</Option>
-                </Select>
-              </Form.Item>
+              <FilterMenuCollapse title="Distance">
+                <Field name="radius" component={FilterRadiusInput} />
+              </FilterMenuCollapse>
+              <FilterMenuCollapse title="Hourly Rate">
+                <Field name="pay_rate" component={FilterPayrateInput} />
+              </FilterMenuCollapse>
             </Form>
           )}
         </Formik>

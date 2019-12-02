@@ -28,13 +28,18 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
   return (
     <Affix
       offsetTop={
-        Breakpoints[data.viewport] < Breakpoints.XL
+        Breakpoints[data.viewport] < Breakpoints.XXL
           ? parseInt(styles.affixSm, 10)
           : parseInt(styles.affixLg, 10)
       }
       {...htmlProps}
     >
-      {children}
+      <div
+        className={styles.container}
+        style={{ height: `calc(100vh - ${styles.affixLg}px)` }}
+      >
+        {children}
+      </div>
     </Affix>
   );
 };
