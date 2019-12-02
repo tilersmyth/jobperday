@@ -5,7 +5,7 @@ import { Spin } from 'antd';
 
 import { SearchQuery } from '../../../apollo';
 import { SearchResultItem } from './item';
-import { SearchResults } from '../search-type';
+import { SearchResults } from '../../shared';
 
 interface Props {
   client: QueryResult<SearchQuery, Record<string, any>>;

@@ -11,7 +11,7 @@ import { SearchResultList } from '../result-list';
 import { SearchResultView } from '../result';
 import { Breakpoints } from '../../../utils';
 import { SearchAffix } from '../affix';
-import { SearchResults } from '../search-type';
+import { SearchResults } from '../../shared';
 import styles from './style.less';
 
 interface Props {

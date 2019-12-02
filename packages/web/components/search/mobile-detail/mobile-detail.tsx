@@ -1,8 +1,10 @@
 import React from 'react';
 
-import { SearchResultDetail } from '../sidebar/result-detail';
-import { SearchResults } from '../search-type';
-import { SearchFilterDetail } from '../../shared';
+import {
+  SearchFilterDetail,
+  SearchResultDetail,
+  SearchResults,
+} from '../../shared';
 import { SearchInput } from '../../../apollo';
 import styles from './style.less';
 

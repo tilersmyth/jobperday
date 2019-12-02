@@ -10,9 +10,13 @@ import {
 } from '../../apollo/generated-components';
 import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
-import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
+import {
+  CandidateLayout,
+  SearchHeader,
+  SearchDrawer,
+  SearchResults,
+} from '../shared';
 import { searchToQuery } from '../../utils';
-import { SearchResults } from './search-type';
 import { SearchMobileDetail } from './mobile-detail';
 import styles from './style.less';
 

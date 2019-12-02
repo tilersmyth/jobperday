@@ -1,6 +1,6 @@
 import { FieldProps, getIn } from 'formik';
 import { Form, Input } from 'antd';
-import { AutoSizeType } from 'antd/lib/input/TextArea';
+import { AutoSizeType } from 'antd/lib/input/ResizableTextArea';
 
 const { TextArea } = Input;
 

@@ -1,10 +1,13 @@
 import React from 'react';
 
 import { SearchInput } from '../../../apollo/generated-components';
-import { SearchFilterForm, SearchFilterDetail } from '../../shared';
+import {
+  SearchFilterForm,
+  SearchFilterDetail,
+  SearchResultDetail,
+  SearchResults,
+} from '../../shared';
 import { SearchAffix } from '../affix';
-import { SearchResults } from '../search-type';
-import { SearchResultDetail } from './result-detail';
 import styles from './style.less';
 
 interface Props {

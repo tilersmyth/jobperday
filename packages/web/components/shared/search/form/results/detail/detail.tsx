@@ -1,8 +1,8 @@
 import React from 'react';
 import { Typography, Divider } from 'antd';
 
-import { SearchResults } from '../../search-type';
-import { LoaderMask } from '../../../shared';
+import { SearchResults } from '../type';
+import { LoaderMask } from '../../../../loader';
 import styles from './style.less';
 
 interface Props {

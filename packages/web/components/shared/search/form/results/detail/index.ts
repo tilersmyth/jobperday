@@ -1,0 +1,1 @@
+export { SearchResultDetail } from './detail';

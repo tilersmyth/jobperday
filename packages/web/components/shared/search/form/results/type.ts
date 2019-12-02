@@ -1,4 +1,4 @@
-import { SearchQuery } from '../../apollo/generated-components';
+import { SearchQuery } from '../../../../../apollo/generated-components';
 
 export interface SearchResults {
   loading: boolean;
