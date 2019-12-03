@@ -12,6 +12,7 @@ import { SearchResultView } from '../result';
 import { SearchAffix } from '../affix';
 import { Breakpoints } from '../../../utils';
 import styles from './style.less';
+import { LoaderMask } from '../../shared';
 
 interface Props {
   client: QueryResult<SearchQuery, Record<string, any>>;
@@ -102,8 +103,11 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
         </Col>
         <Col xl={15} xs={0}>
           <SearchAffix>
-            <div className={styles.result}>
-              {selectedJob && <SearchResultView selectedJob={selectedJob} />}
+            <div className={styles.resultContainer}>
+              <div className={styles.resultInner}>
+                {!selectedJob && <LoaderMask />}
+                {selectedJob && <SearchResultView selectedJob={selectedJob} />}
+              </div>
             </div>
           </SearchAffix>
         </Col>

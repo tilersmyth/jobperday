@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Affix } from 'antd';
 import { useQuery } from 'react-apollo';
 import { AffixProps } from 'antd/lib/affix';
@@ -19,6 +19,7 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
   children,
   ...htmlProps
 }) => {
+  const [affixed, setAffixed] = useState<boolean | undefined>(false);
   const { data } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
 
   if (!data) {
@@ -27,6 +28,7 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
 
   return (
     <Affix
+      onChange={setAffixed}
       offsetTop={
         Breakpoints[data.viewport] < Breakpoints.XXL
           ? parseInt(styles.affixSm, 10)
@@ -34,7 +36,13 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
       }
       {...htmlProps}
     >
-      <div style={{ height: `calc(100vh - ${styles.affixLg}px)` }}>
+      <div
+        style={{
+          height: `calc(100vh - ${
+            affixed ? styles.affixLg : styles.affixScroll
+          }px)`,
+        }}
+      >
         {children}
       </div>
     </Affix>
