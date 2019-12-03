@@ -1,26 +1,22 @@
 import React from 'react';
 
-import {
-  SearchFilterDetail,
-  SearchResultDetail,
-  SearchResults,
-} from '../../shared';
-import { SearchInput } from '../../../apollo';
+import { SearchFilterDetail, SearchResultDetail } from '../../shared';
+import { SearchInput, SearchQuery } from '../../../apollo';
 import styles from './style.less';
 
 interface Props {
-  search: SearchResults;
+  data?: SearchQuery;
   searchArgs: SearchInput;
   setSearchArgs: (args: SearchInput) => Promise<void>;
 }
 
 export const SearchMobileDetail: React.FunctionComponent<Props> = ({
-  search,
+  data,
   searchArgs,
   setSearchArgs,
 }) => (
   <div className={styles.container}>
-    <SearchResultDetail search={search} />
+    <SearchResultDetail data={data} />
     <SearchFilterDetail searchArgs={searchArgs} setSearchArgs={setSearchArgs} />
   </div>
 );

@@ -34,10 +34,7 @@ export const SearchAffix: React.FunctionComponent<Props> = ({
       }
       {...htmlProps}
     >
-      <div
-        className={styles.container}
-        style={{ height: `calc(100vh - ${styles.affixLg}px)` }}
-      >
+      <div style={{ height: `calc(100vh - ${styles.affixLg}px)` }}>
         {children}
       </div>
     </Affix>

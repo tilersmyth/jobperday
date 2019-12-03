@@ -10,12 +10,7 @@ import {
 } from '../../apollo/generated-components';
 import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
-import {
-  CandidateLayout,
-  SearchHeader,
-  SearchDrawer,
-  SearchResults,
-} from '../shared';
+import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
 import { searchToQuery } from '../../utils';
 import { SearchMobileDetail } from './mobile-detail';
 import styles from './style.less';
@@ -32,11 +27,6 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
     fetchPolicy: 'cache-and-network',
   });
 
-  const [search, setSearch] = useState<SearchResults>({
-    loading: true,
-    count: 0,
-    results: [],
-  });
   const [hasMore, setHasMore] = useState(true);
   const [args, setArgs] = useState(searchArgs);
   const [drawer, openDrawer] = useState(false);
@@ -52,8 +42,6 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
 
     await client.refetch({ input });
 
-    setSearch({ ...search, loading: false, results: [] });
-    setHasMore(true);
     setArgs(input);
   };
 
@@ -63,19 +51,17 @@ export const CandidateSearchView: React.FunctionComponent<Props> = ({
         <SearchHeader searchArgs={args} openDrawer={openDrawer} />
         <Layout.Content className={styles.content}>
           <SearchSidebar
-            search={search}
+            data={client.data}
             searchArgs={args}
             setSearchArgs={handleArgsUpdate}
           />
           <SearchMobileDetail
-            search={search}
+            data={client.data}
             searchArgs={args}
             setSearchArgs={handleArgsUpdate}
           />
           <SearchContent
             client={client}
-            setSearch={setSearch}
-            search={search}
             setHasMore={setHasMore}
             hasMore={hasMore}
           />

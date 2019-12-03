@@ -8,14 +8,16 @@ import { SearchResultViewContent } from './content';
 import styles from './style.less';
 
 interface Props {
-  jobId: string;
+  selectedJob: string;
 }
 
-export const SearchResultView: React.FunctionComponent<Props> = ({ jobId }) => {
+export const SearchResultView: React.FunctionComponent<Props> = ({
+  selectedJob,
+}) => {
   const { loading, data, error } = useQuery<SearchFindJobQuery>(
     SearchFindJobDocument,
     {
-      variables: { id: jobId },
+      variables: { id: selectedJob },
     },
   );
 

@@ -1,26 +1,33 @@
 import React from 'react';
 import { Typography, Divider } from 'antd';
 
-import { SearchResults } from '../type';
+import { SearchQuery } from '../../../../../../apollo';
 import { LoaderMask } from '../../../../loader';
 import styles from './style.less';
 
 interface Props {
-  search: SearchResults;
+  data?: SearchQuery;
 }
 
 export const SearchResultDetail: React.FunctionComponent<Props> = ({
-  search: { loading, results, count },
-}) => (
-  <React.Fragment>
-    <div className={styles.container}>
-      {loading && <LoaderMask />}
-      {!loading && (
-        <Typography.Title level={3} style={{ display: 'block' }}>
-          Displaying {results.length} out of {count} results
-        </Typography.Title>
-      )}
-    </div>
-    <Divider className={styles.divider} />
-  </React.Fragment>
-);
+  data,
+}) => {
+  if (!data) {
+    return null;
+  }
+
+  return (
+    <React.Fragment>
+      <div className={styles.container}>
+        {!data.search && <LoaderMask />}
+        {data.search && (
+          <Typography.Title level={3} style={{ display: 'block' }}>
+            Displaying {data.search.results.length} out of {data.search.count}{' '}
+            results
+          </Typography.Title>
+        )}
+      </div>
+      <Divider className={styles.divider} />
+    </React.Fragment>
+  );
+};

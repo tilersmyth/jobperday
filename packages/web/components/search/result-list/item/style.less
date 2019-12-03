@@ -11,7 +11,7 @@
 }
 
 .container.active {
-  border-color: @primary-color;
+  border-color: @white;
 }
 
 .container .image {
@@ -47,4 +47,10 @@
 
 .container .content .item span {
   margin-right: 20px;
+}
+
+@media (min-width: @screen-xl-min) {
+  .container.active {
+    border-color: @primary-color;
+  }
 }

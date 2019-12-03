@@ -1,30 +1,29 @@
 import React from 'react';
 
-import { SearchInput } from '../../../apollo/generated-components';
+import { SearchInput, SearchQuery } from '../../../apollo/generated-components';
 import {
   SearchFilterForm,
   SearchFilterDetail,
   SearchResultDetail,
-  SearchResults,
 } from '../../shared';
 import { SearchAffix } from '../affix';
 import styles from './style.less';
 
 interface Props {
-  search: SearchResults;
+  data?: SearchQuery;
   searchArgs: SearchInput;
   setSearchArgs: (args: SearchInput) => Promise<void>;
 }
 
 export const SearchSidebar: React.FunctionComponent<Props> = ({
-  search,
+  data,
   searchArgs,
   setSearchArgs,
 }) => {
   return (
     <SearchAffix className={styles.container}>
-      <React.Fragment>
-        <SearchResultDetail search={search} />
+      <div className={styles.inner}>
+        <SearchResultDetail data={data} />
         <SearchFilterDetail
           searchArgs={searchArgs}
           setSearchArgs={setSearchArgs}
@@ -33,7 +32,7 @@ export const SearchSidebar: React.FunctionComponent<Props> = ({
           searchArgs={searchArgs}
           setSearchArgs={setSearchArgs}
         />
-      </React.Fragment>
+      </div>
     </SearchAffix>
   );
 };

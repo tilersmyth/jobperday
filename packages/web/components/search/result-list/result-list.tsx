@@ -1,94 +1,49 @@
 import React from 'react';
-import { QueryResult } from 'react-apollo';
-import InfiniteScroll from 'react-infinite-scroller';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import { Spin } from 'antd';
 
 import { SearchQuery } from '../../../apollo';
 import { SearchResultItem } from './item';
-import { SearchResults } from '../../shared';
 
 interface Props {
-  client: QueryResult<SearchQuery, Record<string, any>>;
-  setSearch: (results: SearchResults) => void;
-  search: SearchResults;
-  setHasMore: (value: boolean) => void;
-  hasMore: boolean;
-  selectJob: (id: string) => void;
-  selectedId?: string;
+  data: SearchQuery;
+  loadMore: () => void;
+  onJobSelect: (id: string) => void;
+  selectedJob?: string;
 }
 
 export const SearchResultList: React.FunctionComponent<Props> = ({
-  client,
-  setSearch,
-  search,
-  setHasMore,
-  hasMore,
-  selectJob,
-  selectedId,
+  data,
+  loadMore,
+  onJobSelect,
+  selectedJob,
 }) => {
-  const { loading, data, error, variables, fetchMore } = client;
-
-  if (error || !data) {
-    console.log('search results error');
-    return null;
-  }
-
-  const loadMore = async (page: number) => {
-    if (loading) {
-      return null;
-    }
-
-    if (page === 1) {
-      setSearch({ ...data.search, loading: false });
-
-      if (data.search.results.length > 0) {
-        selectJob(data.search.results[0].job.id);
-      }
-      return;
-    }
-
-    const input = {
-      ...variables.input,
-      pagination: {
-        ...variables.input.pagination,
-        skip: search.results.length,
-      },
-    };
-
-    await fetchMore({
-      variables: { input },
-      updateQuery: (_: any, { fetchMoreResult }: any) => {
-        if (fetchMoreResult.search.results.length === 0) {
-          setHasMore(false);
-          return;
-        }
-
-        const results = Object.assign({}, search, {
-          loading: false,
-          count: fetchMoreResult.search.count,
-          results: [...search.results, ...fetchMoreResult.search.results],
-        });
-
-        setSearch(results);
-      },
-    });
-  };
-
-  const items = search.results.map(({ job }) => (
+  const items = ((data.search && data.search.results) || []).map(({ job }) => (
     <SearchResultItem
       key={job.id}
       job={job}
-      selectedId={selectedId}
-      selectJob={selectJob}
+      selectedId={selectedJob}
+      selectJob={onJobSelect}
     />
   ));
 
   return (
     <InfiniteScroll
-      pageStart={0}
-      loadMore={loadMore}
-      hasMore={hasMore}
+      dataLength={items.length}
+      next={loadMore}
+      hasMore={data.search && data.search.count > items.length}
       loader={<Spin key={0} />}
+      endMessage={
+        <p style={{ textAlign: 'center' }}>
+          <b>End of results</b>
+        </p>
+      }
+      pullDownToRefreshContent={
+        <h3 style={{ textAlign: 'center' }}>&#8595; Pull down to refresh</h3>
+      }
+      releaseToRefreshContent={
+        <h3 style={{ textAlign: 'center' }}>&#8593; Release to refresh</h3>
+      }
     >
       {items}
     </InfiniteScroll>

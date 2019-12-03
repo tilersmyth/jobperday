@@ -17,6 +17,6 @@ export class SearchModel implements SearchInput {
   public filters: SearchFiltersInput = {};
   public pagination: SearchPaginationInput = {
     skip: 0,
-    take: 2,
+    take: 5,
   };
 }

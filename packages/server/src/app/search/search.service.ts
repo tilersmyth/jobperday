@@ -40,7 +40,7 @@ export class SearchService {
       }
 
       query
-        .where('postings.apply_deadline > DATE(NOW())')
+        .where('postings.apply_deadline > :date', { date: new Date() })
         .andWhere('postings.pay_rate >= :pay_rate', {
           pay_rate: filters.pay_rate,
         });
@@ -83,13 +83,17 @@ export class SearchService {
   }
 
   public async findJob(id: string) {
-    return this.repository
+    const query = this.repository
       .createQueryBuilder('job')
       .innerJoinAndSelect('job.company', 'company')
       .innerJoinAndSelect('company.profile', 'profile')
       .innerJoinAndSelect('job.postings', 'postings')
-      .innerJoinAndSelect('postings.address', 'address')
+      .innerJoinAndSelect('postings.address', 'address');
+
+    query
       .where('job.id = :id', { id })
-      .getOne();
+      .andWhere('postings.apply_deadline > :date', { date: new Date() });
+
+    return query.getOne();
   }
 }
