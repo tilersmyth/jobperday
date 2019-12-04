@@ -14,6 +14,8 @@ export class SearchJobPostingDto {
   readonly apply_deadline: Date;
   @Field(() => Int)
   readonly remaining_openings: number;
+  @Field()
+  readonly applicationId: string;
   @Field(() => AddressDto)
   readonly address: AddressDto;
 }

@@ -44,6 +44,7 @@ export const searchFindJobQuery = gql`
         start_date
         apply_deadline
         remaining_openings
+        applicationId
         address {
           street
           street2

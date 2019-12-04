@@ -1,4 +1,5 @@
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
+import { ID } from 'type-graphql';
 
 import { ApplicationService } from './services';
 import { UseGuards } from '@nestjs/common';
@@ -39,5 +40,10 @@ export class ApplicationResolver {
     @Args('companySlug') _: string,
   ) {
     return this.appService.findAll({ where: { companyId: company.id } });
+  }
+
+  @Query(() => ApplicationDto)
+  async findApplication(@Args({ name: 'id', type: () => ID }) id: string) {
+    return this.appService.findById(id);
   }
 }

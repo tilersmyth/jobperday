@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Button, Icon } from 'antd';
 import moment from 'moment';
 
 import { SearchFindJobQuery } from '../../../../apollo';
 import styles from './style.less';
+import { ApplyModal } from '../../../shared';
 
 interface Props {
   job: SearchFindJobQuery['searchFindJob'];
@@ -12,6 +13,8 @@ interface Props {
 export const SearchResultViewContent: React.FunctionComponent<Props> = ({
   job,
 }) => {
+  const [modalOpen, setModalOpen] = useState(false);
+
   if (!job) {
     return null;
   }
@@ -44,7 +47,11 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
             </strong>
           </Col>
           <Col xl={{ span: 6 }} style={{ textAlign: 'right' }}>
-            <Button type="primary" size="large">
+            <Button
+              type="primary"
+              size="large"
+              onClick={() => setModalOpen(true)}
+            >
               Apply
             </Button>
           </Col>
@@ -66,6 +73,11 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
         </li>
       </ul>
       <div className={styles.description}>{job.description}</div>
+      <ApplyModal
+        visible={modalOpen}
+        setVisible={setModalOpen}
+        applicationId={postings[0].applicationId}
+      />
     </div>
   );
 };

@@ -311,6 +311,7 @@ type Query {
   findJobAddresses(companySlug: String!): [JobAddressDto!]!
   findPosting(postingId: String!, companySlug: String!): JobPostingDto!
   findAllApplications(companySlug: String!): [ApplicationDto!]!
+  findApplication(id: ID!): ApplicationDto!
   search(input: SearchInput!): SearchDto!
   searchFindJob(id: ID!): SearchJobResultDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
@@ -374,6 +375,7 @@ type SearchJobPostingDto {
   start_date: DateTime!
   apply_deadline: DateTime!
   remaining_openings: Int!
+  applicationId: String!
   address: AddressDto!
 }
 

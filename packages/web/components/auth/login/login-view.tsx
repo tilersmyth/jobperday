@@ -1,98 +1,20 @@
-import React, { useState } from 'react';
-import { Button } from 'antd';
-import { Formik, Field } from 'formik';
+import React from 'react';
 import Router from 'next/router';
 
 import { AuthLayout } from '../auth-layout';
-import {
-  LoginComponent,
-  MeDocument,
-} from '../../../apollo/generated-components';
-import { LoginSchema } from '../../../utils/yup-validation';
-import { InputField } from '../../shared/input/input-field';
-import { serverValidationError } from '../../../utils/validation-util';
-import { ErrorAlert } from '../../shared/alerts/error-alert';
+import { LoginView } from '../../shared';
 import { LoginViewFooter } from './login-view-footer';
+import { LoginMutation } from '../../../apollo';
 
-export const LoginView: React.FunctionComponent = () => {
-  const [error, setError] = useState('');
+export const LoginPageView: React.FunctionComponent = () => {
+  const loginSuccess = (user: LoginMutation['login']) => {
+    Router.push(`/${user.realm}`);
+  };
 
   return (
     <AuthLayout title="Login">
-      <div>
-        {error && (
-          <div style={{ marginBottom: 20 }}>
-            <ErrorAlert message="Dang it, that email and/or password is incorrect." />
-          </div>
-        )}
-        <LoginComponent>
-          {login => (
-            <Formik
-              validateOnBlur={false}
-              validateOnChange={false}
-              onSubmit={async input => {
-                try {
-                  setError('');
-                  const user = await login({
-                    variables: { input },
-                    update(cache, { data }) {
-                      if (data) {
-                        cache.writeQuery({
-                          query: MeDocument,
-                          data: { me: data.login },
-                        });
-                      }
-                    },
-                  });
-
-                  if (!user || !user.data || !user.data.login) {
-                    Router.push('/error');
-                    return;
-                  }
-
-                  Router.push(`/${user.data.login.realm}`);
-                } catch (err) {
-                  const errors = serverValidationError(err);
-                  return errors && setError(errors.message);
-                }
-              }}
-              initialValues={{
-                email: '',
-                password: '',
-              }}
-              validationSchema={LoginSchema}
-            >
-              {({ handleSubmit }) => (
-                <form onSubmit={handleSubmit}>
-                  <Field
-                    name="email"
-                    size="large"
-                    placeholder="E-mail"
-                    component={InputField}
-                  />
-                  <Field
-                    name="password"
-                    type="password"
-                    size="large"
-                    placeholder="Password"
-                    component={InputField}
-                  />
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className="login-form-button"
-                    size="large"
-                    block={true}
-                  >
-                    Login
-                  </Button>
-                  <LoginViewFooter />
-                </form>
-              )}
-            </Formik>
-          )}
-        </LoginComponent>
-      </div>
+      <LoginView onSuccess={loginSuccess} />
+      <LoginViewFooter />
     </AuthLayout>
   );
 };

@@ -33,4 +33,12 @@ export class ApplicationService extends CrudService<ApplicationEntity> {
       return transaction.save(application);
     });
   }
+
+  public async findById(id: string) {
+    return this.repository
+      .createQueryBuilder('application')
+      .innerJoinAndSelect('application.fields', 'fields')
+      .where('application.id = :id', { id })
+      .getOne();
+  }
 }

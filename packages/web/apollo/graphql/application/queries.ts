@@ -12,4 +12,17 @@ export const findAllApplicationsQuery = gql`
       ...ApplicationParts
     }
   }
+
+  query FindApplication($id: ID!) {
+    findApplication(id: $id) {
+      ...ApplicationParts
+      fields {
+        id
+        question
+        required
+        type
+        options
+      }
+    }
+  }
 `;

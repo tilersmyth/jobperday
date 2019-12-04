@@ -30,7 +30,7 @@ export class ApplicationSeedService {
   ) {}
 
   private selectFieldType(): ApplicationFieldOptions {
-    const optionIndex = randomNum(0, 3);
+    const optionIndex = randomNum(1, 4);
     return applicationFieldOptions[optionIndex];
   }
 
