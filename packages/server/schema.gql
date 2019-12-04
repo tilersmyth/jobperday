@@ -172,18 +172,6 @@ input ForgotPasswordInput {
   email: String!
 }
 
-type JobAddressDto {
-  id: ID!
-  street: String!
-  street2: String
-  city: String!
-  state: String!
-  postal_code: String!
-  country: String!
-  coord_lat: Float!
-  coord_lng: Float!
-}
-
 type JobDto {
   id: ID!
   title: String!
@@ -283,8 +271,8 @@ type Mutation {
   updateCompany(companySlug: String!, input: UpdateCompanyInput!): CreateCompanyDto!
   createJob(input: JobInput!, companySlug: String!): JobDto!
   updateJob(input: UpdateJobInput!, companySlug: String!): JobDto!
-  createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
+  createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   uploadImage(input: UploadImageInput!, companySlug: String!): CompanyImageDto!
 }
 
@@ -307,11 +295,10 @@ type Query {
   findCompanySlug(name: String!): String
   findAllJobs(companySlug: String!): [JobDto!]!
   findJob(id: ID!, companySlug: String!): JobDto!
-  findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
-  findJobAddresses(companySlug: String!): [JobAddressDto!]!
-  findPosting(postingId: String!, companySlug: String!): JobPostingDto!
   findAllApplications(companySlug: String!): [ApplicationDto!]!
   findApplication(id: ID!): ApplicationDto!
+  findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
+  findPosting(postingId: ID!, companySlug: String!): JobPostingDto!
   search(input: SearchInput!): SearchDto!
   searchFindJob(id: ID!): SearchJobResultDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!

@@ -3,13 +3,13 @@ import { Module } from '@nestjs/common';
 import { jobProviders } from './job.providers';
 import { DatabaseModule } from '../database/database.module';
 import { JobResolver } from './job.resolver';
-import { JobService, JobPostingService } from './services';
+import { JobService } from './job.service';
 import { CompanyModule } from '../company/company.module';
 import { UserModule } from '../user/user.module';
 import { ApplicationModule } from '../application/application.module';
-import { AddressModule } from '../address/address.module';
+import { JobPostingModule } from '../job-posting/posting.module';
 
-const PROVIDERS = [...jobProviders, JobService, JobPostingService, JobResolver];
+const PROVIDERS = [...jobProviders, JobService, JobResolver];
 
 @Module({
   providers: [...PROVIDERS],
@@ -17,8 +17,9 @@ const PROVIDERS = [...jobProviders, JobService, JobPostingService, JobResolver];
     DatabaseModule,
     UserModule,
     CompanyModule,
+    JobPostingModule,
     ApplicationModule,
-    AddressModule,
   ],
+  exports: [JobService],
 })
 export class JobModule {}

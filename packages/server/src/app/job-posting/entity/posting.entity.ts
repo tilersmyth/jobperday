@@ -8,7 +8,7 @@ import {
   BeforeInsert,
 } from 'typeorm';
 
-import { JobEntity } from './job.entity';
+import { JobEntity } from '../../job/entity/job.entity';
 import { AddressEntity } from '../../address';
 
 @Entity('job_postings')

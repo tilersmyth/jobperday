@@ -10,9 +10,9 @@ import {
 } from 'typeorm';
 import { Length, MaxLength } from 'class-validator';
 
-import { JobPostingEntity } from './job-posting.entity';
 import { CompanyEntity } from '../../company/entity/company.entity';
 import { ApplicationEntity } from '../../application/entity/application.entity';
+import { JobPostingEntity } from '../../job-posting/entity/posting.entity';
 
 @Entity('jobs')
 export class JobEntity extends BaseEntity {

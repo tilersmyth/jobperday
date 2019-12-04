@@ -1,20 +1,15 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { Repository, MoreThan } from 'typeorm';
+import { Repository } from 'typeorm';
 
-import { CrudService } from '../../../base';
-import { AppLogger } from '../../app.logger';
-import { JOB_POSTING_TOKEN } from '../job.constants';
-import { JobPostingEntity, JobEntity } from '../entity';
-import { AddJobPostingInput } from '../inputs/add-job-posting.input';
-import { CompanyEntity } from '../../company/entity';
-import { CompanyService } from '../../company/company.service';
-import { PaginationInput } from '../../_helpers/inputs/pagination.input';
-import {
-  AddressEntity,
-  AddressService,
-  AddressRefTypeEnum,
-} from '../../address';
-import { AddJobPostingAddressInput } from '../inputs/add-job-posting-address.input';
+import { CrudService } from '../../base';
+import { AppLogger } from '../app.logger';
+import { JOB_POSTING_TOKEN } from './posting.constants';
+import { JobPostingEntity } from './entity';
+import { AddJobPostingInput, AddJobPostingAddressInput } from './inputs';
+import { CompanyEntity, CompanyService } from '../company';
+import { PaginationInput } from '../_helpers/inputs/pagination.input';
+import { AddressEntity, AddressService, AddressRefTypeEnum } from '../address';
+import { JobService } from '../job/job.service';
 
 @Injectable()
 export class JobPostingService extends CrudService<JobPostingEntity> {
@@ -25,6 +20,7 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
     protected readonly repository: Repository<JobPostingEntity>,
     protected companyService: CompanyService,
     private readonly addressService: AddressService,
+    private readonly jobService: JobService,
   ) {
     super();
   }
@@ -63,9 +59,9 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
 
   public async add(
     input: AddJobPostingInput,
-    job: JobEntity,
     company: CompanyEntity,
   ): Promise<JobPostingEntity> {
+    const job = await this.jobService.findOneById(input.jobId);
     const address = await this.handleAddress(input.address, company);
 
     const posting = new JobPostingEntity();
@@ -81,10 +77,10 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
     return this.repository.save(posting);
   }
 
-  public async findCurrent(companyId: string, input: PaginationInput) {
+  public async findCurrent(company: CompanyEntity, input: PaginationInput) {
     const query = this.repository
       .createQueryBuilder('posting')
-      .where('posting.companyId = :companyId', { companyId })
+      .where('posting.companyId = :id', { id: company.id })
       .andWhere('posting.apply_deadline > :now', { now: new Date() })
       .leftJoinAndSelect('posting.job', 'job')
       .skip(input.skip)

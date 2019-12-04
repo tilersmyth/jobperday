@@ -1,2 +1,1 @@
-export * from './job.entity';
-export * from './job-posting.entity';
+export { JobEntity } from './job.entity';

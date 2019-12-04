@@ -4,8 +4,9 @@ import faker from 'faker';
 import moment from 'moment';
 
 import { AppLogger } from '../../src/app';
-import { JobEntity, JobPostingEntity } from '../../src/app/job/entity';
-import { JOB_POSTING_TOKEN } from '../../src/app/job/job.constants';
+import { JobEntity } from '../../src/app/job/entity';
+import { JobPostingEntity } from '../../src/app/job-posting';
+import { JOB_POSTING_TOKEN } from '../../src/app/job-posting/posting.constants';
 import { randomCoordGen } from '../utils/randomCoordGen.util';
 import { randomNum } from '../utils/randomNum.util';
 import { AddressRefTypeEnum, AddressService } from '../../src/app/address';

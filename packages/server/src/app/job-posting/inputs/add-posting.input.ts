@@ -1,7 +1,7 @@
 import { InputType, Field, ID } from 'type-graphql';
 
-import { JobPostingInput } from './job-posting.input';
-import { AddJobPostingAddressInput } from './add-job-posting-address.input';
+import { JobPostingInput } from './posting.input';
+import { AddJobPostingAddressInput } from './add-posting-address.input';
 
 @InputType()
 export class AddJobPostingInput {

@@ -1,6 +1,6 @@
-import { ObjectType, Field, ID, Int } from 'type-graphql';
+import { ObjectType, Field, Int } from 'type-graphql';
 
-import { JobPostingDto } from './job-posting.dto';
+import { JobPostingDto } from './posting.dto';
 import { JobPostingEntity } from '../entity';
 
 @ObjectType()

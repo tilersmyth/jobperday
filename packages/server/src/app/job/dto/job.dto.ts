@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
-import { JobPostingDto } from './job-posting.dto';
+import { JobPostingDto } from '../../job-posting/dto/posting.dto';
 
 @ObjectType()
 export class JobDto {
