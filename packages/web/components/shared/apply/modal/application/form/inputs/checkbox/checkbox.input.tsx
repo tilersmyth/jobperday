@@ -1,6 +1,8 @@
 import { FieldProps, getIn } from 'formik';
 import { Form, Checkbox } from 'antd';
 
+import styles from './style.less';
+
 interface Props extends FieldProps {
   options: string[];
 }
@@ -12,6 +14,7 @@ export const CheckboxInput = ({
 }: Props) => {
   const errorMsg = getIn(errors, field.name);
   const error = errorMsg && getIn(touched, field.name);
+  const fieldValues = field.value ? JSON.parse(field.value) : [];
 
   return (
     <Form.Item validateStatus={error ? 'error' : undefined} help={errorMsg}>
@@ -19,19 +22,22 @@ export const CheckboxInput = ({
         return (
           <Checkbox
             key={opt}
-            style={{ display: 'block', marginLeft: 8 }}
+            className={styles.checkbox}
             value={opt}
-            checked={field.value.includes(opt)}
+            checked={fieldValues.includes(opt)}
             onChange={({ target }) => {
-              const index = field.value.indexOf(target.value);
+              const index = fieldValues.indexOf(target.value);
 
               if (index > -1) {
-                field.value.splice(index, 1);
-                setFieldValue(field.name, field.value);
+                fieldValues.splice(index, 1);
+                setFieldValue(field.name, JSON.stringify(fieldValues));
                 return;
               }
 
-              setFieldValue(field.name, [...field.value, target.value]);
+              setFieldValue(
+                field.name,
+                JSON.stringify([...fieldValues, target.value]),
+              );
             }}
           >
             {opt}

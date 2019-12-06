@@ -2,17 +2,18 @@ import React, { useState } from 'react';
 import { Modal } from 'antd';
 import { ModalProps } from 'antd/lib/modal';
 
+import { SearchFindPostingQuery } from '../../../../apollo';
 import { ApplyModalContent } from './content';
 import styles from './style.less';
 
 interface Props {
-  applicationId: string;
+  posting: SearchFindPostingQuery['searchFindPosting'];
   visible: boolean;
   setVisible: (value: boolean) => void;
 }
 
 export const ApplyModal: React.FunctionComponent<Props> = ({
-  applicationId,
+  posting,
   ...modalProps
 }) => {
   const modalState = useState<ModalProps>({ title: 'Loading', width: 500 });
@@ -28,10 +29,7 @@ export const ApplyModal: React.FunctionComponent<Props> = ({
       footer={false}
       onCancel={() => modalProps.setVisible(false)}
     >
-      <ApplyModalContent
-        modalState={modalState}
-        applicationId={applicationId}
-      />
+      <ApplyModalContent modalState={modalState} posting={posting} />
     </Modal>
   );
 };

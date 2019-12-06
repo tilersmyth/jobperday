@@ -2,34 +2,30 @@ import React, { useState } from 'react';
 import { Row, Col, Button, Icon } from 'antd';
 import moment from 'moment';
 
-import { SearchFindJobQuery } from '../../../../apollo';
-import styles from './style.less';
+import { SearchFindPostingQuery } from '../../../../apollo';
 import { ApplyModal } from '../../../shared';
+import styles from './style.less';
 
 interface Props {
-  job: SearchFindJobQuery['searchFindJob'];
+  posting: SearchFindPostingQuery['searchFindPosting'];
 }
 
 export const SearchResultViewContent: React.FunctionComponent<Props> = ({
-  job,
+  posting,
 }) => {
   const [modalOpen, setModalOpen] = useState(false);
 
-  if (!job) {
+  if (!posting) {
     return null;
   }
 
-  const dateDiff = (value: Date) => {
-    return new Date().getTime() - new Date(value).getTime();
-  };
-
-  const postings = job.postings.sort((a, b) => {
-    const distancea = Math.abs(dateDiff(a.start_date));
-    const distanceb = Math.abs(dateDiff(b.start_date));
-    return distancea - distanceb;
-  });
-
-  const { remaining_openings, pay_rate, start_date, address } = postings[0];
+  const {
+    remaining_openings,
+    pay_rate,
+    start_date,
+    apply_deadline,
+    address,
+  } = posting;
 
   return (
     <div>
@@ -41,10 +37,7 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
               {remaining_openings} opening
               {remaining_openings === 1 ? '' : 's'}
             </strong>{' '}
-            and{' '}
-            <strong>
-              expires {moment.utc(postings[0].apply_deadline).fromNow()}
-            </strong>
+            and <strong>expires {moment.utc(apply_deadline).fromNow()}</strong>
           </Col>
           <Col xl={{ span: 6 }} style={{ textAlign: 'right' }}>
             <Button
@@ -72,11 +65,11 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
           {address.city}, {address.state} {address.postal_code}
         </li>
       </ul>
-      <div className={styles.description}>{job.description}</div>
+      <div className={styles.description}>{posting.job.description}</div>
       <ApplyModal
         visible={modalOpen}
         setVisible={setModalOpen}
-        applicationId={postings[0].applicationId}
+        posting={posting}
       />
     </div>
   );

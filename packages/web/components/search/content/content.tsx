@@ -23,32 +23,35 @@ interface Props {
 export const SearchContent: React.FunctionComponent<Props> = props => {
   const { loading, data, error, variables, fetchMore } = props.client;
   const { data: vpData } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
-  const [selectedJob, setSelectedJob] = useState<string | undefined>(undefined);
+  const [selectedPosting, setSelectedPosting] = useState<string | undefined>(
+    undefined,
+  );
   const [initLoad, setInitLoad] = useState(true);
 
   if (!vpData || error || !data) {
     return null;
   }
 
-  useEffect(() => {
-    if (!initLoad) {
-      return;
-    }
-
-    if (data.search && data.search.results.length > 0) {
-      onJobSelect(data.search.results[0].job.id);
-    }
-  }, [data]);
-
-  const onJobSelect = (id: string) => {
+  const onPostingSelect = (id: string) => {
     if (Breakpoints[vpData.viewport] > Breakpoints.XL) {
-      setSelectedJob(id);
+      setSelectedPosting(id);
       return;
     }
 
     // todo
     // add routing here for smaller screens
   };
+
+  useEffect(() => {
+    if (!initLoad) {
+      return;
+    }
+
+    // Default to first posting in results
+    if (data.search && data.search.results.length > 0) {
+      onPostingSelect(data.search.results[0].posting.id);
+    }
+  }, [data]);
 
   const loadMore = () => {
     if (loading) {
@@ -83,7 +86,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
               ...prev.search.results,
               ...fetchMoreResult.search.results,
             ],
-            __typename: 'SearchDto',
+            __typename: 'Search2Dto',
           },
         });
       },
@@ -97,16 +100,18 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
           <SearchResultList
             data={data}
             loadMore={loadMore}
-            onJobSelect={onJobSelect}
-            selectedJob={selectedJob}
+            onPostingSelect={onPostingSelect}
+            selectedPosting={selectedPosting}
           />
         </Col>
         <Col xl={15} xs={0}>
           <SearchAffix>
             <div className={styles.resultContainer}>
               <div className={styles.resultInner}>
-                {!selectedJob && <LoaderMask />}
-                {selectedJob && <SearchResultView selectedJob={selectedJob} />}
+                {!selectedPosting && <LoaderMask />}
+                {selectedPosting && (
+                  <SearchResultView postingId={selectedPosting} />
+                )}
               </div>
             </div>
           </SearchAffix>

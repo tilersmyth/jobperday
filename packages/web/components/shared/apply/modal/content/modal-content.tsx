@@ -3,7 +3,11 @@ import { useQuery } from 'react-apollo';
 import dynamic from 'next/dynamic';
 import { ModalProps } from 'antd/lib/modal';
 
-import { CurrentUserQuery, CurrentUserDocument } from '../../../../../apollo';
+import {
+  CurrentUserQuery,
+  CurrentUserDocument,
+  SearchFindPostingQuery,
+} from '../../../../../apollo';
 
 const LoginComponent = dynamic({
   loader: async () => {
@@ -20,12 +24,12 @@ const ApplicationComponent = dynamic({
 });
 
 interface Props {
-  applicationId: string;
+  posting: SearchFindPostingQuery['searchFindPosting'];
   modalState: [ModalProps, React.Dispatch<React.SetStateAction<ModalProps>>];
 }
 
 export const ApplyModalContent: React.FunctionComponent<Props> = ({
-  applicationId,
+  posting,
   modalState,
 }) => {
   const { loading, data, error } = useQuery<CurrentUserQuery>(
@@ -43,10 +47,5 @@ export const ApplyModalContent: React.FunctionComponent<Props> = ({
   // to do
   // need to check that user is setup here
 
-  return (
-    <ApplicationComponent
-      modalState={modalState}
-      applicationId={applicationId}
-    />
-  );
+  return <ApplicationComponent modalState={modalState} posting={posting} />;
 };

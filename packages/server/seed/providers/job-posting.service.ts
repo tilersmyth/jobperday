@@ -81,7 +81,7 @@ export class JobPostingSeedService {
         posting.apply_deadline = apply_deadline;
         posting.location = location;
         posting.address = address;
-        posting.companyId = job.company.id;
+        posting.company = job.company;
         posting.applicationId = job.default_application.id;
         posting.job = job;
         const newPosting = await this.repository.save(posting);

@@ -8,22 +8,25 @@ import { SearchResultItem } from './item';
 interface Props {
   data: SearchQuery;
   loadMore: () => void;
-  onJobSelect: (id: string) => void;
-  selectedJob?: string;
+  onPostingSelect: (id: string) => void;
+  selectedPosting?: string;
 }
 
 export const SearchResultList: React.FunctionComponent<Props> = ({
   data,
   loadMore,
-  onJobSelect,
-  selectedJob,
+  onPostingSelect,
+  selectedPosting,
 }) => {
-  const items = ((data.search && data.search.results) || []).map(({ job }) => (
+  const items = (
+    (data.search && data.search.results) ||
+    []
+  ).map(({ posting }) => (
     <SearchResultItem
-      key={job.id}
-      job={job}
-      selectedId={selectedJob}
-      selectJob={onJobSelect}
+      key={posting.id}
+      posting={posting}
+      selectedId={selectedPosting}
+      selectPosting={onPostingSelect}
     />
   ));
 

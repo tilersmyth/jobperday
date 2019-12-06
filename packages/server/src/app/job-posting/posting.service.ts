@@ -72,7 +72,7 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
       coordinates: [address.coord_lng, address.coord_lat],
     };
     posting.job = job;
-    posting.companyId = company.id;
+    posting.company = company;
     posting.applicationId = input.applicationId;
     return this.repository.save(posting);
   }

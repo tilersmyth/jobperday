@@ -145,6 +145,18 @@ input CoordsInput {
   lat: Float!
 }
 
+input CreateApplicantAnswerInput {
+  response: String!
+  fieldId: ID!
+}
+
+input CreateApplicantInput {
+  companyId: ID!
+  jobId: ID!
+  postingId: ID!
+  answers: [CreateApplicantAnswerInput!]!
+}
+
 type CreateCompanyDto {
   id: ID!
   name: String!
@@ -254,7 +266,7 @@ type MeSessionDto {
   is_verified: Boolean!
   setup: [String!]!
   created_at: DateTime!
-  search: SearchLocationDto
+  location: SessionLocationDto
 }
 
 type Mutation {
@@ -274,6 +286,7 @@ type Mutation {
   createApplication(input: ApplicationInput!, companySlug: String!): ApplicationDto!
   createPosting(input: AddJobPostingInput!, companySlug: String!): JobPostingDto!
   uploadImage(input: UploadImageInput!, companySlug: String!): CompanyImageDto!
+  createApplicant(input: CreateApplicantInput!): Boolean!
 }
 
 input PaginationInput {
@@ -281,10 +294,42 @@ input PaginationInput {
   limit: Int = 10
 }
 
+type PostingCompanyDto {
+  id: ID!
+  name: String!
+  profile: PostingCompanyProfileDto!
+}
+
+type PostingCompanyProfileDto {
+  profile_image: String!
+}
+
+type PostingDto {
+  id: ID!
+  pay_rate: String!
+  end_date: DateTime!
+  start_date: DateTime!
+  apply_deadline: DateTime!
+  remaining_openings: Int!
+  applicationId: ID!
+  address: AddressDto!
+  company: PostingCompanyDto!
+  job: PostingJobDto!
+}
+
+type PostingJobDto {
+  id: ID!
+  title: String!
+  default_image: String!
+  description: String!
+  type: String!
+  tags: [String!]!
+}
+
 type Query {
   me: MeSessionDto
   allUsers: [UserDto!]!
-  userLocation: SearchLocationDto
+  userLocation: SessionLocationDto
   findCompanyContact(companySlug: String!): CompanyContactDto
   findCompanyAddresses(companySlug: String!): [AddressDto!]!
   findCompanyProfile(companySlug: String!): CompanyProfileDto
@@ -300,7 +345,7 @@ type Query {
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
   findPosting(postingId: ID!, companySlug: String!): JobPostingDto!
   search(input: SearchInput!): SearchDto!
-  searchFindJob(id: ID!): SearchJobResultDto!
+  searchFindPosting(id: ID!): PostingDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
 }
 
@@ -319,6 +364,7 @@ enum RoleEnum {
 }
 
 type SearchCompanyDto {
+  id: ID!
   name: String!
   profile: SearchCompanyProfileDto!
 }
@@ -327,14 +373,9 @@ type SearchCompanyProfileDto {
   profile_image: String!
 }
 
-type SearchCoordsDto {
-  lng: Float!
-  lat: Float!
-}
-
 type SearchDto {
   count: Int!
-  results: [SearchResultListDto!]!
+  results: [SearchResultDto!]!
 }
 
 input SearchFiltersInput {
@@ -352,34 +393,6 @@ input SearchInput {
 type SearchJobDto {
   id: ID!
   title: String!
-  postings: [SearchJobPostingDto!]!
-  company: SearchCompanyDto!
-}
-
-type SearchJobPostingDto {
-  pay_rate: String!
-  end_date: DateTime!
-  start_date: DateTime!
-  apply_deadline: DateTime!
-  remaining_openings: Int!
-  applicationId: String!
-  address: AddressDto!
-}
-
-type SearchJobResultDto {
-  id: ID!
-  title: String!
-  postings: [SearchJobPostingDto!]!
-  company: SearchCompanyDto!
-  default_image: String!
-  description: String!
-  type: String!
-  tags: [String!]!
-}
-
-type SearchLocationDto {
-  locality: String!
-  coords: SearchCoordsDto!
 }
 
 input SearchPaginationInput {
@@ -387,9 +400,30 @@ input SearchPaginationInput {
   take: Int!
 }
 
-type SearchResultListDto {
+type SearchPostingDto {
+  id: ID!
+  pay_rate: String!
+  end_date: DateTime!
+  start_date: DateTime!
+  apply_deadline: DateTime!
+  address: AddressDto!
+  company: SearchCompanyDto!
   job: SearchJobDto!
+}
+
+type SearchResultDto {
+  posting: SearchPostingDto!
   rank: Float!
+}
+
+type SessionCoordsDto {
+  lng: Float!
+  lat: Float!
+}
+
+type SessionLocationDto {
+  locality: String!
+  coords: SessionCoordsDto!
 }
 
 input UpdateAddressInput {

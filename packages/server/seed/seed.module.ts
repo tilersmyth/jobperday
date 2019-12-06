@@ -16,11 +16,13 @@ import { CompanyModule } from '../src/app/company/company.module';
 import { CompanyMemberModule } from '../src/app/company-member/member.module';
 import { AddressModule } from '../src/app/address/address.module';
 import { CompanyProfileModule } from '../src/app/company-profile/profile.module';
+import { jobPostingProviders } from 'server/src/app/job-posting/posting.providers';
 
 const PROVIDERS = [
   ...userProviders,
   ...companyProviders,
   ...jobProviders,
+  ...jobPostingProviders,
   ...applicationProviders,
   SeedDBService,
   SeedService,

@@ -1,22 +1,23 @@
 import gql from 'graphql-tag';
 
-export const searchQuery = gql`
+export const search2Query = gql`
   query Search($input: SearchInput!) {
     search(input: $input) {
       count
       results {
         rank
-        job {
+        posting {
           id
-          title
-          postings {
-            pay_rate
-            start_date
-            apply_deadline
-            address {
-              city
-              state
-            }
+          pay_rate
+          start_date
+          apply_deadline
+          address {
+            city
+            state
+          }
+          job {
+            id
+            title
           }
           company {
             name
@@ -30,30 +31,28 @@ export const searchQuery = gql`
   }
 `;
 
-export const searchFindJobQuery = gql`
-  query SearchFindJob($id: ID!) {
-    searchFindJob(id: $id) {
+export const searchFindPostingQuery = gql`
+  query SearchFindPosting($id: ID!) {
+    searchFindPosting(id: $id) {
       id
-      title
-      default_image
-      description
-      type
-      tags
-      postings {
-        pay_rate
-        start_date
-        apply_deadline
-        remaining_openings
-        applicationId
-        address {
-          street
-          street2
-          city
-          state
-          postal_code
-        }
+      pay_rate
+      start_date
+      apply_deadline
+      remaining_openings
+      applicationId
+      address {
+        ...AddressParts
+      }
+      job {
+        id
+        title
+        type
+        tags
+        default_image
+        description
       }
       company {
+        id
         name
         profile {
           profile_image

@@ -10,7 +10,7 @@ export const meQuery = gql`
       realm
       is_verified
       setup
-      search {
+      location {
         locality
         coords {
           lng

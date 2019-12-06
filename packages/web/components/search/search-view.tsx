@@ -5,8 +5,8 @@ import { useQuery } from 'react-apollo';
 
 import {
   SearchInput,
-  SearchQuery,
   SearchDocument,
+  SearchQuery,
 } from '../../apollo/generated-components';
 import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';

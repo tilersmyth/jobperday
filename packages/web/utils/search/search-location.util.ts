@@ -27,7 +27,7 @@ export class SearchLocation {
     Start find address methods
     */
 
-  private session = (): LocationInput | null => this.me && this.me.search;
+  private session = (): LocationInput | null => this.me && this.me.location;
 
   private getCookie = (): LocationInput | null => {
     const cookies = parseCookies(this.ctx);

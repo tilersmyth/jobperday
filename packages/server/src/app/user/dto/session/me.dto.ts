@@ -1,6 +1,6 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
-import { SearchLocationDto } from '../../search/dto/search-location.dto';
+import { SessionLocationDto } from './location.dto';
 
 @ObjectType()
 export class MeSessionDto {
@@ -20,6 +20,6 @@ export class MeSessionDto {
   readonly setup: string[];
   @Field()
   readonly created_at: Date;
-  @Field(() => SearchLocationDto, { nullable: true })
-  readonly search?: SearchLocationDto;
+  @Field(() => SessionLocationDto, { nullable: true })
+  readonly location?: SessionLocationDto;
 }

@@ -5,6 +5,8 @@ import { SearchInput } from './inputs/search.input';
 import { AppLogger } from '../app.logger';
 import { JOB_TOKEN } from '../job/job.constants';
 import { JobEntity } from '../job/entity';
+import { JOB_POSTING_TOKEN } from '../job-posting/posting.constants';
+import { JobPostingEntity } from '../job-posting';
 
 @Injectable()
 export class SearchService {
@@ -13,6 +15,8 @@ export class SearchService {
   constructor(
     @Inject(JOB_TOKEN)
     protected readonly repository: Repository<JobEntity>,
+    @Inject(JOB_POSTING_TOKEN)
+    protected readonly postingRepo: Repository<JobPostingEntity>,
   ) {}
 
   public async query(input: SearchInput) {
@@ -23,12 +27,12 @@ export class SearchService {
         pagination,
       } = input;
 
-      const query = this.repository
-        .createQueryBuilder('job')
-        .innerJoinAndSelect('job.company', 'company')
+      const query = this.postingRepo
+        .createQueryBuilder('posting')
+        .innerJoinAndSelect('posting.address', 'address')
+        .innerJoinAndSelect('posting.company', 'company')
         .innerJoinAndSelect('company.profile', 'profile')
-        .innerJoinAndSelect('job.postings', 'postings')
-        .innerJoinAndSelect('postings.address', 'address');
+        .innerJoinAndSelect('posting.job', 'job');
 
       const search = input.search.trim();
 
@@ -40,8 +44,8 @@ export class SearchService {
       }
 
       query
-        .where('postings.apply_deadline > :date', { date: new Date() })
-        .andWhere('postings.pay_rate >= :pay_rate', {
+        .where('posting.apply_deadline > :date', { date: new Date() })
+        .andWhere('posting.pay_rate >= :pay_rate', {
           pay_rate: filters.pay_rate,
         });
 
@@ -56,12 +60,14 @@ export class SearchService {
       this.logger.debug(`RADIUS ${radius}`);
       query.andWhere(
         `ST_DWithin(ST_GeogFromText('SRID=4326;POINT(${coords.lng} ${coords.lat})'),
-        postings.location, :radius)`,
+        posting.location, :radius)`,
         { radius },
       );
 
       if (search) {
-        query.orderBy('rank', 'DESC');
+        query
+          .orderBy('rank', 'DESC')
+          .addOrderBy('posting.apply_deadline', 'DESC');
       }
 
       const { entities, raw } = await query
@@ -71,8 +77,8 @@ export class SearchService {
 
       const count = await query.getCount();
 
-      const results = entities.map((job, i) => {
-        return { job, rank: raw[i].rank ? raw[i].rank : 1 };
+      const results = entities.map((posting, i) => {
+        return { posting, rank: raw[i].rank ? raw[i].rank : 1 };
       });
 
       return { count, results };
@@ -82,18 +88,14 @@ export class SearchService {
     }
   }
 
-  public async findJob(id: string) {
-    const query = this.repository
-      .createQueryBuilder('job')
-      .innerJoinAndSelect('job.company', 'company')
+  public async findPosting(id: string) {
+    return this.postingRepo
+      .createQueryBuilder('posting')
+      .innerJoinAndSelect('posting.address', 'address')
+      .innerJoinAndSelect('posting.company', 'company')
       .innerJoinAndSelect('company.profile', 'profile')
-      .innerJoinAndSelect('job.postings', 'postings')
-      .innerJoinAndSelect('postings.address', 'address');
-
-    query
-      .where('job.id = :id', { id })
-      .andWhere('postings.apply_deadline > :date', { date: new Date() });
-
-    return query.getOne();
+      .innerJoinAndSelect('posting.job', 'job')
+      .where('posting.id = :id', { id })
+      .getOne();
   }
 }

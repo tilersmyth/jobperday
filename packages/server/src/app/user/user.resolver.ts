@@ -5,10 +5,10 @@ import { UserEntity } from './entity';
 import { User as CurrentUser } from '../_helpers';
 import { UserService } from './user.service';
 import { MeSession } from './interfaces/me-session.interface';
-import { MeSessionDto } from './dto/me-session.dto';
+import { MeSessionDto } from './dto/session/me.dto';
 import { Location } from './location/location.decorator';
-import { SearchLocationDto } from '../search/dto/search-location.dto';
 import { SearchLocation } from '../search/interfaces/search-location.interface';
+import { SessionLocationDto } from './dto/session/location.dto';
 
 @Resolver('User')
 export class UserResolver {
@@ -24,7 +24,7 @@ export class UserResolver {
     return this.userService.find();
   }
 
-  @Query(() => SearchLocationDto, { nullable: true })
+  @Query(() => SessionLocationDto, { nullable: true })
   async userLocation(@Location() ip: string): Promise<SearchLocation | null> {
     return this.userService.findUserLocation(ip);
   }

@@ -4,6 +4,8 @@ import { SearchCompanyProfileDto } from './company-profile.dto';
 
 @ObjectType()
 export class SearchCompanyDto {
+  @Field(() => ID)
+  readonly id: string;
   @Field()
   readonly name: string;
   @Field(() => SearchCompanyProfileDto)

@@ -9,7 +9,8 @@ import {
 } from 'typeorm';
 
 import { JobEntity } from '../../job/entity/job.entity';
-import { AddressEntity } from '../../address';
+import { AddressEntity } from '../../address/entity/address.entity';
+import { CompanyEntity } from '../../company/entity/company.entity';
 
 @Entity('job_postings')
 export class JobPostingEntity extends BaseEntity {
@@ -46,10 +47,10 @@ export class JobPostingEntity extends BaseEntity {
   public location: object;
 
   @Column('uuid')
-  public companyId: string;
-
-  @Column('uuid')
   public applicationId: string;
+
+  @ManyToOne(() => CompanyEntity)
+  public company: CompanyEntity;
 
   @ManyToOne(() => JobEntity, job => job.postings)
   public job: JobEntity;

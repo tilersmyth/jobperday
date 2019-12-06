@@ -1,7 +1,7 @@
 import { ObjectType, Field, Float } from 'type-graphql';
 
 @ObjectType()
-export class SearchCoordsDto {
+export class SessionCoordsDto {
   @Field(() => Float)
   readonly lng: number;
   @Field(() => Float)

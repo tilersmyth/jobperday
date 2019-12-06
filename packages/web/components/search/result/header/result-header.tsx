@@ -1,36 +1,36 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { SearchFindJobQuery } from '../../../../apollo';
+import { SearchFindPostingQuery } from '../../../../apollo';
 
 import styles from './style.less';
 
 interface Props {
-  job: SearchFindJobQuery['searchFindJob'];
+  posting: SearchFindPostingQuery['searchFindPosting'];
 }
 
 export const SearchResultViewHeader: React.FunctionComponent<Props> = ({
-  job,
+  posting,
 }) => {
-  if (!job) {
+  if (!posting) {
     return null;
   }
   return (
     <div
       className={styles.container}
-      style={{ backgroundImage: `url(${job.default_image})` }}
+      style={{ backgroundImage: `url(${posting.job.default_image})` }}
     >
       <div className={styles.mask}>
         <Typography.Title className={styles.title} level={2}>
-          {job.title}
+          {posting.job.title}
         </Typography.Title>
         <Typography.Title className={styles.title} level={4}>
-          {job.company.name}
+          {posting.company.name}
         </Typography.Title>
       </div>
-      <div className={styles.type}>{job.type}</div>
+      <div className={styles.type}>{posting.job.type}</div>
       <div className={styles.profile}>
         <div className={styles.imageContainer}>
-          <img src={job.company.profile.profile_image} />
+          <img src={posting.company.profile.profile_image} />
         </div>
       </div>
     </div>

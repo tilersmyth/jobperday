@@ -5,9 +5,8 @@ import { ID } from 'type-graphql';
 import { AppLogger } from '../app.logger';
 import { SearchInput } from './inputs/search.input';
 import { SearchService } from './search.service';
-import { SearchDto } from './dto/search.dto';
 import { SearchInterceptor } from './search.interceptor';
-import { SearchJobResultDto } from './dto/result';
+import { PostingDto, SearchDto } from './dto';
 
 @Resolver('Search')
 export class SearchResolver {
@@ -19,15 +18,12 @@ export class SearchResolver {
   @UseInterceptors(SearchInterceptor)
   async search(@Args('input') input: SearchInput) {
     const search = await this.searchService.query(input);
-
-    this.logger.debug(
-      `[${input.search}] yielded ${search.results.length} results`,
-    );
+    this.logger.debug(`[${input.search}] yielded ${search.count} results`);
     return search;
   }
 
-  @Query(() => SearchJobResultDto)
-  async searchFindJob(@Args({ name: 'id', type: () => ID }) id: string) {
-    return this.searchService.findJob(id);
+  @Query(() => PostingDto)
+  async searchFindPosting(@Args({ name: 'id', type: () => ID }) id: string) {
+    return this.searchService.findPosting(id);
   }
 }

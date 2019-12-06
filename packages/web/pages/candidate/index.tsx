@@ -34,8 +34,8 @@ Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
   }
 
   // Load user search loc from session
-  if (me.search) {
-    searchArgs.location = me.search;
+  if (me.location) {
+    searchArgs.location = me.location;
     return { searchArgs };
   }
 

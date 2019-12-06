@@ -1,9 +1,11 @@
 import { ObjectType, Field, ID } from 'type-graphql';
 
-import { SearchJobDto } from '../result-list/job.dto';
-
 @ObjectType()
-export class SearchJobResultDto extends SearchJobDto {
+export class PostingJobDto {
+  @Field(() => ID)
+  readonly id: string;
+  @Field()
+  readonly title: string;
   @Field()
   readonly default_image: string;
   @Field()
