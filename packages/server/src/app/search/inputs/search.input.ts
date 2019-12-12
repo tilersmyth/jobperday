@@ -6,7 +6,7 @@ import { SearchFiltersInput } from './filters.input';
 
 @InputType()
 export class SearchInput {
-  @Field()
+  @Field({ defaultValue: '' })
   readonly search: string;
   @Field(() => LocationInput)
   readonly location: LocationInput;

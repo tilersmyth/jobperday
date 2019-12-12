@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Router from 'next/router';
-import { Layout } from 'antd';
-import { useQuery } from 'react-apollo';
+import { useQuery, useApolloClient } from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import querystring from 'querystring';
 
 import {
   SearchInput,
@@ -10,69 +11,58 @@ import {
 } from '../../apollo/generated-components';
 import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
-import { CandidateLayout, SearchHeader, SearchDrawer } from '../shared';
+import { SearchLayout } from '../shared';
 import { searchToQuery } from '../../utils';
 import { SearchMobileDetail } from './mobile-detail';
-import styles from './style.less';
 
 interface Props {
   searchArgs: SearchInput;
+  onCompleted: (client: ApolloClient<object>) => void;
 }
 
-export const CandidateSearchView: React.FunctionComponent<Props> = ({
+export const SearchView: React.FunctionComponent<Props> = ({
   searchArgs,
+  onCompleted,
 }) => {
-  const client = useQuery<SearchQuery>(SearchDocument, {
+  const client = useApolloClient();
+  const qeuryResult = useQuery<SearchQuery>(SearchDocument, {
     variables: { input: searchArgs },
     fetchPolicy: 'cache-and-network',
+    onCompleted: () => onCompleted(client),
   });
 
   const [hasMore, setHasMore] = useState(true);
   const [args, setArgs] = useState(searchArgs);
-  const [drawer, openDrawer] = useState(false);
 
   const handleArgsUpdate = async (input: SearchInput) => {
     const query = searchToQuery(input);
 
     // Add variables to url
-    await Router.push({
-      pathname: '/search',
-      query,
-    });
+    const path = `/search?${querystring.encode(query)}`;
+    await Router.push(path, path);
 
-    await client.refetch({ input });
+    await qeuryResult.refetch({ input });
 
     setArgs(input);
   };
 
   return (
-    <CandidateLayout title="Search">
-      <Layout className={styles.container}>
-        <SearchHeader searchArgs={args} openDrawer={openDrawer} />
-        <Layout.Content className={styles.content}>
-          <SearchSidebar
-            data={client.data}
-            searchArgs={args}
-            setSearchArgs={handleArgsUpdate}
-          />
-          <SearchMobileDetail
-            data={client.data}
-            searchArgs={args}
-            setSearchArgs={handleArgsUpdate}
-          />
-          <SearchContent
-            client={client}
-            setHasMore={setHasMore}
-            hasMore={hasMore}
-          />
-        </Layout.Content>
-      </Layout>
-      <SearchDrawer
-        visible={drawer}
+    <SearchLayout searchArgs={args} updateArgs={handleArgsUpdate}>
+      <SearchSidebar
+        data={qeuryResult.data}
         searchArgs={args}
         setSearchArgs={handleArgsUpdate}
-        close={() => openDrawer(false)}
       />
-    </CandidateLayout>
+      <SearchMobileDetail
+        data={qeuryResult.data}
+        searchArgs={args}
+        setSearchArgs={handleArgsUpdate}
+      />
+      <SearchContent
+        client={qeuryResult}
+        setHasMore={setHasMore}
+        hasMore={hasMore}
+      />
+    </SearchLayout>
   );
 };

@@ -46,3 +46,30 @@ export const currentUserQuery = gql`
     }
   }
 `;
+
+export const getSearchLocationQuery = gql`
+  query GetSearchLocation($locationParam: String!) {
+    getSearchLocation(locationParam: $locationParam) @client {
+      type
+      location {
+        locality
+        coords {
+          lat
+          lng
+        }
+      }
+    }
+  }
+`;
+
+export const getNonSearchLocationQuery = gql`
+  query GetNonSearchLocation {
+    getNonSearchLocation @client {
+      locality
+      coords {
+        lat
+        lng
+      }
+    }
+  }
+`;

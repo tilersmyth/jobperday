@@ -37,3 +37,12 @@ export const forgotPasswordMutation = gql`
     forgotPassword(input: $input)
   }
 `;
+
+export const setUserLocationMutation = gql`
+  mutation SetUserLocation(
+    $searchArgs: SearchInput!
+    $type: LocationStorageTypeEnum!
+  ) {
+    setUserLocation(searchArgs: $searchArgs, type: $type) @client
+  }
+`;

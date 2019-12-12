@@ -1,11 +1,10 @@
 import React from 'react';
 import { Radio, Icon } from 'antd';
 import { FieldProps } from 'formik';
+import { searchFilterOptions } from '@jobperday/common';
 
 import { SearchInput } from '../../../../../../../apollo';
 import styles from './style.less';
-
-const options = [20, 50, 100];
 
 export const FilterRadiusInput: React.FunctionComponent<FieldProps<
   SearchInput
@@ -24,7 +23,7 @@ export const FilterRadiusInput: React.FunctionComponent<FieldProps<
       value={field.value ? field.value : undefined}
       className={styles.container}
     >
-      {options.map(option => (
+      {searchFilterOptions.radius.options.map(option => (
         <div key={option}>
           <Radio className={styles.radio} value={option}>
             within {option} miles

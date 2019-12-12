@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import { useQuery } from 'react-apollo';
 import Router from 'next/router';
-import { setCookie } from 'nookies';
-import base64 from 'base-64';
+import querystring from 'querystring';
 
 import { SearchSchema } from './validation-schema';
 import {
@@ -46,16 +45,9 @@ export const SearchHeader: React.FunctionComponent<Props> = ({
         validateOnChange={true}
         validationSchema={SearchSchema}
         onSubmit={async variables => {
-          const encoded = base64.encode(JSON.stringify(variables.location));
-
-          setCookie({}, 'jpd_loc', encoded, {});
-
           const query = searchToQuery(variables);
-
-          await Router.push({
-            pathname: '/search',
-            query,
-          });
+          const path = `/search?${querystring.encode(query)}`;
+          await Router.push(path, path, { shallow: true });
         }}
         initialValues={searchArgs}
       >

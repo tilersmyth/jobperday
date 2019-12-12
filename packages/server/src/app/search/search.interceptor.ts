@@ -24,7 +24,7 @@ export class SearchInterceptor implements NestInterceptor {
 
     req.session.user = {
       ...req.session.user,
-      search: input.location,
+      location: input.location,
     };
 
     return next.handle();

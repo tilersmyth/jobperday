@@ -6,7 +6,6 @@ import {
 } from '../../apollo/generated-components';
 
 export class SearchModel implements SearchInput {
-  public search: string = '';
   public location: LocationInput = {
     locality: '',
     coords: {
@@ -15,8 +14,5 @@ export class SearchModel implements SearchInput {
     },
   };
   public filters: SearchFiltersInput = {};
-  public pagination: SearchPaginationInput = {
-    skip: 0,
-    take: 5,
-  };
+  public pagination: SearchPaginationInput = {};
 }

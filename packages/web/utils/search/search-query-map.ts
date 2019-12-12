@@ -1,15 +1,16 @@
-import { SearchInput, LocationInput } from '../../apollo/generated-components';
-import { ParsedUrlQuery } from 'querystring';
+import { searchFilterOptions } from '@jobperday/common';
+
+import { SearchInput } from '../../apollo/generated-components';
 import { SearchModel } from './SearchModel';
 
-interface SearchQuery {
-  [key: string]: // The value type here is a "poor man's `unknown`". When these types support TypeScript
-  // 3.0+, we can replace this with `unknown`.
-  {} | null | undefined;
-}
-
-export const searchToQuery = (search: SearchInput): SearchQuery => {
-  const query: SearchQuery = {
+export const searchToQuery = (
+  search: SearchInput,
+): {
+  [key: string]: string;
+} => {
+  const query: {
+    [key: string]: string;
+  } = {
     location: search.location.locality,
   };
 
@@ -17,43 +18,44 @@ export const searchToQuery = (search: SearchInput): SearchQuery => {
     query.search = search.search;
   }
 
-  if (search.filters.radius && search.filters.radius < 200) {
-    query.radius = search.filters.radius;
-  }
+  if (search.filters) {
+    if (
+      search.filters.radius &&
+      parseInt(search.filters.radius, 10) <
+        parseInt(searchFilterOptions.radius.default, 10)
+    ) {
+      query.radius = search.filters.radius;
+    }
 
-  if (search.filters.pay_rate && search.filters.pay_rate > 0) {
-    query.pay_rate = search.filters.pay_rate;
+    if (
+      search.filters.pay_rate &&
+      parseInt(search.filters.pay_rate, 10) >
+        parseInt(searchFilterOptions.pay_rate.default, 10)
+    ) {
+      query.pay_rate = search.filters.pay_rate;
+    }
   }
 
   return query;
 };
 
-export const queryToSearch = (
-  query: ParsedUrlQuery,
-  location?: LocationInput,
-): SearchInput => {
-  const search = new SearchModel();
+export const queryToSearch = (query: {
+  [key: string]: string;
+}): SearchInput => {
+  return Object.keys(query).reduce((acc: SearchInput, prop: string) => {
+    if (query[prop].trim()) {
+      if (prop === 'search') {
+        return { [prop]: query[prop], ...acc };
+      }
 
-  if (location) {
-    search.location.locality = location.locality;
-    search.location.coords.lat = location.coords.lat;
-    search.location.coords.lng = location.coords.lng;
-  }
+      if (Object.keys(searchFilterOptions).includes(prop)) {
+        return {
+          ...acc,
+          filters: { [prop]: query[prop], ...acc.filters },
+        };
+      }
+    }
 
-  const searchValue = query.search as string;
-  if (searchValue && searchValue.trim()) {
-    search.search = searchValue.trim();
-  }
-
-  const radius = query.radius as string;
-  if (radius) {
-    search.filters.radius = parseFloat(radius);
-  }
-
-  const pay_rate = query.pay_rate as string;
-  if (pay_rate) {
-    search.filters.pay_rate = parseFloat(pay_rate);
-  }
-
-  return search;
+    return acc;
+  }, new SearchModel());
 };

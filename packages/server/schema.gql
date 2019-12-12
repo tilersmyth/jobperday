@@ -379,12 +379,12 @@ type SearchDto {
 }
 
 input SearchFiltersInput {
-  radius: Int = 200
-  pay_rate: Int = 0
+  radius: String = "200"
+  pay_rate: String = "0"
 }
 
 input SearchInput {
-  search: String!
+  search: String = ""
   location: LocationInput!
   filters: SearchFiltersInput!
   pagination: SearchPaginationInput!
@@ -396,8 +396,8 @@ type SearchJobDto {
 }
 
 input SearchPaginationInput {
-  skip: Int!
-  take: Int!
+  skip: Int = 0
+  take: Int = 5
 }
 
 type SearchPostingDto {

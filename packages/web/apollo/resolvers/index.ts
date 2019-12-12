@@ -6,6 +6,7 @@ import { postingResolvers } from './postings';
 import { companyContactResolvers } from './company-contact';
 import { companyProfileResolvers } from './company-profile';
 import { uiResolvers } from './ui';
+import { userResolvers } from './user';
 
 export const resolvers = merge(
   companyResolvers,
@@ -14,4 +15,5 @@ export const resolvers = merge(
   companyContactResolvers,
   companyProfileResolvers,
   uiResolvers,
+  userResolvers,
 );

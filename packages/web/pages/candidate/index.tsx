@@ -2,11 +2,13 @@ import { NextPage } from 'next';
 import Router from 'next/router';
 
 import { NextPageContextApollo } from '../../types';
-import { fetchMe } from '../../utils';
-import { SearchInput } from '../../apollo/generated-components';
+import { fetchMe, SearchModel } from '../../utils';
+import {
+  SearchInput,
+  GetNonSearchLocationQuery,
+  GetNonSearchLocationDocument,
+} from '../../apollo/generated-components';
 import { redirect } from '../../apollo/redirect';
-import { SearchModel } from '../../utils/search/SearchModel';
-import { SearchLocation } from '../../utils/search/search-location.util';
 import { CandidateHomeView } from '../../components/candidate';
 
 interface Props {
@@ -23,7 +25,6 @@ const Candidate: NextPage<Props> = ({ searchArgs }) => {
 
 Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
   const me = await fetchMe(ctx);
-  const searchArgs = new SearchModel();
 
   if (!me) {
     if (ctx) {
@@ -33,17 +34,17 @@ Candidate.getInitialProps = async (ctx: NextPageContextApollo) => {
     return {};
   }
 
-  // Load user search loc from session
-  if (me.location) {
-    searchArgs.location = me.location;
-    return { searchArgs };
-  }
+  const searchArgs: SearchInput = new SearchModel();
 
-  const search = new SearchLocation(me, ctx);
-  const location = await search.set();
+  const {
+    data: { getNonSearchLocation },
+  } = await ctx.apolloClient.query<GetNonSearchLocationQuery>({
+    query: GetNonSearchLocationDocument,
+    context: { nextCtx: ctx },
+  });
 
-  if (location) {
-    searchArgs.location = location;
+  if (getNonSearchLocation) {
+    searchArgs.location = getNonSearchLocation;
   }
 
   return { me, searchArgs };

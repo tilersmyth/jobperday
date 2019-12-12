@@ -46,7 +46,7 @@ export class SearchService {
       query
         .where('posting.apply_deadline > :date', { date: new Date() })
         .andWhere('posting.pay_rate >= :pay_rate', {
-          pay_rate: filters.pay_rate,
+          pay_rate: parseInt(filters.pay_rate, 10),
         });
 
       if (search) {
@@ -56,18 +56,17 @@ export class SearchService {
       }
 
       // convert miles to meters for PostGIS (default 200 mi if no selection)
-      const radius = filters.radius * 1609.344;
-      this.logger.debug(`RADIUS ${radius}`);
+      const radius = parseInt(filters.radius, 10) * 1609.344;
       query.andWhere(
         `ST_DWithin(ST_GeogFromText('SRID=4326;POINT(${coords.lng} ${coords.lat})'),
         posting.location, :radius)`,
         { radius },
       );
 
+      query.orderBy('posting.start_date', 'ASC');
+
       if (search) {
-        query
-          .orderBy('rank', 'DESC')
-          .addOrderBy('posting.apply_deadline', 'DESC');
+        query.addOrderBy('rank', 'DESC');
       }
 
       const { entities, raw } = await query

@@ -1,128 +1,87 @@
-import { parseCookies, setCookie } from 'nookies';
+import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import base64 from 'base-64';
 
 import {
-  MeQuery,
   LocationInput,
-  UserLocationDocument,
   UserLocationQuery,
+  UserLocationDocument,
 } from '../../apollo/generated-components';
 import { NextPageContextApollo } from '../../types';
+import { LocationCookieEnum } from '../enums';
 
-// Methods for finding user's default search location
-export class SearchLocation {
-  constructor(
-    private me: MeQuery['me'] | null,
-    private ctx: NextPageContextApollo,
-  ) {}
+export class SearchLocationUtil {
+  constructor(private ctx?: NextPageContextApollo) {}
 
-  private setCookie = (location: string) => {
-    setCookie(this.ctx, 'jpd_loc', location, {
+  public getCookie = (): LocationInput | null => {
+    const cookies = parseCookies(this.ctx);
+    if (!cookies[LocationCookieEnum.LOC_ID]) {
+      return null;
+    }
+    return JSON.parse(base64.decode(cookies[LocationCookieEnum.LOC_ID]));
+  };
+
+  public setCookie = (location: LocationInput) => {
+    const encoded = base64.encode(JSON.stringify(location));
+    setCookie(this.ctx, LocationCookieEnum.LOC_ID, encoded, {
       maxAge: 30 * 24 * 60 * 60,
       path: '/',
     });
   };
 
-  /*
-    Start find address methods
-    */
-
-  private session = (): LocationInput | null => this.me && this.me.location;
-
-  private getCookie = (): LocationInput | null => {
-    const cookies = parseCookies(this.ctx);
-    if (!cookies.jpd_loc) {
-      return null;
-    }
-    return JSON.parse(base64.decode(cookies.jpd_loc));
+  public destroyCookie = () => {
+    destroyCookie(this.ctx, LocationCookieEnum.LOC_ID);
   };
 
-  private googleApi = async (
+  public googleApi = async (
     location: string | string[],
   ): Promise<LocationInput | null> => {
+    console.log('HIT GOOGLE');
     try {
       const queryApi = await fetch(
-        `https://maps.googleapis.com/maps/api/place/textsearch/json?query=${location}&key=${process.env.GOOGLE_PLACES_API}`,
+        // tslint:disable-next-line:max-line-length
+        `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${location}&inputtype=textquery&fields=formatted_address,geometry&key=${process.env.GOOGLE_PLACES_API}`,
       );
 
-      const { results } = await queryApi.json();
+      const { candidates } = await queryApi.json();
 
-      if (results.length === 0) {
-        throw Error('Google Places API was unable to fetch any results');
-      }
-
-      const googleLoc = results[0];
-
-      if (location !== googleLoc.formatted_address) {
-        console.log('stored address did not match google API address');
+      if (candidates.length === 0) {
         return null;
       }
 
-      const googleResults: LocationInput = {
+      const googleLoc = candidates[0];
+
+      return {
         locality: googleLoc.formatted_address,
         coords: {
           ...googleLoc.geometry.location,
         },
       };
-
-      const encoded = base64.encode(JSON.stringify(googleResults));
-
-      this.setCookie(encoded);
-
-      return googleResults;
     } catch (error) {
       throw error;
     }
   };
 
-  private ipAddress = async (): Promise<LocationInput | null> => {
+  public apolloOutput = (location: LocationInput) => {
+    return {
+      locality: location.locality,
+      __typename: 'SessionLocationDto',
+      coords: {
+        lat: location.coords.lat,
+        lng: location.coords.lng,
+        __typename: 'SessionCoordsDto',
+      },
+    };
+  };
+
+  public ipAddress = async (): Promise<LocationInput | null> => {
+    if (!this.ctx) {
+      return null;
+    }
+
     const client = this.ctx.apolloClient;
     const { data } = await client.query<UserLocationQuery | null>({
       query: UserLocationDocument,
     });
     return data && data.userLocation;
-  };
-
-  /*
-    End find address methods
-    */
-
-  // Find by matching to location query param (search page)
-  // 1. If user logged in, look for location in session
-  // 2. Else, look for location in cookie
-  // 3. Else, hit Google Places API
-  // 4. redirect if error or invalid location
-  public find = async (
-    location: string | string[],
-  ): Promise<LocationInput | null> => {
-    const session = this.session();
-    if (session && session.locality === location) {
-      return session;
-    }
-
-    const cookie = this.getCookie();
-    if (cookie && cookie.locality === location) {
-      return cookie;
-    }
-
-    return this.googleApi(location);
-  };
-
-  // Set location if stored or falling back to location of IP
-  // 1. If user logged in, look for location in session
-  // 2. Else, look for location in cookie
-  // 3. Else, find server IP
-  public set = async (): Promise<LocationInput | null> => {
-    const session = this.session();
-    if (session) {
-      return session;
-    }
-
-    const cookie = this.getCookie();
-    if (cookie) {
-      return cookie;
-    }
-
-    return this.ipAddress();
   };
 }
