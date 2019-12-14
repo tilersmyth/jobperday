@@ -22,8 +22,7 @@ export const SearchResultDetail: React.FunctionComponent<Props> = ({
         {!data.search && <LoaderMask />}
         {data.search && (
           <Typography.Title level={3} style={{ display: 'block' }}>
-            Displaying {data.search.results.length} out of {data.search.count}{' '}
-            results
+            Displaying {data.search.count} job postings
           </Typography.Title>
         )}
       </div>

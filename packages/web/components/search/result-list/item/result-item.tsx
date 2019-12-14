@@ -8,12 +8,14 @@ import styles from './style.less';
 
 interface Props {
   posting: SearchQuery['search']['results'][0]['posting'];
-  selectPosting: (id: string) => void;
+  index: number;
+  selectPosting: (id: string, index: number) => Promise<void>;
   selectedId?: string;
 }
 
 export const SearchResultItem: React.FunctionComponent<Props> = ({
   posting,
+  index,
   selectPosting,
   selectedId,
 }) => {
@@ -22,7 +24,7 @@ export const SearchResultItem: React.FunctionComponent<Props> = ({
       className={cx(styles.container, {
         [styles.active]: selectedId === posting.id,
       })}
-      onClick={() => selectPosting(posting.id)}
+      onClick={() => selectPosting(posting.id, index)}
     >
       <div className={styles.image}>
         <img src={posting.company.profile.profile_image} />

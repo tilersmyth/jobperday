@@ -17,21 +17,24 @@ import { SearchMobileDetail } from './mobile-detail';
 
 interface Props {
   searchArgs: SearchInput;
-  onCompleted: (client: ApolloClient<object>) => void;
+  setLocation: (client: ApolloClient<object>) => void;
 }
 
 export const SearchView: React.FunctionComponent<Props> = ({
   searchArgs,
-  onCompleted,
+  setLocation,
 }) => {
   const client = useApolloClient();
-  const qeuryResult = useQuery<SearchQuery>(SearchDocument, {
-    variables: { input: searchArgs },
-    fetchPolicy: 'cache-and-network',
-    onCompleted: () => onCompleted(client),
-  });
+  const queryResult = useQuery<SearchQuery, { input: SearchInput }>(
+    SearchDocument,
+    {
+      variables: { input: searchArgs },
+      fetchPolicy: 'cache-and-network',
+      partialRefetch: true,
+      onCompleted: () => setLocation(client),
+    },
+  );
 
-  const [hasMore, setHasMore] = useState(true);
   const [args, setArgs] = useState(searchArgs);
 
   const handleArgsUpdate = async (input: SearchInput) => {
@@ -41,7 +44,7 @@ export const SearchView: React.FunctionComponent<Props> = ({
     const path = `/search?${querystring.encode(query)}`;
     await Router.push(path, path);
 
-    await qeuryResult.refetch({ input });
+    await queryResult.refetch({ input });
 
     setArgs(input);
   };
@@ -49,20 +52,16 @@ export const SearchView: React.FunctionComponent<Props> = ({
   return (
     <SearchLayout searchArgs={args} updateArgs={handleArgsUpdate}>
       <SearchSidebar
-        data={qeuryResult.data}
+        data={queryResult.data}
         searchArgs={args}
         setSearchArgs={handleArgsUpdate}
       />
       <SearchMobileDetail
-        data={qeuryResult.data}
+        data={queryResult.data}
         searchArgs={args}
         setSearchArgs={handleArgsUpdate}
       />
-      <SearchContent
-        client={qeuryResult}
-        setHasMore={setHasMore}
-        hasMore={hasMore}
-      />
+      <SearchContent client={queryResult} />
     </SearchLayout>
   );
 };

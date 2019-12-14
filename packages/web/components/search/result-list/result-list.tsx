@@ -8,22 +8,25 @@ import { SearchResultItem } from './item';
 interface Props {
   data: SearchQuery;
   loadMore: () => void;
-  onPostingSelect: (id: string) => void;
+  hasMore: boolean;
+  onPostingSelect: (id: string, index: number) => Promise<void>;
   selectedPosting?: string;
 }
 
 export const SearchResultList: React.FunctionComponent<Props> = ({
   data,
   loadMore,
+  hasMore,
   onPostingSelect,
   selectedPosting,
 }) => {
   const items = (
     (data.search && data.search.results) ||
     []
-  ).map(({ posting }) => (
+  ).map(({ posting }, i) => (
     <SearchResultItem
       key={posting.id}
+      index={i}
       posting={posting}
       selectedId={selectedPosting}
       selectPosting={onPostingSelect}
@@ -34,7 +37,7 @@ export const SearchResultList: React.FunctionComponent<Props> = ({
     <InfiniteScroll
       dataLength={items.length}
       next={loadMore}
-      hasMore={data.search && data.search.count > items.length}
+      hasMore={hasMore}
       loader={<Spin key={0} />}
       endMessage={
         <p style={{ textAlign: 'center' }}>

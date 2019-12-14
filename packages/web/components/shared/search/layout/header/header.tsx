@@ -47,7 +47,7 @@ export const SearchHeader: React.FunctionComponent<Props> = ({
         onSubmit={async variables => {
           const query = searchToQuery(variables);
           const path = `/search?${querystring.encode(query)}`;
-          await Router.push(path, path, { shallow: true });
+          await Router.push(path, path);
         }}
         initialValues={searchArgs}
       >

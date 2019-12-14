@@ -28,7 +28,7 @@ const Search: NextPage<Props> = ({ searchArgs, locType, error }) => {
     return <SearchErrorView searchArgs={searchArgs} error={error} />;
   }
 
-  const onCompleted = (client: ApolloClient<object>) => {
+  const setLocation = (client: ApolloClient<object>) => {
     // This updates local location storage and url params if necessary
     client.mutate({
       mutation: SetUserLocationDocument,
@@ -36,7 +36,7 @@ const Search: NextPage<Props> = ({ searchArgs, locType, error }) => {
     });
   };
 
-  return <SearchView searchArgs={searchArgs} onCompleted={onCompleted} />;
+  return <SearchView searchArgs={searchArgs} setLocation={setLocation} />;
 };
 
 Search.getInitialProps = async (ctx: NextPageContextApollo) => {

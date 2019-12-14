@@ -34,6 +34,10 @@ export const searchToQuery = (
     ) {
       query.pay_rate = search.filters.pay_rate;
     }
+
+    if (search.pagination.skip) {
+      query.skip = search.pagination.skip.toString();
+    }
   }
 
   return query;
@@ -46,6 +50,13 @@ export const queryToSearch = (query: {
     if (query[prop].trim()) {
       if (prop === 'search') {
         return { [prop]: query[prop], ...acc };
+      }
+
+      if (prop === 'skip') {
+        return {
+          ...acc,
+          pagination: { [prop]: parseInt(query[prop], 10), ...acc.pagination },
+        };
       }
 
       if (Object.keys(searchFilterOptions).includes(prop)) {

@@ -1,38 +1,79 @@
 import React, { useState, useEffect } from 'react';
 import { QueryResult, useQuery } from 'react-apollo';
 import { Row, Col } from 'antd';
+import querystring from 'querystring';
+import { useRouter } from 'next/router';
+import { searchPaginationDefault } from '@jobperday/common';
 
 import {
   SearchQuery,
   ViewportQueryQuery,
   ViewportQueryDocument,
+  SearchInput,
 } from '../../../apollo/generated-components';
 import { SearchResultList } from '../result-list';
 import { SearchResultView } from '../result';
 import { SearchAffix } from '../affix';
 import { Breakpoints } from '../../../utils';
-import styles from './style.less';
 import { LoaderMask } from '../../shared';
+import styles from './style.less';
+import { SearchNoResults } from '../no-results';
 
 interface Props {
-  client: QueryResult<SearchQuery, Record<string, any>>;
-  setHasMore: (value: boolean) => void;
-  hasMore: boolean;
+  client: QueryResult<SearchQuery, { input: SearchInput }>;
+}
+
+interface LoadState {
+  initData: boolean;
+  initSkip: number;
 }
 
 export const SearchContent: React.FunctionComponent<Props> = props => {
-  const { loading, data, error, variables, fetchMore } = props.client;
+  const [loadState, setLoadState] = useState<LoadState>({
+    initData: true,
+    initSkip: 0,
+  });
+  const [hasMore, setHasMore] = useState(true);
+  const router = useRouter();
+  const { data, error, variables, fetchMore } = props.client;
   const { data: vpData } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
   const [selectedPosting, setSelectedPosting] = useState<string | undefined>(
     undefined,
   );
-  const [initLoad, setInitLoad] = useState(true);
 
   if (!vpData || error || !data) {
     return null;
   }
 
-  const onPostingSelect = (id: string) => {
+  const onPostingSelect = async (
+    id: string,
+    skip: number | null,
+    onLoad?: boolean,
+  ) => {
+    // Add posting id to url for reference
+
+    if (!onLoad) {
+      const queryParams: { [key: string]: string } = {
+        ...router.query,
+        pId: id,
+      };
+
+      const scrollBuffer = 1;
+
+      if (skip && skip + loadState.initSkip > searchPaginationDefault.limit) {
+        queryParams.skip = (
+          skip +
+          loadState.initSkip -
+          scrollBuffer
+        ).toString();
+      }
+
+      const href = `/search?${querystring.encode(queryParams)}`;
+      const as = href;
+
+      await router.push(href, as, { shallow: true });
+    }
+
     if (Breakpoints[vpData.viewport] > Breakpoints.XL) {
       setSelectedPosting(id);
       return;
@@ -43,39 +84,53 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
   };
 
   useEffect(() => {
-    if (!initLoad) {
+    if (data.search) {
+      setHasMore(
+        data.search.count > loadState.initSkip + data.search.results.length,
+      );
+    }
+
+    if (!loadState.initData) {
       return;
+    }
+
+    const query = router.query as { [key: string]: string };
+
+    if (query.skip) {
+      setLoadState({ ...loadState, initSkip: parseInt(query.skip, 10) });
     }
 
     // Default to first posting in results
     if (data.search && data.search.results.length > 0) {
-      onPostingSelect(data.search.results[0].posting.id);
+      // Need to consider here if stale post is loaded (how to handle?)
+
+      const urlPostId = router.query.pId as string;
+      const loadPost = urlPostId
+        ? urlPostId
+        : data.search.results[0].posting.id;
+
+      onPostingSelect(loadPost, null, true);
     }
   }, [data]);
 
   const loadMore = () => {
-    if (loading) {
-      return null;
-    }
-
-    setInitLoad(false);
+    setLoadState({
+      ...loadState,
+      initData: false,
+    });
 
     const input = {
       ...variables.input,
       pagination: {
         ...variables.input.pagination,
-        skip: data.search.results.length,
+        skip: loadState.initSkip + data.search.results.length,
       },
     };
 
     return fetchMore({
       variables: { input },
       updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) {
-          return prev;
-        }
-
-        if (fetchMoreResult.search.results.length === 0) {
+        if (!fetchMoreResult || fetchMoreResult.search.results.length === 0) {
           return prev;
         }
 
@@ -93,6 +148,10 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
     });
   };
 
+  if (data && data.search && data.search.count === 0) {
+    return <SearchNoResults />;
+  }
+
   return (
     <div className={styles.container}>
       <Row gutter={16}>
@@ -100,6 +159,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
           <SearchResultList
             data={data}
             loadMore={loadMore}
+            hasMore={hasMore}
             onPostingSelect={onPostingSelect}
             selectedPosting={selectedPosting}
           />
