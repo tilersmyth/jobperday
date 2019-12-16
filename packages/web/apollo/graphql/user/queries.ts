@@ -21,18 +21,6 @@ export const meQuery = gql`
   }
 `;
 
-export const UserLocationQuery = gql`
-  query UserLocation {
-    userLocation {
-      locality
-      coords {
-        lat
-        lng
-      }
-    }
-  }
-`;
-
 export const currentUserQuery = gql`
   query CurrentUser {
     currentUser @client {

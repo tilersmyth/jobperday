@@ -8,13 +8,13 @@ export const userTypeDef = gql`
 
   type LocationStorageDto {
     type: LocationStorageTypeEnum!
-    location: SessionLocationDto!
+    location: UserLocationDto!
   }
 
   extend type Query {
     currentUser: UserDto!
     getSearchLocation(locationParam: String!): LocationStorageDto
-    getNonSearchLocation: SessionLocationDto
+    getNonSearchLocation: UserLocationDto
   }
 
   extend type Mutation {

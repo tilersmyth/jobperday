@@ -3,8 +3,10 @@ import base64 from 'base-64';
 
 import {
   LocationInput,
-  UserLocationQuery,
-  UserLocationDocument,
+  UserIpLocationQuery,
+  UserIpLocationDocument,
+  UserGoogleLocationDocument,
+  UserGoogleLocationQuery,
 } from '../../apollo/generated-components';
 import { NextPageContextApollo } from '../../types';
 import { LocationCookieEnum } from '../enums';
@@ -33,32 +35,18 @@ export class SearchLocationUtil {
   };
 
   public googleApi = async (
-    location: string | string[],
-  ): Promise<LocationInput | null> => {
-    console.log('HIT GOOGLE');
-    try {
-      const queryApi = await fetch(
-        // tslint:disable-next-line:max-line-length
-        `https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input=${location}&inputtype=textquery&fields=formatted_address,geometry&key=${process.env.GOOGLE_PLACES_API}`,
-      );
-
-      const { candidates } = await queryApi.json();
-
-      if (candidates.length === 0) {
-        return null;
-      }
-
-      const googleLoc = candidates[0];
-
-      return {
-        locality: googleLoc.formatted_address,
-        coords: {
-          ...googleLoc.geometry.location,
-        },
-      };
-    } catch (error) {
-      throw error;
+    address: string | string[],
+  ): Promise<UserGoogleLocationQuery['userGoogleLocation']> => {
+    if (!this.ctx) {
+      return null;
     }
+
+    const client = this.ctx.apolloClient;
+    const { data } = await client.query<UserGoogleLocationQuery>({
+      query: UserGoogleLocationDocument,
+      variables: { address },
+    });
+    return data && data.userGoogleLocation;
   };
 
   public apolloOutput = (location: LocationInput) => {
@@ -73,15 +61,17 @@ export class SearchLocationUtil {
     };
   };
 
-  public ipAddress = async (): Promise<LocationInput | null> => {
+  public ipLocation = async (): Promise<
+    UserIpLocationQuery['userIpLocation']
+  > => {
     if (!this.ctx) {
       return null;
     }
 
     const client = this.ctx.apolloClient;
-    const { data } = await client.query<UserLocationQuery | null>({
-      query: UserLocationDocument,
+    const { data } = await client.query<UserIpLocationQuery>({
+      query: UserIpLocationDocument,
     });
-    return data && data.userLocation;
+    return data && data.userIpLocation;
   };
 }

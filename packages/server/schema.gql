@@ -257,18 +257,6 @@ enum MemberRolesEnum {
   associate
 }
 
-type MeSessionDto {
-  id: ID!
-  first_name: String!
-  last_name: String!
-  email: String!
-  realm: String!
-  is_verified: Boolean!
-  setup: [String!]!
-  created_at: DateTime!
-  location: SessionLocationDto
-}
-
 type Mutation {
   register(input: RegisterInput!): UserDto!
   login(input: LoginInput!): UserDto!
@@ -327,9 +315,8 @@ type PostingJobDto {
 }
 
 type Query {
-  me: MeSessionDto
+  me: UserSessionDto
   allUsers: [UserDto!]!
-  userLocation: SessionLocationDto
   findCompanyContact(companySlug: String!): CompanyContactDto
   findCompanyAddresses(companySlug: String!): [AddressDto!]!
   findCompanyProfile(companySlug: String!): CompanyProfileDto
@@ -347,6 +334,8 @@ type Query {
   search(input: SearchInput!): SearchDto!
   searchFindPosting(id: ID!): PostingDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!
+  userIpLocation: UserLocationDto
+  userGoogleLocation(address: String!): UserLocationDto
 }
 
 input RegisterInput {
@@ -416,16 +405,6 @@ type SearchResultDto {
   rank: Float!
 }
 
-type SessionCoordsDto {
-  lng: Float!
-  lat: Float!
-}
-
-type SessionLocationDto {
-  locality: String!
-  coords: SessionCoordsDto!
-}
-
 input UpdateAddressInput {
   id: ID!
   street: String
@@ -475,6 +454,11 @@ input UploadImageInput {
   image: Upload!
 }
 
+type UserCoordsDto {
+  lng: Float!
+  lat: Float!
+}
+
 type UserDto {
   id: ID!
   first_name: String!
@@ -484,4 +468,21 @@ type UserDto {
   is_verified: Boolean!
   setup: [String!]!
   created_at: DateTime!
+}
+
+type UserLocationDto {
+  locality: String!
+  coords: UserCoordsDto!
+}
+
+type UserSessionDto {
+  id: ID!
+  first_name: String!
+  last_name: String!
+  email: String!
+  realm: String!
+  is_verified: Boolean!
+  setup: [String!]!
+  created_at: DateTime!
+  location: UserLocationDto
 }

@@ -36,6 +36,9 @@ interface Config {
     region: string;
     sslEnabled: boolean;
   };
+  google: {
+    key: string;
+  };
 }
 
 export const config: Config = {
@@ -81,5 +84,8 @@ export const config: Config = {
     secretAccessKey: process.env.AWS_SES_SECRET_ACCESS_KEY,
     region: process.env.AWS_SES_REGION,
     sslEnabled: process.env.NODE_ENV === 'production',
+  },
+  google: {
+    key: process.env.GOOGLE_PLACES_API,
   },
 };

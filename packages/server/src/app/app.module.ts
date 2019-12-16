@@ -12,12 +12,14 @@ import { ApplicationModule } from './application/application.module';
 import { CompanyImageModule } from './company/image/image.module';
 import { CompanyContactModule } from './company-contact';
 import { ApplicantModule } from './applicant/applicant.module';
+import { UserLocationModule } from './user-location/location.module';
 
 @Module({
   imports: [
     DatabaseModule,
     AuthModule,
     UserModule,
+    UserLocationModule,
     CompanyModule,
     CompanyContactModule,
     JobModule,

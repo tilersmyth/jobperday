@@ -142,7 +142,7 @@ export const userResolvers = {
         return localLoc;
       }
 
-      const serverLoc = await locationUtil.ipAddress();
+      const serverLoc = await locationUtil.ipLocation();
       if (serverLoc) {
         return serverLoc;
       }

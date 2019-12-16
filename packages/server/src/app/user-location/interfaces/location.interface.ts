@@ -3,7 +3,7 @@ interface Coords {
   lat: number;
 }
 
-export interface SearchLocation {
+export interface UserLocation {
   locality: string;
   coords: Coords;
 }
