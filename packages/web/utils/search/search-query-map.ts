@@ -1,13 +1,10 @@
+import querystring from 'querystring';
 import { searchFilterOptions } from '@jobperday/common';
 
 import { SearchInput } from '../../apollo/generated-components';
 import { SearchModel } from './SearchModel';
 
-export const searchToQuery = (
-  search: SearchInput,
-): {
-  [key: string]: string;
-} => {
+export const argsQueryString = (search: SearchInput) => {
   const query: {
     [key: string]: string;
   } = {
@@ -40,7 +37,7 @@ export const searchToQuery = (
     }
   }
 
-  return query;
+  return `/search?${querystring.encode(query)}`;
 };
 
 export const queryToSearch = (query: {

@@ -3,7 +3,6 @@ import { QueryResult, useQuery } from 'react-apollo';
 import { Row, Col } from 'antd';
 import querystring from 'querystring';
 import { useRouter } from 'next/router';
-import { searchPaginationDefault } from '@jobperday/common';
 
 import {
   SearchQuery,
@@ -36,12 +35,12 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
   const [hasMore, setHasMore] = useState(true);
   const router = useRouter();
   const { data, error, variables, fetchMore } = props.client;
-  const { data: vpData } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
+  const { data: uiData } = useQuery<ViewportQueryQuery>(ViewportQueryDocument);
   const [selectedPosting, setSelectedPosting] = useState<string | undefined>(
     undefined,
   );
 
-  if (!vpData || error || !data) {
+  if (!uiData || error || !data) {
     return null;
   }
 
@@ -50,8 +49,6 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
     skip: number | null,
     onLoad?: boolean,
   ) => {
-    // Add posting id to url for reference
-
     if (!onLoad) {
       const queryParams: { [key: string]: string } = {
         ...router.query,
@@ -60,7 +57,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
 
       const scrollBuffer = 1;
 
-      if (skip && skip + loadState.initSkip > searchPaginationDefault.limit) {
+      if (skip && skip + loadState.initSkip > scrollBuffer) {
         queryParams.skip = (
           skip +
           loadState.initSkip -
@@ -74,7 +71,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
       await router.push(href, as, { shallow: true });
     }
 
-    if (Breakpoints[vpData.viewport] > Breakpoints.XL) {
+    if (Breakpoints[uiData.viewport] > Breakpoints.XL) {
       setSelectedPosting(id);
       return;
     }
@@ -110,8 +107,18 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
         : data.search.results[0].posting.id;
 
       onPostingSelect(loadPost, null, true);
+
+      // scrollTo not working without delay
+      setTimeout(
+        () =>
+          window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+          }),
+        300,
+      );
     }
-  }, [data]);
+  }, [data, uiData]);
 
   const loadMore = () => {
     setLoadState({

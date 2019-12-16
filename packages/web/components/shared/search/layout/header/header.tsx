@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Formik } from 'formik';
 import { useQuery } from 'react-apollo';
 import Router from 'next/router';
-import querystring from 'querystring';
 
 import { SearchSchema } from './validation-schema';
 import {
@@ -12,7 +11,7 @@ import {
 } from '../../../../../apollo';
 import { SearchHeaderForm } from '../../form';
 import { SearchHeaderContainer } from './container';
-import { Breakpoints, searchToQuery } from '../../../../../utils';
+import { Breakpoints, argsQueryString } from '../../../../../utils';
 
 interface Props {
   searchArgs: SearchInput;
@@ -44,10 +43,10 @@ export const SearchHeader: React.FunctionComponent<Props> = ({
         validateOnBlur={false}
         validateOnChange={true}
         validationSchema={SearchSchema}
-        onSubmit={async variables => {
-          const query = searchToQuery(variables);
-          const path = `/search?${querystring.encode(query)}`;
-          await Router.push(path, path);
+        onSubmit={async input => {
+          const href = argsQueryString(input);
+          const as = href;
+          await Router.push(href, as);
         }}
         initialValues={searchArgs}
       >

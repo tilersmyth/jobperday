@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import Router from 'next/router';
 import { useQuery, useApolloClient } from 'react-apollo';
 import ApolloClient from 'apollo-client';
-import querystring from 'querystring';
 
 import {
   SearchInput,
@@ -12,7 +11,7 @@ import {
 import { SearchSidebar } from './sidebar';
 import { SearchContent } from './content';
 import { SearchLayout } from '../shared';
-import { searchToQuery } from '../../utils';
+import { argsQueryString } from '../../utils';
 import { SearchMobileDetail } from './mobile-detail';
 
 interface Props {
@@ -38,11 +37,10 @@ export const SearchView: React.FunctionComponent<Props> = ({
   const [args, setArgs] = useState(searchArgs);
 
   const handleArgsUpdate = async (input: SearchInput) => {
-    const query = searchToQuery(input);
-
     // Add variables to url
-    const path = `/search?${querystring.encode(query)}`;
-    await Router.push(path, path);
+    const href = argsQueryString(input);
+    const as = href;
+    await Router.push(href, as);
 
     await queryResult.refetch({ input });
 

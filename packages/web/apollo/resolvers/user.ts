@@ -1,7 +1,6 @@
 import { ApolloCache } from 'apollo-cache';
 import ApolloClient from 'apollo-client';
 import Router from 'next/router';
-import querystring from 'querystring';
 
 import {
   MeDocument,
@@ -10,7 +9,7 @@ import {
   SearchInput,
 } from '../generated-components';
 import { NextPageContextApollo } from '../../types';
-import { searchToQuery, SearchLocationUtil } from '../../utils';
+import { argsQueryString, SearchLocationUtil } from '../../utils';
 
 type GetCacheKey = (obj: { __typename: string; id: string | number }) => any;
 
@@ -74,9 +73,9 @@ export const userResolvers = {
 
       if (type === LocationStorageTypeEnum.Google) {
         // Update url with location param if from Google API
-        const newQuery = searchToQuery(searchArgs);
-        const path = `/search?${querystring.encode(newQuery)}`;
-        Router.push(path, path, { shallow: true });
+        const href = argsQueryString(searchArgs);
+        const as = href;
+        Router.push(href, as, { shallow: true });
       }
 
       return true;
