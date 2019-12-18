@@ -28,9 +28,7 @@ export class CompanyProfileResolver {
     @Company() company: CompanyEntity,
     @Args('companySlug') _: string,
   ) {
-    return this.profileService.findOne({
-      where: { company },
-    });
+    return this.profileService.findOne(company);
   }
 
   @Mutation(() => CompanyProfileDto)
@@ -41,9 +39,7 @@ export class CompanyProfileResolver {
     @Args('input') input: CompanyProfileInput,
     @Args('companySlug') _: string,
   ) {
-    const profile = await this.profileService.create(input);
-    company.setup_stage = company.setup_stage + 1;
-    await company.save();
+    const profile = await this.profileService.create(company, input);
     this.logger.debug(`[createCompanyProfile]: ${company.id}`);
     return profile;
   }

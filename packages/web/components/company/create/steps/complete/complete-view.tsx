@@ -1,9 +1,13 @@
 import React from 'react';
-import Link from 'next/link';
 import { Card, PageHeader, Icon, Result, Button, Row, Col } from 'antd';
 
 import { FindCompanyQuery } from '../../../../../apollo';
-import { CompanyHeader, CompanyContent, RootLayout } from '../../../../shared';
+import {
+  CompanyHeader,
+  CompanyContent,
+  RootLayout,
+  CompanyLink,
+} from '../../../../shared';
 import styles from './style.less';
 
 interface Props {
@@ -40,19 +44,17 @@ export const CreateCompanyCompleteView: React.SFC<Props> = ({ company }) => {
                 title={<Title name={company.name} />}
                 subTitle="Approval generally takes less than 24 hours. In the meantime create a job!"
                 extra={[
-                  <Link key="home" href={`/employer/${company.slug}`}>
-                    <a>
-                      <Button>Home</Button>
-                    </a>
-                  </Link>,
-                  <Link
-                    key="create-job"
-                    href={`/employer/${company.slug}/jobs/create`}
+                  <CompanyLink key="home" as="" href="">
+                    <Button>Home</Button>
+                  </CompanyLink>,
+
+                  <CompanyLink
+                    key="create"
+                    as={`/jobs/create`}
+                    href="/jobs/create"
                   >
-                    <a>
-                      <Button type="primary">Create job</Button>
-                    </a>
-                  </Link>,
+                    <Button type="primary">Create job</Button>
+                  </CompanyLink>,
                 ]}
               />
             </Card>

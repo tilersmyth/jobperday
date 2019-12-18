@@ -43,10 +43,10 @@ export const SearchHeader: React.FunctionComponent<Props> = ({
         validateOnBlur={false}
         validateOnChange={true}
         validationSchema={SearchSchema}
-        onSubmit={async input => {
+        onSubmit={input => {
           const href = argsQueryString(input);
           const as = href;
-          await Router.push(href, as);
+          Router.push(href, as);
         }}
         initialValues={searchArgs}
       >

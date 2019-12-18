@@ -24,7 +24,7 @@ export const TextAreaField = ({
       help={errorMsg}
       label={label}
     >
-      <TextArea {...field} {...rest} autosize={autoSize} />
+      <TextArea {...field} {...rest} autoSize={autoSize} />
     </Form.Item>
   );
 };

@@ -80,9 +80,10 @@ export class JobPostingService extends CrudService<JobPostingEntity> {
   public async findCurrent(company: CompanyEntity, input: PaginationInput) {
     const query = this.repository
       .createQueryBuilder('posting')
-      .where('posting.companyId = :id', { id: company.id })
+      .innerJoin('posting.company', 'company')
+      .where('company.id = :id', { id: company.id })
       .andWhere('posting.apply_deadline > :now', { now: new Date() })
-      .leftJoinAndSelect('posting.job', 'job')
+      .innerJoinAndSelect('posting.job', 'job')
       .skip(input.skip)
       .take(input.limit);
 

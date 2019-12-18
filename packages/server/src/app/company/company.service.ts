@@ -10,6 +10,8 @@ import { UserService } from '../user/user.service';
 import { CompanyMemberService } from '../company-member/member.service';
 import { CompanyInput, UpdateCompanyInput } from './inputs';
 import { SlugGeneratorUtil } from '../_helpers';
+import { CompanyProfileEntity } from '../company-profile';
+import { CompanyContactEntity } from '../company-contact';
 
 @Injectable()
 export class CompanyService extends CrudService<CompanyEntity> {
@@ -86,5 +88,38 @@ export class CompanyService extends CrudService<CompanyEntity> {
   public async findSlug(name: string): Promise<string | null> {
     const slug = new SlugGeneratorUtil(this.repository);
     return slug.available(name);
+  }
+
+  /**
+   * Find company profile
+   * Relation of company entity
+   */
+  public async findProfile(
+    companyId: string,
+  ): Promise<CompanyProfileEntity | null> {
+    const company = await this.repository
+      .createQueryBuilder('company')
+      .where('company.id = :id', { id: companyId })
+      .leftJoinAndSelect('company.profile', 'profile')
+      .getOne();
+
+    return company.profile;
+  }
+
+  /**
+   * Find company contact
+   * Relation of company entity
+   */
+  public async findContact(
+    companyId: string,
+  ): Promise<CompanyContactEntity | null> {
+    const company = await this.repository
+      .createQueryBuilder('company')
+      .where('company.id = :id', { id: companyId })
+      .leftJoinAndSelect('company.contact', 'contact')
+      .leftJoinAndSelect('contact.address', 'address')
+      .getOne();
+
+    return company.contact;
   }
 }

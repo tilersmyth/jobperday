@@ -1,4 +1,4 @@
-export { SelectJobInput } from './select-job-input';
+export { SelectJobInput } from './select-job-input/select-job-input';
 export { OpeningsInput } from './openings-input';
 export { SelectAddressView } from './select-address-input';
 export { SelectApplicationInput } from './select-application-input';

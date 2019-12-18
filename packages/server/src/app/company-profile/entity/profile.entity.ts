@@ -6,7 +6,7 @@ import {
   BaseEntity,
   UpdateDateColumn,
   OneToOne,
-  JoinColumn,
+  RelationId,
 } from 'typeorm';
 
 import { CompanyEntity } from '../../company/entity';
@@ -25,7 +25,7 @@ export class CompanyProfileEntity extends BaseEntity {
   @Column('text')
   public about: string;
 
-  @OneToOne(() => CompanyEntity)
+  @OneToOne(() => CompanyEntity, company => company.profile)
   public company: CompanyEntity;
 
   @UpdateDateColumn() updated_at: Date;

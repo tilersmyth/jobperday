@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Layout, Icon } from 'antd';
-import { useQuery, useMutation } from 'react-apollo';
+import { useQuery, useMutation, useApolloClient } from 'react-apollo';
 
 import {
   CurrentUserDocument,
@@ -16,6 +16,7 @@ interface Props {
 }
 
 export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
+  const client = useApolloClient();
   const [logout] = useMutation<LogoutMutation>(LogoutDocument);
   const { loading, data, error } = useQuery<CurrentUserQuery>(
     CurrentUserDocument,
@@ -27,9 +28,9 @@ export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
 
   const { currentUser } = data;
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     logout({
-      update(cache, { data: logoutData }) {
+      async update(cache, { data: logoutData }) {
         if (!logoutData || !logoutData.logout) {
           console.log('error logging out');
           return;
@@ -39,6 +40,8 @@ export const CandidateHeader: React.SFC<Props> = ({ openDrawer }) => {
           query: CurrentUserDocument,
           data: { currentUser: null },
         });
+
+        await client.clearStore();
       },
     });
   };

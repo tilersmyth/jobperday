@@ -29,10 +29,7 @@ export class CompanyContactResolver {
     @Company() company: CompanyEntity,
     @Args('companySlug') _: string,
   ) {
-    return this.contactService.findOne({
-      where: { company },
-      relations: ['address'],
-    });
+    return this.contactService.findOne(company);
   }
 
   @Mutation(() => CompanyContactDto)

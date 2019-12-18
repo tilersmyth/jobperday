@@ -3,7 +3,8 @@ import Router from 'next/router';
 import { Select, Form, Divider, Icon } from 'antd';
 import { FieldProps, getIn } from 'formik';
 
-import { FindAllJobsQuery } from '../../../../../apollo/generated-components';
+import { FindAllJobsQuery } from '../../../../../../apollo/generated-components';
+import styles from './style.less';
 
 const { Option } = Select;
 
@@ -52,11 +53,11 @@ export const SelectJobInput: React.FunctionComponent<Props> = ({
             .includes(input.toLowerCase());
         }}
         dropdownRender={menu => (
-          <div className="posting-select-menu">
+          <div className={styles.dropdown}>
             {menu}
-            <Divider />
+            <Divider className={styles.divider} />
             <div
-              className="extra-option"
+              className={styles.option}
               onMouseDown={e => e.preventDefault()}
               onClick={createNewJob}
             >

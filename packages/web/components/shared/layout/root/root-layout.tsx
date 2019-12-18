@@ -32,6 +32,7 @@ export const RootLayout: React.SFC<Props> = ({
       });
     }
   };
+
   return (
     <div>
       <Head>
@@ -39,7 +40,7 @@ export const RootLayout: React.SFC<Props> = ({
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <script
-          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_PLACES_API}&libraries=places`}
+          src={`https://maps.googleapis.com/maps/api/js?key=${process.env.GOOGLE_API_KEY}&libraries=places`}
         />
       </Head>
       <Layout>{children}</Layout>

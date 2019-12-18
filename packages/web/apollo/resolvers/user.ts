@@ -139,7 +139,7 @@ export const userResolvers = {
 
       const localLoc = locationUtil.getCookie();
       if (localLoc) {
-        return localLoc;
+        return locationUtil.apolloOutput(localLoc);
       }
 
       const serverLoc = await locationUtil.ipLocation();

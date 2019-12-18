@@ -33,22 +33,21 @@ export class CompanySeedService {
     for (const user of users) {
       const companyName = faker.company.companyName();
 
-      const imageIndex = randomNum(1, 11);
-
-      const profile = await this.profileService.create({
-        profile_image: `https://jobperday-dev.s3.amazonaws.com/sample/profile/profile_sample-${imageIndex}.png`,
-        cover_image:
-          'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_cover.jpg',
-        about: 'about this company....',
-      });
-
       const company = new CompanyEntity();
       company.name = companyName;
       company.slug = await this.generateSlug(companyName);
       company.setup_complete = true;
       company.active = true;
-      company.profile = profile;
       const savedCompany = await this.repository.save(company);
+
+      const imageIndex = randomNum(1, 11);
+
+      const profile = await this.profileService.create(savedCompany, {
+        profile_image: `https://jobperday-dev.s3.amazonaws.com/sample/profile/profile_sample-${imageIndex}.png`,
+        cover_image:
+          'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_cover.jpg',
+        about: 'about this company....',
+      });
 
       await this.memberService.add(
         {

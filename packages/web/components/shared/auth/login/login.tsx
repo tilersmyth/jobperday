@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Formik } from 'formik';
-import { useMutation } from 'react-apollo';
+import { useMutation, useApolloClient } from 'react-apollo';
 
 import {
   LoginDocument,
@@ -18,6 +18,7 @@ interface Props {
 }
 
 export const LoginView: React.FunctionComponent<Props> = ({ onSuccess }) => {
+  const client = useApolloClient();
   const [login] = useMutation<LoginMutation>(LoginDocument);
   const [error, setError] = useState('');
 
@@ -37,11 +38,13 @@ export const LoginView: React.FunctionComponent<Props> = ({ onSuccess }) => {
             setError('');
             await login({
               variables: { input },
-              update(cache, { data }) {
+              async update(cache, { data }) {
                 if (!data) {
                   console.log('error adding user to cache');
                   return;
                 }
+
+                await client.clearStore();
 
                 cache.writeQuery<CurrentUserQuery>({
                   query: CurrentUserDocument,
