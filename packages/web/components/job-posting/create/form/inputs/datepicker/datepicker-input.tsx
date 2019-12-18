@@ -28,7 +28,7 @@ export const DatepickerInput: React.FunctionComponent<Props> = ({
         className={styles.datepicker}
         showTime={true}
         onChange={value => value && setFieldValue(field.name, value.format())}
-        onOk={value => setFieldValue(field.name, value.format())}
+        onOk={value => value && setFieldValue(field.name, value.format())}
       />
     </Form.Item>
   );
