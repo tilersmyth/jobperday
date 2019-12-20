@@ -2,13 +2,18 @@ import React, { useState } from 'react';
 import { Form } from 'antd';
 import { FieldProps } from 'formik';
 
-import { PROFILE_DEFAULT_IMAGES } from '../../initial-values';
-import { ImageUploadModal } from '../../../../../../../shared';
+import { CurrentCompanyQuery } from '../../../../../../../../apollo';
+import { ImageUploadModal, ProfileAvatar } from '../../../../../../../shared';
 import styles from './style.less';
 
-export const SelectProfileImage: React.FunctionComponent<FieldProps> = ({
+interface Props extends FieldProps {
+  company: CurrentCompanyQuery['currentCompany'];
+}
+
+export const SelectProfileImage: React.FunctionComponent<Props> = ({
   field,
   form,
+  company,
 }) => {
   const [imageModal, setImageModal] = useState(false);
 
@@ -17,11 +22,15 @@ export const SelectProfileImage: React.FunctionComponent<FieldProps> = ({
       <Form.Item className={styles.container}>
         <div className={styles.profile}>
           <div className={styles.mask} onClick={() => setImageModal(true)} />
-          <img
-            src={
-              field.value ? field.value : PROFILE_DEFAULT_IMAGES.profile_image
-            }
-          />
+          {field.value && <img src={field.value} />}
+          {!field.value && (
+            <ProfileAvatar
+              color={form.values.color}
+              companyName={company.name}
+              size={200}
+              shape="square"
+            />
+          )}
         </div>
       </Form.Item>
 

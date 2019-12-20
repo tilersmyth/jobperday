@@ -163,13 +163,15 @@ export type CompanyProfileDto = {
   id: Scalars['ID'];
   about: Scalars['String'];
   cover_image: Scalars['String'];
-  profile_image: Scalars['String'];
+  profile_image?: Maybe<Scalars['String']>;
+  color: ProfileColorsEnum;
 };
 
 export type CompanyProfileInput = {
   profile_image?: Maybe<Scalars['String']>;
-  cover_image?: Maybe<Scalars['String']>;
+  cover_image: Scalars['String'];
   about: Scalars['String'];
+  color: ProfileColorsEnum;
 };
 
 export type CoordsInput = {
@@ -438,7 +440,8 @@ export type PostingCompanyDto = {
 
 export type PostingCompanyProfileDto = {
   __typename?: 'PostingCompanyProfileDto';
-  profile_image: Scalars['String'];
+  profile_image?: Maybe<Scalars['String']>;
+  color: ProfileColorsEnum;
 };
 
 export type PostingDto = {
@@ -464,6 +467,16 @@ export type PostingJobDto = {
   type: Scalars['String'];
   tags: Array<Scalars['String']>;
 };
+
+export enum ProfileColorsEnum {
+  Red = 'red',
+  Orange = 'orange',
+  Cyan = 'cyan',
+  Blue = 'blue',
+  Lime = 'lime',
+  Volcano = 'volcano',
+  Green = 'green',
+}
 
 export type Query = {
   __typename?: 'Query';
@@ -594,7 +607,8 @@ export type SearchCompanyDto = {
 
 export type SearchCompanyProfileDto = {
   __typename?: 'SearchCompanyProfileDto';
-  profile_image: Scalars['String'];
+  profile_image?: Maybe<Scalars['String']>;
+  color: ProfileColorsEnum;
 };
 
 export type SearchDto = {
@@ -790,6 +804,28 @@ export type CreateApplicantMutation = { __typename?: 'Mutation' } & Pick<
   'createApplicant'
 >;
 
+export type UploadImageMutationVariables = {
+  companySlug: Scalars['String'];
+  input: UploadImageInput;
+};
+
+export type UploadImageMutation = { __typename?: 'Mutation' } & {
+  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
+    CompanyImageDto,
+    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
+  >;
+};
+
+export type FindAllCompanyImagesQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
+  findAllCompanyImages: Array<
+    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
+  >;
+};
+
 export type CreateCompanyMutationVariables = {
   input: CompanyInput;
 };
@@ -856,28 +892,6 @@ export type FindCompanySlugQuery = { __typename?: 'Query' } & Pick<
   Query,
   'findCompanySlug'
 >;
-
-export type UploadImageMutationVariables = {
-  companySlug: Scalars['String'];
-  input: UploadImageInput;
-};
-
-export type UploadImageMutation = { __typename?: 'Mutation' } & {
-  uploadImage: { __typename?: 'CompanyImageDto' } & Pick<
-    CompanyImageDto,
-    'id' | 'filename' | 'path' | 'thumb' | 'awsKey'
-  >;
-};
-
-export type FindAllCompanyImagesQueryVariables = {
-  companySlug: Scalars['String'];
-};
-
-export type FindAllCompanyImagesQuery = { __typename?: 'Query' } & {
-  findAllCompanyImages: Array<
-    { __typename?: 'CompanyImageDto' } & Pick<CompanyImageDto, 'id' | 'path'>
-  >;
-};
 
 export type CreateCompanyContactMutationVariables = {
   companySlug: Scalars['String'];
@@ -1013,7 +1027,10 @@ export type UpdateCompanyProfileClientMutation = {
 
 export type CompanyProfilePartsFragment = {
   __typename?: 'CompanyProfileDto';
-} & Pick<CompanyProfileDto, 'id' | 'about' | 'cover_image' | 'profile_image'>;
+} & Pick<
+  CompanyProfileDto,
+  'id' | 'about' | 'cover_image' | 'profile_image' | 'color'
+>;
 
 export type FindCompanyProfileQueryVariables = {
   companySlug: Scalars['String'];
@@ -1122,7 +1139,7 @@ export type SearchQuery = { __typename?: 'Query' } & {
                 > & {
                     profile: { __typename?: 'SearchCompanyProfileDto' } & Pick<
                       SearchCompanyProfileDto,
-                      'profile_image'
+                      'profile_image' | 'color'
                     >;
                   };
               };
@@ -1156,7 +1173,7 @@ export type SearchFindPostingQuery = { __typename?: 'Query' } & {
       > & {
           profile: { __typename?: 'PostingCompanyProfileDto' } & Pick<
             PostingCompanyProfileDto,
-            'profile_image'
+            'profile_image' | 'color'
           >;
         };
     };
@@ -1424,6 +1441,7 @@ export const CompanyProfilePartsFragmentDoc = gql`
     about
     cover_image
     profile_image
+    color
   }
 `;
 export const PostingPartsFragmentDoc = gql`
@@ -1710,6 +1728,129 @@ export type CreateApplicantMutationResult = ApolloReactCommon.MutationResult<
 export type CreateApplicantMutationOptions = ApolloReactCommon.BaseMutationOptions<
   CreateApplicantMutation,
   CreateApplicantMutationVariables
+>;
+export const UploadImageDocument = gql`
+  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
+    uploadImage(companySlug: $companySlug, input: $input) {
+      id
+      filename
+      path
+      thumb
+      awsKey
+    }
+  }
+`;
+export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>;
+export type UploadImageComponentProps = Omit<
+  ApolloReactComponents.MutationComponentOptions<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >,
+  'mutation'
+>;
+
+export const UploadImageComponent = (props: UploadImageComponentProps) => (
+  <ApolloReactComponents.Mutation<
+    UploadImageMutation,
+    UploadImageMutationVariables
+  >
+    mutation={UploadImageDocument}
+    {...props}
+  />
+);
+
+export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
+  UploadImageMutation,
+  UploadImageMutationVariables
+> &
+  TChildProps;
+export function withUploadImage<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withMutation<
+    TProps,
+    UploadImageMutation,
+    UploadImageMutationVariables,
+    UploadImageProps<TChildProps>
+  >(UploadImageDocument, {
+    alias: 'withUploadImage',
+    ...operationOptions,
+  });
+}
+export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
+  UploadImageMutation
+>;
+export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
+  UploadImageMutation,
+  UploadImageMutationVariables
+>;
+export const FindAllCompanyImagesDocument = gql`
+  query FindAllCompanyImages($companySlug: String!) {
+    findAllCompanyImages(companySlug: $companySlug) {
+      id
+      path
+    }
+  }
+`;
+export type FindAllCompanyImagesComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindAllCompanyImagesComponent = (
+  props: FindAllCompanyImagesComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables
+  >
+    query={FindAllCompanyImagesDocument}
+    {...props}
+  />
+);
+
+export type FindAllCompanyImagesProps<
+  TChildProps = {}
+> = ApolloReactHoc.DataProps<
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
+> &
+  TChildProps;
+export function withFindAllCompanyImages<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindAllCompanyImagesQuery,
+    FindAllCompanyImagesQueryVariables,
+    FindAllCompanyImagesProps<TChildProps>
+  >(FindAllCompanyImagesDocument, {
+    alias: 'withFindAllCompanyImages',
+    ...operationOptions,
+  });
+}
+export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
+  FindAllCompanyImagesQuery,
+  FindAllCompanyImagesQueryVariables
 >;
 export const CreateCompanyDocument = gql`
   mutation CreateCompany($input: CompanyInput!) {
@@ -2053,129 +2194,6 @@ export function withFindCompanySlug<TProps, TChildProps = {}>(
 export type FindCompanySlugQueryResult = ApolloReactCommon.QueryResult<
   FindCompanySlugQuery,
   FindCompanySlugQueryVariables
->;
-export const UploadImageDocument = gql`
-  mutation UploadImage($companySlug: String!, $input: UploadImageInput!) {
-    uploadImage(companySlug: $companySlug, input: $input) {
-      id
-      filename
-      path
-      thumb
-      awsKey
-    }
-  }
-`;
-export type UploadImageMutationFn = ApolloReactCommon.MutationFunction<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
-export type UploadImageComponentProps = Omit<
-  ApolloReactComponents.MutationComponentOptions<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >,
-  'mutation'
->;
-
-export const UploadImageComponent = (props: UploadImageComponentProps) => (
-  <ApolloReactComponents.Mutation<
-    UploadImageMutation,
-    UploadImageMutationVariables
-  >
-    mutation={UploadImageDocument}
-    {...props}
-  />
-);
-
-export type UploadImageProps<TChildProps = {}> = ApolloReactHoc.MutateProps<
-  UploadImageMutation,
-  UploadImageMutationVariables
-> &
-  TChildProps;
-export function withUploadImage<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withMutation<
-    TProps,
-    UploadImageMutation,
-    UploadImageMutationVariables,
-    UploadImageProps<TChildProps>
-  >(UploadImageDocument, {
-    alias: 'withUploadImage',
-    ...operationOptions,
-  });
-}
-export type UploadImageMutationResult = ApolloReactCommon.MutationResult<
-  UploadImageMutation
->;
-export type UploadImageMutationOptions = ApolloReactCommon.BaseMutationOptions<
-  UploadImageMutation,
-  UploadImageMutationVariables
->;
-export const FindAllCompanyImagesDocument = gql`
-  query FindAllCompanyImages($companySlug: String!) {
-    findAllCompanyImages(companySlug: $companySlug) {
-      id
-      path
-    }
-  }
-`;
-export type FindAllCompanyImagesComponentProps = Omit<
-  ApolloReactComponents.QueryComponentOptions<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >,
-  'query'
-> &
-  (
-    | { variables: FindAllCompanyImagesQueryVariables; skip?: boolean }
-    | { skip: boolean });
-
-export const FindAllCompanyImagesComponent = (
-  props: FindAllCompanyImagesComponentProps,
-) => (
-  <ApolloReactComponents.Query<
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables
-  >
-    query={FindAllCompanyImagesDocument}
-    {...props}
-  />
-);
-
-export type FindAllCompanyImagesProps<
-  TChildProps = {}
-> = ApolloReactHoc.DataProps<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
-> &
-  TChildProps;
-export function withFindAllCompanyImages<TProps, TChildProps = {}>(
-  operationOptions?: ApolloReactHoc.OperationOption<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >,
-) {
-  return ApolloReactHoc.withQuery<
-    TProps,
-    FindAllCompanyImagesQuery,
-    FindAllCompanyImagesQueryVariables,
-    FindAllCompanyImagesProps<TChildProps>
-  >(FindAllCompanyImagesDocument, {
-    alias: 'withFindAllCompanyImages',
-    ...operationOptions,
-  });
-}
-export type FindAllCompanyImagesQueryResult = ApolloReactCommon.QueryResult<
-  FindAllCompanyImagesQuery,
-  FindAllCompanyImagesQueryVariables
 >;
 export const CreateCompanyContactDocument = gql`
   mutation CreateCompanyContact(
@@ -3303,6 +3321,7 @@ export const SearchDocument = gql`
             name
             profile {
               profile_image
+              color
             }
           }
         }
@@ -3378,6 +3397,7 @@ export const SearchFindPostingDocument = gql`
         name
         profile {
           profile_image
+          color
         }
       }
     }

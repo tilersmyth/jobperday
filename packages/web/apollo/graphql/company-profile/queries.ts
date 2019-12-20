@@ -6,6 +6,7 @@ export const findCompanyProfileQuery = gql`
     about
     cover_image
     profile_image
+    color
   }
 
   query FindCompanyProfile($companySlug: String!) {

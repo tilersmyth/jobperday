@@ -23,6 +23,7 @@ export const search2Query = gql`
             name
             profile {
               profile_image
+              color
             }
           }
         }
@@ -56,6 +57,7 @@ export const searchFindPostingQuery = gql`
         name
         profile {
           profile_image
+          color
         }
       }
     }

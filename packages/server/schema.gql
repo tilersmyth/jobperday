@@ -131,13 +131,15 @@ type CompanyProfileDto {
   id: ID!
   about: String!
   cover_image: String!
-  profile_image: String!
+  profile_image: String
+  color: ProfileColorsEnum!
 }
 
 input CompanyProfileInput {
   profile_image: String
-  cover_image: String
+  cover_image: String!
   about: String!
+  color: ProfileColorsEnum!
 }
 
 input CoordsInput {
@@ -289,7 +291,8 @@ type PostingCompanyDto {
 }
 
 type PostingCompanyProfileDto {
-  profile_image: String!
+  profile_image: String
+  color: ProfileColorsEnum!
 }
 
 type PostingDto {
@@ -312,6 +315,16 @@ type PostingJobDto {
   description: String!
   type: String!
   tags: [String!]!
+}
+
+enum ProfileColorsEnum {
+  red
+  orange
+  cyan
+  blue
+  lime
+  volcano
+  green
 }
 
 type Query {
@@ -359,7 +372,8 @@ type SearchCompanyDto {
 }
 
 type SearchCompanyProfileDto {
-  profile_image: String!
+  profile_image: String
+  color: ProfileColorsEnum!
 }
 
 type SearchDto {

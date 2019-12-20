@@ -5,6 +5,7 @@ import cx from 'classnames';
 
 import { SearchQuery } from '../../../../apollo';
 import styles from './style.less';
+import { ProfileAvatar } from '../../../shared';
 
 interface Props {
   posting: SearchQuery['search']['results'][0]['posting'];
@@ -27,7 +28,16 @@ export const SearchResultItem: React.FunctionComponent<Props> = ({
       onClick={() => selectPosting(posting.id, index)}
     >
       <div className={styles.image}>
-        <img src={posting.company.profile.profile_image} />
+        {posting.company.profile.profile_image ? (
+          <img src={posting.company.profile.profile_image} />
+        ) : (
+          <ProfileAvatar
+            companyName={posting.company.name}
+            color={posting.company.profile.color}
+            size={80}
+            shape="square"
+          />
+        )}
       </div>
       <div className={styles.content}>
         <Typography.Text strong={true} className={styles.item}>

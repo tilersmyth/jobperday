@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Form } from 'antd';
 import { FieldProps } from 'formik';
 
-import { PROFILE_DEFAULT_IMAGES } from '../../initial-values';
 import { ImageUploadModal } from '../../../../../../../shared';
 import styles from './style.less';
 
@@ -17,9 +16,7 @@ export const SelectCoverImage: React.FunctionComponent<FieldProps> = ({
       <Form.Item>
         <div className={styles.container}>
           <div className={styles.mask} onClick={() => setImageModal(true)} />
-          <img
-            src={field.value ? field.value : PROFILE_DEFAULT_IMAGES.cover_image}
-          />
+          <img src={field.value} />
         </div>
       </Form.Item>
 

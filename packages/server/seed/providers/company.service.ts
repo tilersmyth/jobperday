@@ -9,6 +9,7 @@ import { CompanyEntity } from '../../src/app/company/entity';
 import { SlugGeneratorUtil } from '../../src/app/_helpers';
 import { CompanyMemberService } from '../../src/app/company-member';
 import { CompanyProfileService } from '../../src/app/company-profile';
+import { ProfileColorsEnum } from '../../src/app/company-profile/enums';
 import { randomNum } from '../utils/randomNum.util';
 
 @Injectable()
@@ -42,11 +43,14 @@ export class CompanySeedService {
 
       const imageIndex = randomNum(1, 11);
 
-      const profile = await this.profileService.create(savedCompany, {
+      const colorIndex = randomNum(0, 6);
+
+      await this.profileService.create(savedCompany, {
         profile_image: `https://jobperday-dev.s3.amazonaws.com/sample/profile/profile_sample-${imageIndex}.png`,
         cover_image:
           'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_cover.jpg',
         about: 'about this company....',
+        color: Object.values(ProfileColorsEnum)[colorIndex],
       });
 
       await this.memberService.add(

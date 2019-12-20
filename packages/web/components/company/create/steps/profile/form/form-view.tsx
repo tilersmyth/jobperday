@@ -1,6 +1,6 @@
 import React from 'react';
 import { Formik } from 'formik';
-import { ApolloConsumer } from 'react-apollo';
+import { useQuery } from 'react-apollo';
 import { createCompanySteps } from '@jobperday/common';
 import { updatedDiff } from 'deep-object-diff';
 import Router from 'next/router';
@@ -28,121 +28,123 @@ export const CompanyProfileFormView: React.FunctionComponent<Props> = ({
   data,
   step,
 }) => {
+  const { loading, data: companyData, client } = useQuery<CurrentCompanyQuery>(
+    CurrentCompanyDocument,
+  );
+
+  if (!companyData || loading) {
+    return null;
+  }
+
+  const { currentCompany } = companyData;
+
   return (
-    <ApolloConsumer>
-      {client => (
-        <Formik
-          validateOnBlur={false}
-          validateOnChange={false}
-          enableReinitialize={true}
-          onSubmit={async input => {
-            const { loading, data: companyData } = await client.query<
-              CurrentCompanyQuery
-            >({ query: CurrentCompanyDocument });
+    <Formik
+      validateOnBlur={false}
+      validateOnChange={false}
+      enableReinitialize={true}
+      onSubmit={async input => {
+        const setupNext = createCompanySteps.find(
+          setup => setup.step === step + 1,
+        );
 
-            if (!companyData || loading) {
-              return null;
-            }
+        if (!setupNext) {
+          console.log('error finding next step');
+          return;
+        }
 
-            const { currentCompany } = companyData;
+        try {
+          if (data.id) {
+            const updatedInputs = updatedDiff(
+              data,
+              input,
+            ) as UpdateCompanyProfileInput;
 
-            const setupNext = createCompanySteps.find(
-              setup => setup.step === step + 1,
-            );
-
-            if (!setupNext) {
-              console.log('error finding next step');
+            // No form updates
+            if (Object.entries(updatedInputs).length === 0) {
+              Router.push(
+                `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
+                `/company/create/${
+                  currentCompany.slug
+                }/${setupNext.title.toLowerCase()}`,
+              );
               return;
             }
 
-            try {
-              if (data.id) {
-                const updatedInputs = updatedDiff(
-                  data,
-                  input,
-                ) as UpdateCompanyProfileInput;
+            Object.assign(updatedInputs, {
+              id: data.id,
+              ...updatedInputs,
+            });
 
-                // No form updates
-                if (Object.entries(updatedInputs).length === 0) {
-                  Router.push(
-                    `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
-                    `/company/create/${
-                      currentCompany.slug
-                    }/${setupNext.title.toLowerCase()}`,
-                  );
+            await client.mutate<UpdateCompanyProfileMutation>({
+              mutation: UpdateCompanyProfileDocument,
+              variables: {
+                companySlug: currentCompany.slug,
+                input: updatedInputs,
+              },
+              update(_, updates) {
+                if (!updates.data) {
+                  console.log('error updating profile');
                   return;
                 }
 
-                Object.assign(updatedInputs, {
-                  id: data.id,
-                  ...updatedInputs,
+                const { updateCompanyProfile } = updates.data;
+
+                client.mutate({
+                  mutation: UpdateCompanyProfileClientDocument,
+                  variables: { input: updateCompanyProfile },
                 });
 
-                await client.mutate<UpdateCompanyProfileMutation>({
-                  mutation: UpdateCompanyProfileDocument,
-                  variables: {
-                    companySlug: currentCompany.slug,
-                    input: updatedInputs,
-                  },
-                  update(_, updates) {
-                    if (!updates.data) {
-                      console.log('error updating profile');
-                      return;
-                    }
+                Router.push(
+                  `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
+                  `/company/create/${
+                    currentCompany.slug
+                  }/${setupNext.title.toLowerCase()}`,
+                );
+              },
+            });
+          }
 
-                    const { updateCompanyProfile } = updates.data;
-
-                    client.mutate({
-                      mutation: UpdateCompanyProfileClientDocument,
-                      variables: { input: updateCompanyProfile },
-                    });
-
-                    Router.push(
-                      `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
-                      `/company/create/${
-                        currentCompany.slug
-                      }/${setupNext.title.toLowerCase()}`,
-                    );
-                  },
-                });
+          await client.mutate<CreateCompanyProfileMutation>({
+            mutation: CreateCompanyProfileDocument,
+            variables: {
+              companySlug: currentCompany.slug,
+              input,
+            },
+            update(_, create) {
+              if (!create.data) {
+                console.log('error creating profile');
+                return;
               }
+              const { createCompanyProfile } = create.data;
 
-              await client.mutate<CreateCompanyProfileMutation>({
-                mutation: CreateCompanyProfileDocument,
-                variables: {
-                  companySlug: currentCompany.slug,
-                  input,
-                },
-                update(_, create) {
-                  if (!create.data) {
-                    console.log('error creating profile');
-                    return;
-                  }
-                  const { createCompanyProfile } = create.data;
-
-                  client.mutate({
-                    mutation: UpdateCompanyProfileClientDocument,
-                    variables: { input: createCompanyProfile },
-                  });
-
-                  Router.push(
-                    `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
-                    `/company/create/${
-                      currentCompany.slug
-                    }/${setupNext.title.toLowerCase()}`,
-                  );
-                },
+              client.mutate({
+                mutation: UpdateCompanyProfileClientDocument,
+                variables: { input: createCompanyProfile },
               });
-            } catch (err) {
-              console.log(err);
-            }
-          }}
-          initialValues={data}
-          validationSchema={companyProfileSchema}
-        >
-          {formikProps => <CompanyProfileForm step={step} {...formikProps} />}
-        </Formik>
+
+              Router.push(
+                `/company/create/[slug]/${setupNext.title.toLowerCase()}`,
+                `/company/create/${
+                  currentCompany.slug
+                }/${setupNext.title.toLowerCase()}`,
+              );
+            },
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }}
+      initialValues={data}
+      validationSchema={companyProfileSchema}
+    >
+      {formikProps => (
+        <CompanyProfileForm
+          company={currentCompany}
+          step={step}
+          {...formikProps}
+        />
       )}
-    </ApolloConsumer>
+    </Formik>
   );
 };

@@ -2,7 +2,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import { Repository, getManager } from 'typeorm';
 
 import { CompanyService } from '../company/company.service';
-import { config } from '../../config';
 import { AppLogger } from '../app.logger';
 import { CompanyProfileEntity } from './entity';
 import { COMPANY_PROFILE_TOKEN } from './profile.constants';
@@ -25,13 +24,6 @@ export class CompanyProfileService {
   ): Promise<CompanyProfileEntity> {
     return getManager().transaction(async transaction => {
       const profile = new CompanyProfileEntity();
-
-      if (config.env !== 'production') {
-        (profile.cover_image =
-          'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_cover.jpg'),
-          (profile.profile_image =
-            'https://jobperday-dev.s3.amazonaws.com/companies/stock/stock_profile.png');
-      }
 
       Object.assign(profile, input);
       const savedProfile = await transaction.save(profile);

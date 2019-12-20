@@ -2,17 +2,20 @@ import React from 'react';
 import { Form } from 'antd';
 import { Field, FormikProps } from 'formik';
 
+import { CurrentCompanyQuery } from '../../../../../../apollo';
 import { CreateCompanyStepsActions } from '../../../shared';
 import { TextAreaField } from '../../../../../shared/input/textarea-field';
 import { SelectCoverImage, SelectProfileImage } from './inputs';
 import styles from './style.less';
 
 interface Props extends FormikProps<{}> {
+  company: CurrentCompanyQuery['currentCompany'];
   step: number;
 }
 
 export const CompanyProfileForm: React.FunctionComponent<Props> = ({
   handleSubmit,
+  company,
   step,
 }) => {
   return (
@@ -24,7 +27,11 @@ export const CompanyProfileForm: React.FunctionComponent<Props> = ({
       </div>
       <div className={styles.container}>
         <Field name="cover_image" component={SelectCoverImage} />
-        <Field name="profile_image" component={SelectProfileImage} />
+        <Field
+          name="profile_image"
+          company={company}
+          component={SelectProfileImage}
+        />
       </div>
 
       <Field

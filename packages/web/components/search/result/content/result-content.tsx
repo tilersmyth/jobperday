@@ -65,7 +65,10 @@ export const SearchResultViewContent: React.FunctionComponent<Props> = ({
           {address.city}, {address.state} {address.postal_code}
         </li>
       </ul>
-      <div className={styles.description}>{posting.job.description}</div>
+      <div
+        className={styles.description}
+        dangerouslySetInnerHTML={{ __html: posting.job.description }}
+      />
       <ApplyModal
         visible={modalOpen}
         setVisible={setModalOpen}
