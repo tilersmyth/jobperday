@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { QueryResult, useQuery } from 'react-apollo';
 import { Row, Col } from 'antd';
 import querystring from 'querystring';
@@ -28,6 +28,7 @@ interface LoadState {
 }
 
 export const SearchContent: React.FunctionComponent<Props> = props => {
+  const previewDivRef = useRef<HTMLDivElement>(null);
   const [loadState, setLoadState] = useState<LoadState>({
     initData: true,
     initSkip: 0,
@@ -46,24 +47,23 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
 
   const onPostingSelect = async (
     id: string,
-    skip: number | null,
+    skip: number,
     onLoad?: boolean,
   ) => {
     if (!onLoad) {
+      // Scroll preview to top
+      if (previewDivRef && previewDivRef.current) {
+        previewDivRef.current.scrollTo(0, 0);
+      }
+
       const queryParams: { [key: string]: string } = {
         ...router.query,
         pId: id,
       };
 
-      const scrollBuffer = 1;
-
-      if (skip && skip + loadState.initSkip > scrollBuffer) {
-        queryParams.skip = (
-          skip +
-          loadState.initSkip -
-          scrollBuffer
-        ).toString();
-      }
+      const skipWithBuffer = skip - 1;
+      const scrollSkip = skipWithBuffer > -1 ? skipWithBuffer : 0;
+      queryParams.skip = (scrollSkip + loadState.initSkip).toString();
 
       const href = `/search?${querystring.encode(queryParams)}`;
       const as = href;
@@ -106,7 +106,7 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
         ? urlPostId
         : data.search.results[0].posting.id;
 
-      onPostingSelect(loadPost, null, true);
+      onPostingSelect(loadPost, 0, true);
 
       // scrollTo not working without delay
       setTimeout(
@@ -177,7 +177,10 @@ export const SearchContent: React.FunctionComponent<Props> = props => {
               <div className={styles.resultInner}>
                 {!selectedPosting && <LoaderMask />}
                 {selectedPosting && (
-                  <SearchResultView postingId={selectedPosting} />
+                  <SearchResultView
+                    postingId={selectedPosting}
+                    divRef={previewDivRef}
+                  />
                 )}
               </div>
             </div>

@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export const createJobMutation = gql`
   mutation CreateJob($companySlug: String!, $input: JobInput!) {
     createJob(companySlug: $companySlug, input: $input) {
-      id
+      ...JobParts
     }
   }
 `;
@@ -13,5 +13,11 @@ export const updateJobMutation = gql`
     updateJob(companySlug: $companySlug, input: $input) {
       ...JobParts
     }
+  }
+`;
+
+export const updateJobListMutation = gql`
+  mutation UpdateJobList($companySlug: String!, $input: JobInput!) {
+    updateJobList(companySlug: $companySlug, input: $input) @client
   }
 `;

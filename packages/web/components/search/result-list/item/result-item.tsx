@@ -50,7 +50,7 @@ export const SearchResultItem: React.FunctionComponent<Props> = ({
         <div className={styles.item}>
           <span>
             <Icon type="dollar" className={styles.icon} />
-            {posting.pay_rate}/hr
+            {posting.pay_rate}
           </span>
           <span>
             <Icon type="calendar" className={styles.icon} />

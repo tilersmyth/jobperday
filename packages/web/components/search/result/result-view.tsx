@@ -11,10 +11,12 @@ import { SearchResultViewContent } from './content';
 import styles from './style.less';
 
 interface Props {
+  divRef: any;
   postingId: string;
 }
 
 export const SearchResultView: React.FunctionComponent<Props> = ({
+  divRef,
   postingId,
 }) => {
   const { loading, data, error } = useQuery<SearchFindPostingQuery>(
@@ -29,7 +31,7 @@ export const SearchResultView: React.FunctionComponent<Props> = ({
   }
 
   return (
-    <div className={styles.container}>
+    <div ref={divRef} className={styles.container}>
       {loading && <LoaderMask />}
       <SearchResultViewHeader posting={data.searchFindPosting} />
       <SearchResultViewContent posting={data.searchFindPosting} />

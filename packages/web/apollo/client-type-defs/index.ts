@@ -5,6 +5,7 @@ import { companyTypeDef } from './company';
 import { postingTypeDef } from './posting';
 import { companyContactTypeDef } from './company-contact';
 import { companyProfileTypeDef } from './company-profile';
+import { jobTypeDef } from './job';
 import { uiTypeDef } from './ui';
 
 export const typeDefs = merge(
@@ -13,5 +14,6 @@ export const typeDefs = merge(
   postingTypeDef,
   companyContactTypeDef,
   companyProfileTypeDef,
+  jobTypeDef,
   uiTypeDef,
 );

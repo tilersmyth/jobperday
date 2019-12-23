@@ -1,9 +1,10 @@
 import React from 'react';
 import { Typography } from 'antd';
-import { SearchFindPostingQuery } from '../../../../apollo';
+import cx from 'classnames';
 
-import styles from './style.less';
+import { SearchFindPostingQuery } from '../../../../apollo';
 import { ProfileAvatar } from '../../../shared';
+import styles from './style.less';
 
 interface Props {
   posting: SearchFindPostingQuery['searchFindPosting'];
@@ -15,6 +16,7 @@ export const SearchResultViewHeader: React.FunctionComponent<Props> = ({
   if (!posting) {
     return null;
   }
+
   return (
     <div
       className={styles.container}
@@ -28,7 +30,9 @@ export const SearchResultViewHeader: React.FunctionComponent<Props> = ({
           {posting.company.name}
         </Typography.Title>
       </div>
-      <div className={styles.type}>{posting.job.type}</div>
+      <div className={cx(styles.type, styles[posting.company.profile.color])}>
+        {posting.job.type}
+      </div>
       <div className={styles.profile}>
         <div className={styles.imageContainer}>
           {posting.company.profile.profile_image ? (
@@ -37,7 +41,7 @@ export const SearchResultViewHeader: React.FunctionComponent<Props> = ({
             <ProfileAvatar
               color={posting.company.profile.color}
               companyName={posting.company.name}
-              size={130}
+              size={150}
               shape="square"
             />
           )}

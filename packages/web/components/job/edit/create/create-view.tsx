@@ -1,7 +1,7 @@
 import React from 'react';
 import { Formik } from 'formik';
 import { notification } from 'antd';
-import { useQuery } from 'react-apollo';
+import { useQuery, useMutation } from 'react-apollo';
 import Router from 'next/router';
 
 import { EditJobLayout } from '../layout';
@@ -11,6 +11,8 @@ import {
   FindCompanyProfileQuery,
   FindCompanyProfileDocument,
   JobInput,
+  UpdateJobListDocument,
+  UpdateJobListMutation,
 } from '../../../../apollo';
 import { jobSchema, validationFormatter } from '../validation-schema';
 import { EditJobForm } from '../form';
@@ -22,6 +24,9 @@ interface Props {
 export const CreateJobView: React.FunctionComponent<Props> = ({
   companySlug,
 }) => {
+  const [updateJobList] = useMutation<UpdateJobListMutation>(
+    UpdateJobListDocument,
+  );
   const { loading, data, error } = useQuery<FindCompanyProfileQuery>(
     FindCompanyProfileDocument,
     {
@@ -56,7 +61,7 @@ export const CreateJobView: React.FunctionComponent<Props> = ({
                 const { id, ...jobInputs } = input;
                 await create({
                   variables: { companySlug, input: jobInputs as JobInput },
-                  update(_, updates) {
+                  async update(_, updates) {
                     if (!updates.data) {
                       console.log('error updating contact');
                       return;
@@ -64,11 +69,16 @@ export const CreateJobView: React.FunctionComponent<Props> = ({
 
                     const { createJob } = updates.data;
 
+                    // Update local storage
+                    await updateJobList({
+                      variables: { companySlug, input: createJob },
+                    });
+
                     notification.success({
                       message: 'Job Successfully Created',
                     });
 
-                    Router.push(
+                    await Router.push(
                       '/employer/[company-slug]/jobs/[job-id]',
                       `/employer/${companySlug}/jobs/${createJob.id}`,
                     );

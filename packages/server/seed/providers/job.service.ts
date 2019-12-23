@@ -39,12 +39,20 @@ export class JobSeedService {
 
       const application = await this.appService.create(company);
 
+      const descParCount = randomNum(2, 5);
+      const descArray = Array.from(Array(descParCount).keys());
+
+      const description = descArray.reduce(
+        acc => `<p>${faker.lorem.paragraph()}</p>${acc}`,
+        '',
+      );
+
       for (let i = 1; i <= jobCount; i++) {
         const imageIndex = randomNum(1, 11);
         const job = new JobEntity();
         job.title = faker.name.jobTitle();
         job.summary = faker.lorem.sentence();
-        job.description = faker.lorem.paragraph();
+        job.description = description;
         job.type = faker.name.jobType();
         job.tags = this.tagGenerator();
         job.default_image = `https://jobperday-dev.s3.amazonaws.com/sample/cover/cover_sample-${imageIndex}.png`;

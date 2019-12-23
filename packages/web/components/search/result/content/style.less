@@ -1,31 +1,25 @@
-.header {
-  padding: 10px 10px 0 185px;
+.container {
+  position: relative;
+  padding: 0 20px 100px 20px;
 }
 
-.status {
-  line-height: 35px;
+.container .header {
+  padding-left: 180px;
+  height: 50px;
+  display: flex;
+  align-items: center;
 }
 
-.details {
-  list-style: none;
-  padding: 0;
-  margin: 20px 0 0 30px;
+.container .stats {
+  padding: 25px 0;
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.details li {
-  display: inline;
-  margin-right: 10px;
-}
-
-.details li .icon {
-  margin-right: 5px;
-}
-
-.details .address {
-  display: block;
-  margin-top: 10px;
-}
-
-.description {
-  padding: 30px;
+.container .tags {
+  position: absolute;
+  left: 20px;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
 }
