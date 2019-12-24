@@ -1,1 +1,1 @@
-export { JobPostingsListView } from './list-view';
+export { PostingListView } from './list-view';

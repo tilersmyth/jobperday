@@ -2,33 +2,25 @@ import React from 'react';
 import { Table } from 'antd';
 import moment from 'moment';
 import Link from 'next/link';
-import { useQuery } from 'react-apollo';
-import { postingPaginationConfig } from '@jobperday/common';
+import { QueryResult } from 'react-apollo';
+import { PaginationConfig } from 'antd/lib/table';
+import { ApolloQueryResult } from 'apollo-client';
 
-import {
-  FindCurrentPostingsQuery,
-  FindCurrentPostingsDocument,
-} from '../../../../apollo/generated-components';
+import { FindCurrentPostingsQuery } from '../../../../../apollo/generated-components';
+import { PostingsNoData } from '../../shared';
 import styles from './style.less';
 
 interface Props {
-  companySlug: string;
+  client: QueryResult<FindCurrentPostingsQuery, Record<string, any>>;
+  loadMore: (
+    pagination: PaginationConfig,
+  ) => Promise<ApolloQueryResult<FindCurrentPostingsQuery>>;
 }
 
-// Results to show per page
-const queryLimit: number = postingPaginationConfig.limit;
-
-export const JobPostingsTable: React.FunctionComponent<Props> = ({
-  companySlug,
+export const PostingsTable: React.FunctionComponent<Props> = ({
+  client: { loading, error, data, variables },
+  loadMore,
 }) => {
-  const { loading, data, error, fetchMore } = useQuery<
-    FindCurrentPostingsQuery
-  >(FindCurrentPostingsDocument, {
-    variables: { companySlug, input: {} },
-    fetchPolicy: 'cache-and-network',
-    ssr: false,
-  });
-
   if (error || !data) {
     return null;
   }
@@ -40,7 +32,7 @@ export const JobPostingsTable: React.FunctionComponent<Props> = ({
       key: 'job',
       render: (name: string, row: any) => (
         <Link
-          as={`/employer/${companySlug}/postings/${row.key}`}
+          as={`/employer/${variables.companySlug}/postings/${row.key}`}
           href={`/employer/[company-slug]/postings/[posting-id]`}
         >
           <a>{name}</a>
@@ -96,30 +88,12 @@ export const JobPostingsTable: React.FunctionComponent<Props> = ({
       dataSource={dataSource}
       loading={loading}
       columns={columns}
-      onChange={async ({ current }) =>
-        fetchMore({
-          variables: {
-            companySlug,
-            input: {
-              skip: current ? queryLimit * (current - 1) : 0,
-              limit: queryLimit,
-            },
-          },
-          updateQuery: (prev, { fetchMoreResult }) => {
-            if (!fetchMoreResult) {
-              return prev;
-            }
-
-            return Object.assign({}, prev, {
-              count: prev.findCurrentPostings.count,
-              postings: [
-                ...prev.findCurrentPostings.postings,
-                ...fetchMoreResult.findCurrentPostings.postings,
-              ],
-            });
-          },
-        })
-      }
+      onChange={loadMore}
+      locale={{
+        emptyText: () => (
+          <PostingsNoData>No current postings found</PostingsNoData>
+        ),
+      }}
     />
   );
 };

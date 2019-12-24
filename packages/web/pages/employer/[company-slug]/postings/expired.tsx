@@ -10,7 +10,7 @@ interface Props {
   slug?: string;
 }
 
-const CurrentCompanyPostings: NextPage<Props> = ({ slug }) => {
+const ExpiredCompanyPostings: NextPage<Props> = ({ slug }) => {
   if (!slug) {
     return null;
   }
@@ -21,12 +21,12 @@ const CurrentCompanyPostings: NextPage<Props> = ({ slug }) => {
       pageRole="associate"
       companySlug={slug}
     >
-      <PostingListView companySlug={slug} tabKey="" />
+      <PostingListView companySlug={slug} tabKey="expired" />
     </CompanyAdminLayout>
   );
 };
 
-CurrentCompanyPostings.getInitialProps = async (ctx: NextPageContextApollo) => {
+ExpiredCompanyPostings.getInitialProps = async (ctx: NextPageContextApollo) => {
   const me = await fetchMe(ctx);
 
   if (!me) {
@@ -44,4 +44,4 @@ CurrentCompanyPostings.getInitialProps = async (ctx: NextPageContextApollo) => {
   return { slug };
 };
 
-export default CurrentCompanyPostings;
+export default ExpiredCompanyPostings;

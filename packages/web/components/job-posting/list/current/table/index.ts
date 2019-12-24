@@ -1,0 +1,1 @@
+export { PostingsTable } from './table';
