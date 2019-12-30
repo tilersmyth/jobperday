@@ -1,1 +1,0 @@
-export { CurrentPostingListView } from './current';

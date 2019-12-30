@@ -1,0 +1,1 @@
+export { PostingTitle } from './title';

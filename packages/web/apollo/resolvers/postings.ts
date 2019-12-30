@@ -2,9 +2,10 @@ import { ApolloCache } from 'apollo-cache';
 
 import {
   PostingPartsFragmentDoc,
-  FindCurrentPostingsDocument,
-  FindCurrentPostingsQuery,
   PostingPartsFragment,
+  FindAllPostingsDocument,
+  FindAllPostingsQuery,
+  PostingStatusEnum,
 } from '../generated-components';
 
 interface Variables {
@@ -26,11 +27,11 @@ export const postingResolvers = {
       variables: Variables,
       { cache, getCacheKey }: ApolloContext,
     ) => {
-      const oldPostings = cache.readQuery<FindCurrentPostingsQuery>({
-        query: FindCurrentPostingsDocument,
+      const oldPostings = cache.readQuery<FindAllPostingsQuery>({
+        query: FindAllPostingsDocument,
         variables: {
           companySlug: variables.companySlug,
-          input: {},
+          input: { status: PostingStatusEnum.Open, filter: {}, pagination: {} },
         },
       });
 
@@ -49,15 +50,15 @@ export const postingResolvers = {
       });
 
       cache.writeQuery({
-        query: FindCurrentPostingsDocument,
+        query: FindAllPostingsDocument,
         variables: {
           companySlug: variables.companySlug,
-          input: {},
+          input: { status: PostingStatusEnum.Open, filter: {}, pagination: {} },
         },
         data: {
-          findCurrentPostings: {
-            count: oldPostings.findCurrentPostings.count + 1,
-            postings: [newPosting, ...oldPostings.findCurrentPostings.postings],
+          findAllPostings: {
+            count: oldPostings.findAllPostings.count + 1,
+            postings: [newPosting, ...oldPostings.findAllPostings.postings],
             __typename: 'JobPostingResultsDto',
           },
         },

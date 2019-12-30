@@ -1,0 +1,1 @@
+export { PostingExpireText } from './expire';

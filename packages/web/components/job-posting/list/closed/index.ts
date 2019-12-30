@@ -1,0 +1,1 @@
+export { ClosedPostingListView } from './closed';

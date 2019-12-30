@@ -182,6 +182,12 @@ The javascript `Date` as string. Type represents date and time as the ISO Date s
 """
 scalar DateTime
 
+input FindAllPostingsInput {
+  status: PostingStatusEnum!
+  filter: PostingsFilterInput!
+  pagination: PostingPaginationInput!
+}
+
 input ForgotPasswordInput {
   email: String!
 }
@@ -233,6 +239,20 @@ input JobPostingInput {
 type JobPostingResultsDto {
   count: Int!
   postings: [JobPostingDto!]!
+}
+
+type JobPostingSingleDto {
+  id: ID!
+  active: Boolean!
+  start_date: DateTime!
+  end_date: DateTime!
+  pay_rate: Int!
+  total_openings: Int!
+  remaining_openings: Int!
+  apply_deadline: DateTime!
+  job: JobDto!
+  status: PostingStatusEnum!
+  address: AddressDto!
 }
 
 input LocationInput {
@@ -295,6 +315,11 @@ type PostingCompanyProfileDto {
   color: ProfileColorsEnum!
 }
 
+type PostingCountDto {
+  open: Int!
+  closed: Int!
+}
+
 type PostingDto {
   id: ID!
   pay_rate: String!
@@ -308,6 +333,11 @@ type PostingDto {
   job: PostingJobDto!
 }
 
+enum PostingFilterSortEnum {
+  ASC
+  DESC
+}
+
 type PostingJobDto {
   id: ID!
   title: String!
@@ -315,6 +345,20 @@ type PostingJobDto {
   description: String!
   type: String!
   tags: [String!]!
+}
+
+input PostingPaginationInput {
+  skip: Int = 0
+  limit: Int = 10
+}
+
+input PostingsFilterInput {
+  sort: PostingFilterSortEnum = DESC
+}
+
+enum PostingStatusEnum {
+  OPEN
+  CLOSED
 }
 
 enum ProfileColorsEnum {
@@ -343,7 +387,9 @@ type Query {
   findAllApplications(companySlug: String!): [ApplicationDto!]!
   findApplication(id: ID!): ApplicationDto!
   findCurrentPostings(input: PaginationInput!, companySlug: String!): JobPostingResultsDto!
-  findPosting(postingId: ID!, companySlug: String!): JobPostingDto!
+  findPosting(postingId: ID!, companySlug: String!): JobPostingSingleDto!
+  findAllPostings(input: FindAllPostingsInput!, companySlug: String!): JobPostingResultsDto!
+  postingCount(companySlug: String!): PostingCountDto!
   search(input: SearchInput!): SearchDto!
   searchFindPosting(id: ID!): PostingDto!
   findAllCompanyImages(companySlug: String!): [CompanyImageDto!]!

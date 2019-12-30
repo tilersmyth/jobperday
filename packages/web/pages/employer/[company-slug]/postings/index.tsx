@@ -4,7 +4,10 @@ import { NextPageContextApollo } from '../../../../types';
 import { fetchMe } from '../../../../utils';
 import { redirect } from '../../../../apollo/redirect';
 import { CompanyAdminLayout } from '../../../../components/shared';
-import { PostingListView } from '../../../../components/job-posting';
+import {
+  PostingListLayout,
+  OpenPostingListView,
+} from '../../../../components/job-posting';
 
 interface Props {
   slug?: string;
@@ -21,7 +24,9 @@ const CurrentCompanyPostings: NextPage<Props> = ({ slug }) => {
       pageRole="associate"
       companySlug={slug}
     >
-      <PostingListView companySlug={slug} tabKey="" />
+      <PostingListLayout companySlug={slug} tabKey="open">
+        <OpenPostingListView companySlug={slug} />
+      </PostingListLayout>
     </CompanyAdminLayout>
   );
 };

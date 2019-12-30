@@ -1,0 +1,1 @@
+export { PostingSingleLayout } from './layout';

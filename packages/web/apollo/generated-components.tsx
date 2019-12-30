@@ -211,6 +211,12 @@ export type CurrentCompanyDto = {
   members: Array<CompanyMemberDto>;
 };
 
+export type FindAllPostingsInput = {
+  status: PostingStatusEnum;
+  filter: PostingsFilterInput;
+  pagination: PostingPaginationInput;
+};
+
 export type ForgotPasswordInput = {
   email: Scalars['String'];
 };
@@ -265,6 +271,21 @@ export type JobPostingResultsDto = {
   __typename?: 'JobPostingResultsDto';
   count: Scalars['Int'];
   postings: Array<JobPostingDto>;
+};
+
+export type JobPostingSingleDto = {
+  __typename?: 'JobPostingSingleDto';
+  id: Scalars['ID'];
+  active: Scalars['Boolean'];
+  start_date: Scalars['DateTime'];
+  end_date: Scalars['DateTime'];
+  pay_rate: Scalars['Int'];
+  total_openings: Scalars['Int'];
+  remaining_openings: Scalars['Int'];
+  apply_deadline: Scalars['DateTime'];
+  job: JobDto;
+  status: PostingStatusEnum;
+  address: AddressDto;
 };
 
 export type LocationInput = {
@@ -450,6 +471,12 @@ export type PostingCompanyProfileDto = {
   color: ProfileColorsEnum;
 };
 
+export type PostingCountDto = {
+  __typename?: 'PostingCountDto';
+  open: Scalars['Int'];
+  closed: Scalars['Int'];
+};
+
 export type PostingDto = {
   __typename?: 'PostingDto';
   id: Scalars['ID'];
@@ -464,6 +491,11 @@ export type PostingDto = {
   job: PostingJobDto;
 };
 
+export enum PostingFilterSortEnum {
+  Asc = 'ASC',
+  Desc = 'DESC',
+}
+
 export type PostingJobDto = {
   __typename?: 'PostingJobDto';
   id: Scalars['ID'];
@@ -473,6 +505,20 @@ export type PostingJobDto = {
   type: Scalars['String'];
   tags: Array<Scalars['String']>;
 };
+
+export type PostingPaginationInput = {
+  skip?: Maybe<Scalars['Int']>;
+  limit?: Maybe<Scalars['Int']>;
+};
+
+export type PostingsFilterInput = {
+  sort?: Maybe<PostingFilterSortEnum>;
+};
+
+export enum PostingStatusEnum {
+  Open = 'OPEN',
+  Closed = 'CLOSED',
+}
 
 export enum ProfileColorsEnum {
   Red = 'red',
@@ -501,7 +547,9 @@ export type Query = {
   findAllApplications: Array<ApplicationDto>;
   findApplication: ApplicationDto;
   findCurrentPostings: JobPostingResultsDto;
-  findPosting: JobPostingDto;
+  findPosting: JobPostingSingleDto;
+  findAllPostings: JobPostingResultsDto;
+  postingCount: PostingCountDto;
   search: SearchDto;
   searchFindPosting: PostingDto;
   findAllCompanyImages: Array<CompanyImageDto>;
@@ -567,6 +615,15 @@ export type QueryFindCurrentPostingsArgs = {
 
 export type QueryFindPostingArgs = {
   postingId: Scalars['ID'];
+  companySlug: Scalars['String'];
+};
+
+export type QueryFindAllPostingsArgs = {
+  input: FindAllPostingsInput;
+  companySlug: Scalars['String'];
+};
+
+export type QueryPostingCountArgs = {
   companySlug: Scalars['String'];
 };
 
@@ -1112,7 +1169,23 @@ export type FindPostingQueryVariables = {
 };
 
 export type FindPostingQuery = { __typename?: 'Query' } & {
-  findPosting: { __typename?: 'JobPostingDto' } & PostingPartsFragment;
+  findPosting: { __typename?: 'JobPostingSingleDto' } & Pick<
+    JobPostingSingleDto,
+    | 'id'
+    | 'start_date'
+    | 'end_date'
+    | 'pay_rate'
+    | 'total_openings'
+    | 'remaining_openings'
+    | 'apply_deadline'
+    | 'status'
+  > & {
+      job: { __typename?: 'JobDto' } & Pick<JobDto, 'title'>;
+      address: { __typename?: 'AddressDto' } & Pick<
+        AddressDto,
+        'street' | 'street2' | 'city' | 'state' | 'postal_code'
+      >;
+    };
 };
 
 export type FindCurrentPostingsQueryVariables = {
@@ -1127,6 +1200,31 @@ export type FindCurrentPostingsQuery = { __typename?: 'Query' } & {
   > & {
       postings: Array<{ __typename?: 'JobPostingDto' } & PostingPartsFragment>;
     };
+};
+
+export type FindAllPostingsQueryVariables = {
+  companySlug: Scalars['String'];
+  input: FindAllPostingsInput;
+};
+
+export type FindAllPostingsQuery = { __typename?: 'Query' } & {
+  findAllPostings: { __typename?: 'JobPostingResultsDto' } & Pick<
+    JobPostingResultsDto,
+    'count'
+  > & {
+      postings: Array<{ __typename?: 'JobPostingDto' } & PostingPartsFragment>;
+    };
+};
+
+export type PostingCountQueryVariables = {
+  companySlug: Scalars['String'];
+};
+
+export type PostingCountQuery = { __typename?: 'Query' } & {
+  postingCount: { __typename?: 'PostingCountDto' } & Pick<
+    PostingCountDto,
+    'open' | 'closed'
+  >;
 };
 
 export type SearchQueryVariables = {
@@ -3259,10 +3357,26 @@ export type CreatePostingClientMutationOptions = ApolloReactCommon.BaseMutationO
 export const FindPostingDocument = gql`
   query FindPosting($companySlug: String!, $postingId: ID!) {
     findPosting(companySlug: $companySlug, postingId: $postingId) {
-      ...PostingParts
+      id
+      start_date
+      end_date
+      pay_rate
+      total_openings
+      remaining_openings
+      apply_deadline
+      job {
+        title
+      }
+      status
+      address {
+        street
+        street2
+        city
+        state
+        postal_code
+      }
     }
   }
-  ${PostingPartsFragmentDoc}
 `;
 export type FindPostingComponentProps = Omit<
   ApolloReactComponents.QueryComponentOptions<
@@ -3371,6 +3485,120 @@ export function withFindCurrentPostings<TProps, TChildProps = {}>(
 export type FindCurrentPostingsQueryResult = ApolloReactCommon.QueryResult<
   FindCurrentPostingsQuery,
   FindCurrentPostingsQueryVariables
+>;
+export const FindAllPostingsDocument = gql`
+  query FindAllPostings($companySlug: String!, $input: FindAllPostingsInput!) {
+    findAllPostings(companySlug: $companySlug, input: $input) {
+      count
+      postings {
+        ...PostingParts
+      }
+    }
+  }
+  ${PostingPartsFragmentDoc}
+`;
+export type FindAllPostingsComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    FindAllPostingsQuery,
+    FindAllPostingsQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: FindAllPostingsQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const FindAllPostingsComponent = (
+  props: FindAllPostingsComponentProps,
+) => (
+  <ApolloReactComponents.Query<
+    FindAllPostingsQuery,
+    FindAllPostingsQueryVariables
+  >
+    query={FindAllPostingsDocument}
+    {...props}
+  />
+);
+
+export type FindAllPostingsProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  FindAllPostingsQuery,
+  FindAllPostingsQueryVariables
+> &
+  TChildProps;
+export function withFindAllPostings<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    FindAllPostingsQuery,
+    FindAllPostingsQueryVariables,
+    FindAllPostingsProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    FindAllPostingsQuery,
+    FindAllPostingsQueryVariables,
+    FindAllPostingsProps<TChildProps>
+  >(FindAllPostingsDocument, {
+    alias: 'withFindAllPostings',
+    ...operationOptions,
+  });
+}
+export type FindAllPostingsQueryResult = ApolloReactCommon.QueryResult<
+  FindAllPostingsQuery,
+  FindAllPostingsQueryVariables
+>;
+export const PostingCountDocument = gql`
+  query PostingCount($companySlug: String!) {
+    postingCount(companySlug: $companySlug) {
+      open
+      closed
+    }
+  }
+`;
+export type PostingCountComponentProps = Omit<
+  ApolloReactComponents.QueryComponentOptions<
+    PostingCountQuery,
+    PostingCountQueryVariables
+  >,
+  'query'
+> &
+  (
+    | { variables: PostingCountQueryVariables; skip?: boolean }
+    | { skip: boolean });
+
+export const PostingCountComponent = (props: PostingCountComponentProps) => (
+  <ApolloReactComponents.Query<PostingCountQuery, PostingCountQueryVariables>
+    query={PostingCountDocument}
+    {...props}
+  />
+);
+
+export type PostingCountProps<TChildProps = {}> = ApolloReactHoc.DataProps<
+  PostingCountQuery,
+  PostingCountQueryVariables
+> &
+  TChildProps;
+export function withPostingCount<TProps, TChildProps = {}>(
+  operationOptions?: ApolloReactHoc.OperationOption<
+    TProps,
+    PostingCountQuery,
+    PostingCountQueryVariables,
+    PostingCountProps<TChildProps>
+  >,
+) {
+  return ApolloReactHoc.withQuery<
+    TProps,
+    PostingCountQuery,
+    PostingCountQueryVariables,
+    PostingCountProps<TChildProps>
+  >(PostingCountDocument, {
+    alias: 'withPostingCount',
+    ...operationOptions,
+  });
+}
+export type PostingCountQueryResult = ApolloReactCommon.QueryResult<
+  PostingCountQuery,
+  PostingCountQueryVariables
 >;
 export const SearchDocument = gql`
   query Search($input: SearchInput!) {

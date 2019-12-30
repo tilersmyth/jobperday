@@ -69,6 +69,7 @@ const createApollo = (initialState: any = {}, { getToken }: Options) => {
 
   const authLink = setContext((_, { headers }) => {
     const token = getToken();
+
     return {
       headers: {
         ...headers,

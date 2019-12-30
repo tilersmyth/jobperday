@@ -1,1 +1,0 @@
-export { ExpiredPostingsTable } from './table';

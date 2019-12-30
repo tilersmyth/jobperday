@@ -1,0 +1,31 @@
+@import '~antd/lib/style/themes/default.less';
+
+.details {
+  margin-bottom: @padding-lg;
+  padding: @padding-sm @padding-lg;
+  background-color: #dcd5c4;
+
+  ul {
+    padding: 0;
+    margin: 0;
+
+    li {
+      list-style: none;
+      border-right: 1px solid #f2eee6;
+      display: inline-block;
+      padding: 0 @padding-lg;
+
+      .title {
+        display: block;
+      }
+    }
+
+    li:first-child {
+      padding-left: 0;
+    }
+
+    li:last-child {
+      border-right: none;
+    }
+  }
+}

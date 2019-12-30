@@ -2,9 +2,17 @@ import { NextPage } from 'next';
 
 import { NextPageContextApollo } from '../../../../../types';
 import { fetchMe } from '../../../../../utils';
-import { MeQuery } from '../../../../../apollo/generated-components';
+import {
+  MeQuery,
+  PostingStatusEnum,
+} from '../../../../../apollo/generated-components';
 import { redirect } from '../../../../../apollo/redirect';
 import { CompanyAdminLayout } from '../../../../../components/shared';
+import {
+  PostingSingleLayout,
+  PostingSingleOpenView,
+  PostingSingleClosedView,
+} from '../../../../../components/job-posting';
 
 interface Props {
   me?: MeQuery['me'];
@@ -23,7 +31,15 @@ const JobPosting: NextPage<Props> = ({ slug, postingId }) => {
       pageRole="associate"
       companySlug={slug}
     >
-      Single posting view
+      <PostingSingleLayout companySlug={slug} postingId={postingId}>
+        {posting =>
+          posting.status === PostingStatusEnum.Open ? (
+            <PostingSingleOpenView posting={posting} />
+          ) : (
+            <PostingSingleClosedView posting={posting} />
+          )
+        }
+      </PostingSingleLayout>
     </CompanyAdminLayout>
   );
 };

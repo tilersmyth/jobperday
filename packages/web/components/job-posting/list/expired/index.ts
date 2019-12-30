@@ -1,1 +1,0 @@
-export { ExpiredPostingListView } from './expired';

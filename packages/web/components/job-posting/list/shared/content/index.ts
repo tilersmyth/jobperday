@@ -1,0 +1,1 @@
+export { PostingsListContent } from './content';

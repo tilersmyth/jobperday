@@ -4,11 +4,9 @@ import { ApplicantService } from './services';
 import { UseGuards } from '@nestjs/common';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { AppLogger } from '../app.logger';
-import { User as CurrentUser, Company } from '../_helpers';
-import { CompanyEntity } from '../company/entity';
+import { User as CurrentUser } from '../_helpers';
 import { CreateApplicantInput } from './inputs';
 import { UserEntity } from '../user/entity';
-import { ID } from 'type-graphql';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Applicant')

@@ -16,6 +16,12 @@ export const companyNavTree: NavTree[] = [
     role: 'associate',
   },
   {
+    route: '/applicants',
+    title: 'Applicants',
+    icon: 'usergroup-add',
+    role: 'associate',
+  },
+  {
     route: '/postings',
     title: 'Postings',
     icon: 'pushpin',

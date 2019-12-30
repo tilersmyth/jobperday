@@ -6,11 +6,13 @@ import {
   BaseEntity,
   ManyToOne,
   BeforeInsert,
+  AfterLoad,
 } from 'typeorm';
 
 import { JobEntity } from '../../job/entity/job.entity';
 import { AddressEntity } from '../../address/entity/address.entity';
 import { CompanyEntity } from '../../company/entity/company.entity';
+import { PostingStatusEnum } from '../enums';
 
 @Entity('job_postings')
 export class JobPostingEntity extends BaseEntity {
@@ -32,8 +34,10 @@ export class JobPostingEntity extends BaseEntity {
   @Column({ type: 'int' })
   public remaining_openings: number;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: true })
   public active: boolean;
+
+  public status: PostingStatusEnum;
 
   @Column('timestamp')
   public apply_deadline: Date;

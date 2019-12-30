@@ -1,0 +1,1 @@
+export { PostingDetailsCard } from './details';

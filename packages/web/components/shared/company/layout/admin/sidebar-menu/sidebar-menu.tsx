@@ -1,6 +1,6 @@
 import React from 'react';
 import { Menu, Icon } from 'antd';
-import { withRouter, NextRouter } from 'next/router';
+import { useRouter } from 'next/router';
 
 import { companyNavTree } from './company-nav-tree';
 import Link from 'next/link';
@@ -9,11 +9,18 @@ import { navParserUtil } from './route-parser.util';
 const { Item, SubMenu } = Menu;
 
 interface Props {
-  router: NextRouter;
   companySlug: string;
 }
 
-const C: React.FunctionComponent<Props> = ({ router, companySlug }) => {
+export const CompanySidebarMenu: React.FunctionComponent<Props> = ({
+  companySlug,
+}) => {
+  const router = useRouter();
+
+  if (!router) {
+    return null;
+  }
+
   const route = navParserUtil(router.pathname);
 
   return (
@@ -76,5 +83,3 @@ const C: React.FunctionComponent<Props> = ({ router, companySlug }) => {
     </Menu>
   );
 };
-
-export const CompanySidebarMenu = withRouter(C);

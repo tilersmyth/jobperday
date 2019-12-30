@@ -10,8 +10,13 @@ import { RolesGuard } from '../company/guards/roles.guard';
 import { UserAuthGuard } from '../auth/guards/user-auth.guard';
 import { PaginationInput } from '../_helpers/inputs/pagination.input';
 import { JobPostingService } from './posting.service';
-import { JobPostingResultsDto, JobPostingDto } from './dto';
-import { AddJobPostingInput } from './inputs';
+import {
+  JobPostingResultsDto,
+  JobPostingDto,
+  JobPostingSingleDto,
+  PostingCountDto,
+} from './dto';
+import { AddJobPostingInput, FindAllPostingsInput } from './inputs';
 
 @UseGuards(UserAuthGuard)
 @Resolver('Job/Posting')
@@ -44,13 +49,34 @@ export class JobPostingResolver {
     return posting;
   }
 
-  @Query(() => JobPostingDto)
+  @Query(() => JobPostingSingleDto)
   @Role('manager')
   @UseGuards(RolesGuard)
   async findPosting(
     @Args('companySlug') _: string,
     @Args({ name: 'postingId', type: () => ID }) id: string,
   ) {
-    return this.postingService.findOneById(id);
+    return this.postingService.findOne(id);
+  }
+
+  @Query(() => JobPostingResultsDto)
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async findAllPostings(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+    @Args('input') input: FindAllPostingsInput,
+  ) {
+    return this.postingService.findAll(company, input);
+  }
+
+  @Query(() => PostingCountDto)
+  @Role('manager')
+  @UseGuards(RolesGuard)
+  async postingCount(
+    @Company() company: CompanyEntity,
+    @Args('companySlug') _: string,
+  ) {
+    return this.postingService.count(company);
   }
 }
