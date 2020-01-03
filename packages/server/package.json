@@ -41,6 +41,7 @@
     "graphql": "^14.4.2",
     "graphql-tools": "^4.0.5",
     "graphql-upload": "^8.1.0",
+    "handlebars": "^4.3.0",
     "ioredis": "^4.14.0",
     "luxon": "^1.17.2",
     "moment": "^2.24.0",
