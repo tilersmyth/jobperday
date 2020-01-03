@@ -1,0 +1,70 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+  padding-right: 10px;
+  padding-left: 10px;
+  height: @layout-header-height-sm;
+}
+
+.container .brand {
+  float: left;
+}
+
+.container .brand .menuIcon {
+  display: inline-block;
+  vertical-align: top;
+  font-size: 20px;
+  color: @white;
+  margin: 0 20px;
+  transition: color 0.3s;
+  line-height: @layout-header-height-sm;
+}
+
+.container .brand .menuIcon:hover {
+  color: @primary-4;
+}
+
+@small_pg_margin: @layout-header-height-sm / 4;
+.container .brand .placeholder {
+  width: 120px;
+  height: @layout-header-height-sm / 2;
+  background: rgba(255, 255, 255, 0.2);
+  margin: @small_pg_margin 24px @small_pg_margin 0;
+  display: inline-block;
+}
+
+.container .menu {
+  line-height: @layout-header-height-sm;
+  display: flex;
+}
+
+.container .menu .subMenu {
+  margin-left: auto;
+}
+
+.container .menu .subMenu .itemGroup {
+  text-align: right;
+}
+
+@media (min-width: @screen-xl-min) {
+  .container {
+    height: @layout-header-height-lg;
+  }
+
+  .container .menu {
+    line-height: @layout-header-height-lg;
+  }
+
+  @large_pg_margin: @layout-header-height-lg / 4;
+  .container .brand .placeholder {
+    height: @layout-header-height-lg / 2;
+    margin: @large_pg_margin 24px @large_pg_margin 0;
+  }
+
+  .container .brand .menuIcon {
+    display: none;
+  }
+}

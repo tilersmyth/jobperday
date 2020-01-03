@@ -1,0 +1,15 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container input.ant-input:read-only {
+  background: @input-disabled-bg;
+  color: @disabled-color;
+  cursor: default;
+}
+
+.container input.ant-input:read-only:hover,
+.container input.ant-input:read-only:focus {
+  border: @input-border-color;
+  border-width: @border-width-base;
+  border-style: @border-style-base;
+  box-shadow: none;
+}

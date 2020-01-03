@@ -1,0 +1,20 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  padding: @padding-sm;
+}
+
+.container .content {
+  padding-top: @padding-sm;
+}
+
+@media (min-width: @screen-xl-min) {
+  .container {
+    padding: @padding-md;
+    overflow-x: visible;
+  }
+
+  .container .content {
+    padding-top: @padding-md;
+  }
+}

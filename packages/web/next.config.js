@@ -1,45 +1,17 @@
-const fs = require('fs');
-const path = require('path');
-
-const lessToJS = require('less-vars-to-js');
-const FilterWarningsPlugin = require('webpack-filter-warnings-plugin');
-
-const withDotenv = require('./config/next-dotenv.config');
-const withAntd = require('./config/next-less.config');
-
-const antdVariables = lessToJS(
-  fs.readFileSync(
-    path.resolve(__dirname, './theme/antd-overrides.less'),
-    'utf8',
-  ),
-);
+const env = require('./tools/next/next-dotenv');
+const withWebpack = require('./tools/next/next-webpack');
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
 
 // fix: prevents error when .less files are required by node
 if (typeof require !== 'undefined') {
   require.extensions['.less'] = file => {};
 }
 
-module.exports = withDotenv(
-  withAntd({
-    cssModules: true,
-    cssLoaderOptions: {
-      sourceMap: false,
-      importLoaders: 1,
-      localIdentName: '[local]___[hash:base64:5]',
-    },
-    lessLoaderOptions: {
-      javascriptEnabled: true,
-      modifyVars: antdVariables,
-    },
-    webpack: config => {
-      config.plugins.push(
-        new FilterWarningsPlugin({
-          // ignore ANTD chunk styles [mini-css-extract-plugin] warning
-          exclude: /mini-css-extract-plugin[^]*Conflicting order between:/,
-        }),
-      );
+const nextConfig = {
+  env,
+  target: 'server',
+};
 
-      return config;
-    },
-  }),
-);
+module.exports = withBundleAnalyzer({ ...nextConfig, webpack: withWebpack });

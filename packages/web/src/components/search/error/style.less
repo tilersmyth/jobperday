@@ -1,0 +1,19 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  position: relative;
+  margin-left: 0;
+  padding: 20px;
+}
+
+@media (min-width: @screen-lg-min) {
+  .container {
+    margin-left: @layout-sidebar-width-lg + @padding-sm;
+  }
+}
+
+@media (min-width: @screen-xl-min) {
+  .container {
+    margin-left: @layout-sidebar-width-lg + @padding-md;
+  }
+}

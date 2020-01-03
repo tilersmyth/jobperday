@@ -1,0 +1,28 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.secondaryFields {
+  max-height: 0;
+  overflow: hidden;
+  display: block;
+  width: 100%;
+  transition: max-height 0.25s ease-in;
+}
+
+.secondaryFields.open {
+  max-height: 300px;
+}
+
+.secondaryFields .fieldItem {
+  margin-top: 5px;
+}
+
+@media (min-width: @screen-lg-min) {
+  .secondaryFields {
+    display: block;
+    overflow: inherit;
+  }
+
+  .secondaryFields .fieldItem {
+    margin-top: 0;
+  }
+}

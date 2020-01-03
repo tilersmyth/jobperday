@@ -1,0 +1,58 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  position: relative;
+  background-color: @white;
+  min-height: 120px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: block;
+  cursor: pointer;
+  transition: border-color 0.25s ease;
+  border: 1px solid @white;
+}
+
+.container.active {
+  border-color: @white;
+}
+
+.container .image {
+  position: absolute;
+  left: 20px;
+  top: 20px;
+  height: 80px;
+  width: 80px;
+  overflow: hidden;
+  border: 1px solid @border-color-base;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container .image img {
+  height: 80px;
+  width: auto;
+}
+
+.container .content {
+  margin-left: 100px;
+}
+
+.container .content .item {
+  margin-bottom: 5px;
+  display: block;
+}
+
+.container .content .item .icon {
+  margin-right: 5px;
+}
+
+.container .content .item span {
+  margin-right: 20px;
+}
+
+@media (min-width: @screen-xl-min) {
+  .container.active {
+    border-color: @primary-color;
+  }
+}

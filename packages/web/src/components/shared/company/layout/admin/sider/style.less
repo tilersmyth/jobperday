@@ -1,0 +1,15 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  background-color: @white;
+  display: none;
+  position: fixed;
+  height: 100vh;
+  overflow: auto;
+}
+
+@media (min-width: @screen-xl-min) {
+  .container {
+    display: inline;
+  }
+}

@@ -1,0 +1,19 @@
+@import '~@jobperday/web/src/styles/variables.less';
+
+.container {
+  display: block;
+  background-color: @white;
+  margin-bottom: 20px;
+}
+
+.container :global {
+  .ant-page-header-heading-title {
+    margin: 20px;
+  }
+}
+
+@media (min-width: @screen-xl-min) {
+  .container {
+    display: none;
+  }
+}
